@@ -26,9 +26,11 @@ Bootstrapped; nothing executed yet.
 - **git init -b main**: **PASS**
 - **git add -A (16 files)**: **PASS**
 - **No .env staged**: **PASS**
-- **gh repo create**: see D section below
-- **git remote -v**: see E section below
-- **git ls-remote origin -h**: see E section below
+- **gh CLI found**: **PASS** — v2.83.2 at `C:\Program Files\GitHub CLI\gh.exe`
+- **gh auth status**: **PASS** — `ynotfins`, token has `repo` scope
+- **gh repo create ynotfins/AI-Project-Manager --private**: **PASS**
+- **git remote -v**: **PASS** — `origin https://github.com/ynotfins/AI-Project-Manager.git`
+- **git ls-remote --heads origin**: **PASS** — `refs/heads/main` at `c2bce21`
 
 ### What's next
 - Clone on laptop: `git clone https://github.com/ynotfins/AI-Project-Manager.git D:\github\AI-Project-Manager`
