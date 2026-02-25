@@ -1,5 +1,35 @@
 # MCP Health Log
 
+## Entry: 2026-02-24 — shell-mcp-server Installation
+
+**Timestamp:** 2026-02-24 00:30 local (UTC-5 EST)
+
+### Install Method
+`uv tool install shell-mcp-server` (was already installed — v0.1.0)
+
+### Binary
+`C:\Users\ynotf\.local\bin\shell-mcp-server.exe`
+
+### MCP Entry (`shell-mcp`)
+
+| Field | Value |
+|---|---|
+| command | `shell-mcp-server` |
+| Allowed dirs | `D:\github`, `D:\github_2`, `C:\Users\ynotf\.openclaw` |
+| Shells configured | `pwsh` (PS7), `powershell` (PS5), `cmd`, `bash` (WSL) |
+
+### Evidence
+
+| Check | Result |
+|---|---|
+| `uv --version` | **PASS** — 0.9.18 |
+| `uv tool install shell-mcp-server` | **PASS** — v0.1.0 already installed |
+| `shell-mcp-server --help` | **PASS** — correct args format confirmed |
+| JSON valid after edit | **PASS** |
+| Cursor restart required | **PENDING** |
+
+---
+
 ## Entry: 2026-02-24 — filesystem_scoped + filesystem_fulldisk Installation
 
 **Timestamp:** 2026-02-24 00:10 local (UTC-5 EST)

@@ -8,6 +8,25 @@ Bootstrapped; nothing executed yet.
 
 <!-- AGENT appends entries below this line after each execution block. -->
 
+## 2026-02-24 — shell-mcp-server Installation
+
+### Changes
+- `uv tool install shell-mcp-server` — v0.1.0 already present
+- `~/.cursor/mcp.json`: added `shell-mcp` entry with 4 shells (pwsh, powershell, cmd, bash) and 3 allowed dirs
+
+### Evidence
+- **uv 0.9.18**: **PASS**
+- **shell-mcp-server v0.1.0**: **PASS** — `C:\Users\ynotf\.local\bin\shell-mcp-server.exe`
+- **shell-mcp-server --help**: **PASS**
+- **mcp.json JSON valid**: **PASS**
+- **Cursor restart + MCP connection**: **PENDING**
+
+### What's next
+- Restart Cursor to activate `shell-mcp`
+- Verify `execute_command` tool is listed and callable
+
+---
+
 ## 2026-02-24 — filesystem_scoped MCP Installation
 
 ### Changes
