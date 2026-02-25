@@ -8,6 +8,31 @@ Bootstrapped; nothing executed yet.
 
 <!-- AGENT appends entries below this line after each execution block. -->
 
+## 2026-02-24 — filesystem_scoped MCP Installation
+
+### Changes
+- `~/.cursor/mcp.json`: replaced broken remote `Filesystem` HTTP entry with:
+  - `filesystem_scoped` (enabled) — roots: `D:\github`, `D:\github_2`, `C:\Users\ynotf\.openclaw`
+  - `filesystem_fulldisk` (disabled) — roots: `C:\`, `D:\`
+- `@modelcontextprotocol/server-filesystem` pre-cached via npx
+
+### Evidence
+- **node/npm/pnpm**: **PASS** — v22.18.0 / 11.7.0 / 10.24.0
+- **WSL distro**: **PASS** — Ubuntu
+- **D:\github + D:\github_2 + .openclaw paths**: **PASS**
+- **WSL UNC \\wsl.localhost\Ubuntu\...**: **BLOCKED** — access denied from PowerShell
+- **mcp.json written**: **PASS** — verified via ConvertFrom-Json
+- **Package pre-cached**: **PASS**
+- **filesystem_scoped MCP tool calls**: **PENDING** — Cursor restart required
+- **Windows file reads (Cursor native)**: **PASS** — README.md + AGENTS.md confirmed readable
+
+### What's next
+- Restart Cursor → confirm `filesystem_scoped` connects
+- Run post-restart MCP tool call verification
+- Consider `mcp-server-wsl-filesystem` for WSL path access
+
+---
+
 ## 2026-02-24 — Publish AI-Project-Manager to GitHub
 
 ### Changes
