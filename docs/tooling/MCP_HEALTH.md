@@ -26,7 +26,10 @@
 | `uv tool install shell-mcp-server` | **PASS** — v0.1.0 already installed |
 | `shell-mcp-server --help` | **PASS** — correct args format confirmed |
 | JSON valid after edit | **PASS** |
-| Cursor restart required | **PENDING** |
+| `filesystem_fulldisk` removed | **PASS** — Cursor ignores `disabled: true`; removed to prevent unscoped C:\\ + D:\\ access |
+| `shell-mcp` command → absolute path | **PASS** — `C:\Users\ynotf\.local\bin\shell-mcp-server.exe` |
+| Stale process cleanup (20 killed) | **PASS** |
+| Cursor restart + MCP connection | **PENDING** — toggle shell-mcp and filesystem_scoped in MCP panel |
 
 ---
 
