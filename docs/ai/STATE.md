@@ -50,6 +50,27 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 
 ---
 
+## 2026-02-25 — filesystem_scoped + shell-mcp Tool Evidence Log
+
+### What was tested
+- filesystem_scoped: 14 tools confirmed, file reads on two repos
+- shell-mcp: execute_command confirmed across pwsh + cmd shells
+
+### Evidence
+- **filesystem_scoped descriptor**: **PASS** — 14 tools listed
+- **read_file D:\github\open--claw\README.md**: **PASS**
+- **read_file D:\github\AI-Project-Manager\AGENTS.md**: **PASS**
+- **shell-mcp descriptor**: **PASS** — 1 tool (execute_command)
+- **whoami (pwsh)**: **PASS** — `chaoscentral\ynotf`
+- **dir /b AI-Project-Manager (cmd)**: **PASS** — 5 entries listed
+- **PSVersion (pwsh)**: **PASS** — 7.5.4
+
+### What's next
+- Resolve open--claw → open-claw GitHub rename before running cleanup plan
+- Add wsl-filesystem MCP server for WSL path access
+
+---
+
 ## 2026-02-24 — shell-mcp-server Installation
 
 ### Changes

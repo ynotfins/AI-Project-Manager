@@ -1,5 +1,43 @@
 # MCP Health Log
 
+## Entry: 2026-02-25 — filesystem_scoped + shell-mcp Tool Evidence Log
+
+**Timestamp:** 2026-02-25 17:30 local (UTC-5 EST)
+
+### A) filesystem_scoped
+
+| Field | Value |
+|---|---|
+| Server key | `filesystem_scoped` |
+| Descriptor folder | `mcps/user-filesystem_scoped/` — **present** |
+| Tool count | **14** |
+| Tools | `read_file`, `read_text_file`, `read_media_file`, `read_multiple_files`, `write_file`, `edit_file`, `create_directory`, `list_directory`, `list_directory_with_sizes`, `directory_tree`, `move_file`, `search_files`, `get_file_info`, `list_allowed_directories` |
+
+| Proof call | Path | Result | Excerpt |
+|---|---|---|---|
+| `read_file` | `D:\github\open--claw\README.md` | **PASS** | `# Open Claw — A modular AI assistant platform...` |
+| `read_file` | `D:\github\AI-Project-Manager\AGENTS.md` | **PASS** | `# AGENTS.md — This repo uses a five-tab Cursor workflow...` |
+
+### B) shell-mcp
+
+| Field | Value |
+|---|---|
+| Server key | `shell-mcp` |
+| Descriptor folder | `mcps/user-shell-mcp/` — **present** |
+| Tool count | **1** |
+| Tools | `execute_command` |
+| Binary | `C:\Users\ynotf\.local\bin\shell-mcp-server.exe` (v0.1.0, patched) |
+
+| Command | Shell | Result | Output |
+|---|---|---|---|
+| `whoami` | pwsh | **PASS** | `chaoscentral\ynotf` |
+| `dir /b` in `D:\github\AI-Project-Manager` | cmd | **PASS** | `.cursor .gitignore AGENTS.md docs README.md` |
+| `$PSVersionTable.PSVersion.ToString()` | pwsh | **PASS** | `7.5.4` |
+
+**Overall: PASS** — both MCP servers connected, tools listed, proof calls all succeeded.
+
+---
+
 ## Entry: 2026-02-24 — shell-mcp-server Installation
 
 **Timestamp:** 2026-02-24 00:30 local (UTC-5 EST)
