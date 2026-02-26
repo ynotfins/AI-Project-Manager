@@ -1,125 +1,239 @@
-# MCP Canonical Config — Global Setup
+# MCP Canonical Configuration
 
-This document is the authoritative reference for the global Cursor MCP configuration on all machines.
-Config lives at: `%USERPROFILE%\.cursor\mcp.json`
+**Last verified:** 2026-02-25 — all servers showing tools and connected.
 
----
-
-## Machine baseline requirements
-
-| Tool | Required version | Install command |
-|------|-----------------|-----------------|
-| Node.js | ≥22 LTS | `winget install OpenJS.NodeJS.LTS` |
-| npm/npx | bundled with Node | — |
-| uv | ≥0.10 | `winget install astral-sh.uv` |
-| uvx | bundled with uv | — |
-| shell-mcp-server | 0.1.x | `uv tool install shell-mcp-server` |
-| git | any recent | `winget install Git.Git` |
+This is the authoritative reference for the global Cursor MCP setup.
+Apply this to every machine and every project. Secrets live in the machine's
+keyring / `.env.local` — never in this file or git.
 
 ---
 
-## Server list and transport
+## How global MCP config works in Cursor
 
-| Server key | Transport | Secret required (Bitwarden) |
-|------------|-----------|----------------------------|
-| `GitKraken` | stdio (gk.exe) | none |
-| `Clear Thought 1.5` | http | none |
-| `Context7` | http | none |
-| `Exa Search` | http | none |
-| `Memory Tool` | http | none |
-| `Stripe` | http | none |
-| `playwright` | stdio (npx) | none |
-| `github` | stdio (npx) | `GITHUB_PERSONAL_ACCESS_TOKEN` |
-| `sequential-thinking` | stdio (npx) | none |
-| `firecrawl-mcp` | stdio (npx) | `FIRECRAWL_API_KEY` |
-| `firestore-mcp` | stdio (npx via smithery) | none |
-| `Magic MCP` | stdio (npx via cmd) | Magic API key (positional arg) |
-| `googlesheets-tvi8pq-94` | http (composio) | `customerId` in URL |
-| `serena` | stdio (uvx from git) | none |
-| `filesystem_scoped` | stdio (npx) | none |
-| `shell-mcp` | stdio (shell-mcp-server.exe) | none |
+- **File:** `%USERPROFILE%\.cursor\mcp.json`  (Windows) / `~/.cursor/mcp.json` (Mac/Linux)
+- Applies to **all** Cursor projects on the machine.
+- Project-level `.cursor/mcp.json` can add servers but **cannot disable** global ones.
+- Cursor has **no working `disabled` flag** — remove an entry to disable it.
+- Each server spawns a subprocess; multiple toggles create stale processes. If servers stop
+  responding, kill stale processes and toggle once cleanly.
 
 ---
 
-## Bitwarden secret lookup
+## Working server list (2026-02-25)
 
-Before first use, fill these placeholders in `mcp.json` locally (never commit):
+### HTTP / remote servers (no local process)
 
-| Placeholder | Bitwarden item | Field |
-|-------------|---------------|-------|
-| `FROM_BITWARDEN` in `github.env.GITHUB_PERSONAL_ACCESS_TOKEN` | "GitHub PAT — MCP" | password |
-| `FROM_BITWARDEN` in `firecrawl-mcp.env.FIRECRAWL_API_KEY` | "Firecrawl API" | password |
-| `API_KEY="FROM_BITWARDEN"` in `Magic MCP.args` | "21st.dev Magic MCP" | password |
-| `customerId=FROM_BITWARDEN` in `googlesheets-tvi8pq-94.url` | "Composio Google Sheets" | customerId |
+| Key | URL | Purpose |
+|---|---|---|
+| `Context7` | `https://server.smithery.ai/@upstash/context7-mcp` | Library docs lookup |
+| `Exa Search` | `https://mcp.exa.ai` | Web search |
+| `Memory Tool` | `https://server.smithery.ai/@mem0ai/mem0-memory-mcp` | Cross-session memory |
+| `Clear Thought 1.5` | `https://clear-thought--waldzellai.run.tools` | Reasoning/thinking |
+| `Stripe` | `https://stripe.run.tools` | Stripe API |
+| `googlesheets-tvi8pq-94` | `https://mcp.composio.dev/...` | Google Sheets |
+
+### Local stdio servers (spawn a process)
+
+| Key | Command | Purpose |
+|---|---|---|
+| `filesystem_scoped` | `npx -y @modelcontextprotocol/server-filesystem` | File read/write scoped to `D:\github`, `D:\github_2`, `.openclaw` |
+| `shell-mcp` | `shell-mcp-server` (absolute path on Windows) | Shell command execution |
+| `serena` | `uvx ... serena start-mcp-server` | Code navigation (LSP) |
+| `sequential-thinking` | `npx -y @modelcontextprotocol/server-sequential-thinking` | Step-by-step reasoning |
+| `playwright` | `npx @playwright/mcp@latest` | Browser automation |
+| `github` | `npx -y @modelcontextprotocol/server-github` | GitHub API |
+| `firecrawl-mcp` | `npx -y firecrawl-mcp` | Web scraping |
+| `firestore-mcp` | `npx -y @smithery/cli@latest run @devlimelabs/firestore-mcp` | Firestore |
+| `Magic MCP` | `cmd /c npx -y @21st-dev/magic@latest` | UI component generation |
 
 ---
 
-## shell-mcp-server setup
+## Full `mcp.json` template
 
-```powershell
-# Install
-uv tool install shell-mcp-server
+Copy this to `%USERPROFILE%\.cursor\mcp.json`. Fill in `YOUR_*` placeholders from
+your secrets store (1Password / keyring). Never commit secrets.
 
-# Executable location
-C:\Users\<USERNAME>\.local\bin\shell-mcp-server.exe
-
-# Verify sync entrypoint (no patch needed in v0.1.0+)
-$pythonExe = "$env:APPDATA\uv\tools\shell-mcp-server\Scripts\python.exe"
-& $pythonExe -c "import sys; sys.argv=['s','D:\\github']; from shell_mcp_server import main; import inspect; print('sync:', not inspect.iscoroutinefunction(main))"
-# Expected: sync: True
+```json
+{
+  "mcpServers": {
+    "Context7": {
+      "type": "http",
+      "url": "https://server.smithery.ai/@upstash/context7-mcp",
+      "headers": {}
+    },
+    "Exa Search": {
+      "type": "http",
+      "url": "https://mcp.exa.ai",
+      "headers": {}
+    },
+    "Memory Tool": {
+      "type": "http",
+      "url": "https://server.smithery.ai/@mem0ai/mem0-memory-mcp",
+      "headers": {}
+    },
+    "Clear Thought 1.5": {
+      "type": "http",
+      "url": "https://clear-thought--waldzellai.run.tools",
+      "headers": {}
+    },
+    "Stripe": {
+      "type": "http",
+      "url": "https://stripe.run.tools",
+      "headers": {}
+    },
+    "googlesheets-tvi8pq-94": {
+      "url": "https://mcp.composio.dev/partner/composio/googlesheets/mcp?customerId=YOUR_COMPOSIO_CUSTOMER_ID&agent=cursor"
+    },
+    "filesystem_scoped": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "D:\\github",
+        "D:\\github_2",
+        "C:\\Users\\YOUR_USERNAME\\.openclaw"
+      ]
+    },
+    "shell-mcp": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\shell-mcp-server.exe",
+      "args": [
+        "D:\\github",
+        "D:\\github_2",
+        "C:\\Users\\YOUR_USERNAME\\.openclaw",
+        "--shell", "pwsh",       "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "--shell", "powershell", "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "--shell", "cmd",        "C:\\WINDOWS\\System32\\cmd.exe",
+        "--shell", "bash",       "C:\\WINDOWS\\system32\\bash.exe"
+      ]
+    },
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--project-from-cwd",
+        "--transport",
+        "stdio"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_PAT"
+      }
+    },
+    "firecrawl-mcp": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY"
+      }
+    },
+    "firestore-mcp": {
+      "command": "npx",
+      "args": ["-y", "@smithery/cli@latest", "run", "@devlimelabs/firestore-mcp"]
+    },
+    "Magic MCP": {
+      "command": "cmd",
+      "args": [
+        "/c", "npx", "-y", "@21st-dev/magic@latest",
+        "API_KEY=\"YOUR_MAGIC_API_KEY\""
+      ],
+      "env": {}
+    }
+  }
+}
 ```
 
-Note: In shell-mcp-server v0.1.0 the `__init__.py` already wraps `asyncio.run(server.main())` — no patch is needed. The `main()` in `__init__.py` is sync; `server.main()` is async.
+---
+
+## Prerequisites (must be installed before applying config)
+
+| Tool | Install command | Notes |
+|---|---|---|
+| Node.js ≥ 18 | https://nodejs.org | Required for all `npx` servers |
+| pnpm | `npm i -g pnpm` | Optional but faster |
+| uv | https://docs.astral.sh/uv/getting-started/installation/ | Required for Serena |
+| uvx | ships with uv | Required for Serena |
+| shell-mcp-server | `uv tool install shell-mcp-server` | Then patch — see below |
+| Git | https://git-scm.com | Required for github MCP |
+
+### shell-mcp-server patch (required — v0.1.0 has async bug)
+
+After `uv tool install shell-mcp-server`, patch the installed `server.py`:
+
+**File:** `%APPDATA%\uv\tools\shell-mcp-server\Lib\site-packages\shell_mcp_server\server.py`
+
+Change the bottom of the file from:
+```python
+async def main():
+    """Main entry point for the shell MCP server."""
+    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
+        ...
+```
+
+To:
+```python
+async def _main_async():
+    """Async implementation of the shell MCP server."""
+    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
+        ...
+
+def main():
+    """Sync entry point called by the compiled .exe console script."""
+    import asyncio
+    asyncio.run(_main_async())
+```
+
+This fixes `coroutine 'main' was never awaited` on Windows.
 
 ---
 
-## Serena setup
+## Serena project registration
 
-```powershell
-# Create config dir
-New-Item -ItemType Directory -Path "$env:USERPROFILE\.serena" -Force
+Serena uses `--project-from-cwd` — it activates based on the folder Cursor opens.
+Registered projects live in `%USERPROFILE%\.serena\serena_config.yml` under `projects:`.
 
-# Create config file
-@"
+Current registered projects:
+```yaml
 projects:
-  - path: D:\github\open--claw
-  - path: D:\github\AI-Project-Manager
-"@ | Set-Content "$env:USERPROFILE\.serena\serena_config.yml"
+- D:\github\alerts-sheets
+- D:\github\open--claw
+- D:\github\AI-Project-Manager
 ```
 
-Serena is loaded via `uvx --from git+https://github.com/oraios/serena` — no separate install needed beyond uv.
+To add a new project: append its path to the `projects:` list in that file,
+then restart Serena (toggle in MCP panel or restart Cursor).
 
 ---
 
-## Kill stale MCP processes (fix for "no tools" after restart)
+## Troubleshooting
 
-Run this if a server shows connected but lists 0 tools:
+| Symptom | Cause | Fix |
+|---|---|---|
+| Server shows no tools | Stale process from previous toggle | Kill stale processes + toggle once |
+| `coroutine was never awaited` | shell-mcp-server v0.1.0 async bug | Apply patch above |
+| Serena only shows one project | Process loaded old config | Full Cursor restart (not just toggle) |
+| `filesystem_fulldisk` running unscoped | Cursor ignores `disabled: true` | Remove the entry entirely |
+| WSL UNC `\\wsl$\...` access denied | PowerShell permission restriction | Use `wsl` shell commands as workaround |
 
+### Kill stale MCP processes (PowerShell)
 ```powershell
-# Kill all node processes spawned for MCP (npx-based servers)
-Get-Process -Name "node" -ErrorAction SilentlyContinue | Stop-Process -Force
-
-# Kill shell-mcp-server if stale
-Get-Process -Name "shell-mcp-server" -ErrorAction SilentlyContinue | Stop-Process -Force
-
-# Kill uvx/serena if stale
-Get-Process -Name "serena" -ErrorAction SilentlyContinue | Stop-Process -Force
-```
-
-Then fully quit and restart Cursor (File → Exit, not just reload window).
-
----
-
-## Conflict policy
-
-**Global-only**: All MCP servers must be in `%USERPROFILE%\.cursor\mcp.json`.
-
-Per-project `.cursor\mcp.json` or `.vscode\mcp.json` files are **forbidden** (they shadow global config and cause stale-process issues).
-
-Check both repos:
-```powershell
-Test-Path "D:\github\open--claw\.cursor\mcp.json"      # must be False
-Test-Path "D:\github\open--claw\.vscode\mcp.json"      # must be False
-Test-Path "D:\Github\AI-Project-Manager\.cursor\mcp.json"   # must be False
-Test-Path "D:\Github\AI-Project-Manager\.vscode\mcp.json"   # must be False
+Get-WmiObject Win32_Process | Where-Object {
+    ($_.CommandLine -like '*server-filesystem*' -or
+     $_.CommandLine -like '*shell-mcp-server*' -or
+     $_.CommandLine -like '*serena*') -and
+    $_.Name -ne 'pwsh.exe'
+} | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 ```

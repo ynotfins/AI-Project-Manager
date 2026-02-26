@@ -24,7 +24,7 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 | Conflict check (both repos) | **PASS** | No per-project `.cursor\mcp.json` or `.vscode\mcp.json` found |
 | mcp.json written | **PASS** | 16 servers, JSON valid, backed up first |
 | `~/.serena/serena_config.yml` | **PASS** | Created with `D:\github\open--claw` + `D:\github\AI-Project-Manager` |
-| `MCP_CANONICAL_CONFIG.md` | **PASS** | Created at `docs/tooling/MCP_CANONICAL_CONFIG.md` |
+| `MCP_CANONICAL_CONFIG.md` | **PASS** | Kept ChaosCentral version (theirs, more complete) |
 | 4 secret-dependent servers | **BLOCKED** | `github`, `firecrawl-mcp`, `Magic MCP`, `googlesheets-tvi8pq-94` — user must fill from Bitwarden |
 | Cursor restart + verification | **PENDING** | User action required |
 
@@ -42,11 +42,57 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 - Updated `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` PLAN-tab prompt to enforce: tab separation, required reads, MCP-first + fallback, PASS/FAIL evidence expectations, and a deterministic 3-item output contract.
 
 ### Evidence
-- **Doc edit (Cursor)**: **PASS** — updated prompt block under “PLAN tab — first prompt”
+- **Doc edit (Cursor)**: **PASS** — updated prompt block under "PLAN tab — first prompt"
 - **Commands run**: **SKIPPED** — PLAN-mode doc edit only
 
 ### What's next
 - Use the updated PLAN-tab prompt in new sessions; Phase planning should now consistently produce a single AGENT execution prompt with explicit exit criteria and evidence requirements.
+
+---
+
+## 2026-02-24 — shell-mcp-server Installation
+
+### Changes
+- `uv tool install shell-mcp-server` — v0.1.0 already present
+- `~/.cursor/mcp.json`: added `shell-mcp` entry with 4 shells (pwsh, powershell, cmd, bash) and 3 allowed dirs
+
+### Evidence
+- **uv 0.9.18**: **PASS**
+- **shell-mcp-server v0.1.0**: **PASS** — `C:\Users\ynotf\.local\bin\shell-mcp-server.exe`
+- **shell-mcp-server --help**: **PASS**
+- **mcp.json JSON valid**: **PASS**
+- **Cursor restart + MCP connection**: **PENDING**
+
+### What's next
+- Restart Cursor to activate `shell-mcp`
+- Verify `execute_command` tool is listed and callable
+
+---
+
+## 2026-02-24 — filesystem_scoped MCP Installation
+
+### Changes
+- `~/.cursor/mcp.json`: replaced broken remote `Filesystem` HTTP entry with:
+  - `filesystem_scoped` (enabled) — roots: `D:\github`, `D:\github_2`, `C:\Users\ynotf\.openclaw`
+  - `filesystem_fulldisk` (disabled) — roots: `C:\`, `D:\`
+- `@modelcontextprotocol/server-filesystem` pre-cached via npx
+
+### Evidence
+- **node/npm/pnpm**: **PASS** — v22.18.0 / 11.7.0 / 10.24.0
+- **WSL distro**: **PASS** — Ubuntu
+- **D:\github + D:\github_2 + .openclaw paths**: **PASS**
+- **WSL UNC \\wsl.localhost\Ubuntu\...**: **BLOCKED** — access denied from PowerShell
+- **mcp.json written**: **PASS** — verified via ConvertFrom-Json
+- **Package pre-cached**: **PASS**
+- **filesystem_scoped MCP tool calls**: **PENDING** — Cursor restart required
+- **Windows file reads (Cursor native)**: **PASS** — README.md + AGENTS.md confirmed readable
+
+### What's next
+- Restart Cursor → confirm `filesystem_scoped` connects
+- Run post-restart MCP tool call verification
+- Consider `mcp-server-wsl-filesystem` for WSL path access
+
+---
 
 ## 2026-02-24 — Publish AI-Project-Manager to GitHub
 

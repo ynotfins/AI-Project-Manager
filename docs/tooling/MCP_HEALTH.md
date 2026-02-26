@@ -1,5 +1,91 @@
 # MCP Health Log
 
+## Entry: 2026-02-24 — shell-mcp-server Installation
+
+**Timestamp:** 2026-02-24 00:30 local (UTC-5 EST)
+
+### Install Method
+`uv tool install shell-mcp-server` (was already installed — v0.1.0)
+
+### Binary
+`C:\Users\ynotf\.local\bin\shell-mcp-server.exe`
+
+### MCP Entry (`shell-mcp`)
+
+| Field | Value |
+|---|---|
+| command | `shell-mcp-server` |
+| Allowed dirs | `D:\github`, `D:\github_2`, `C:\Users\ynotf\.openclaw` |
+| Shells configured | `pwsh` (PS7), `powershell` (PS5), `cmd`, `bash` (WSL) |
+
+### Evidence
+
+| Check | Result |
+|---|---|
+| `uv --version` | **PASS** — 0.9.18 |
+| `uv tool install shell-mcp-server` | **PASS** — v0.1.0 already installed |
+| `shell-mcp-server --help` | **PASS** — correct args format confirmed |
+| JSON valid after edit | **PASS** |
+| `filesystem_fulldisk` removed | **PASS** — Cursor ignores `disabled: true`; removed to prevent unscoped C:\\ + D:\\ access |
+| `shell-mcp` command → absolute path | **PASS** — `C:\Users\ynotf\.local\bin\shell-mcp-server.exe` |
+| Stale process cleanup (20 killed) | **PASS** |
+| Cursor restart + MCP connection | **PENDING** — toggle shell-mcp and filesystem_scoped in MCP panel |
+
+---
+
+## Entry: 2026-02-24 — filesystem_scoped + filesystem_fulldisk Installation
+
+**Timestamp:** 2026-02-24 00:10 local (UTC-5 EST)
+
+### A) Preflight
+
+| Check | Result |
+|---|---|
+| node | **PASS** — v22.18.0 |
+| npm | **PASS** — 11.7.0 |
+| pnpm | **PASS** — 10.24.0 |
+| WSL default distro | **PASS** — `Ubuntu` |
+| `Test-Path D:\github` | **PASS** |
+| `Test-Path D:\github_2` | **PASS** |
+| `Test-Path %USERPROFILE%\.openclaw` | **PASS** — `C:\Users\ynotf\.openclaw` |
+| `Test-Path \\wsl.localhost\Ubuntu\mnt\d\github` | **FAIL** — Access denied from PowerShell → **WSL_UNC_BLOCKED** |
+
+**WSL_UNC_BLOCKED fix steps:**
+- Option A: Add `\\wsl.localhost\Ubuntu` to `filesystem_scoped` args once Windows→WSL UNC permissions are fixed
+- Option B (recommended): Run a second `mcp-server-wsl-filesystem` instance inside WSL via `wsl.exe -e npx ...`
+
+### B) MCP Config Written
+
+**File:** `C:\Users\ynotf\.cursor\mcp.json`
+
+| Server | Status | Allowed roots |
+|---|---|---|
+| `filesystem_scoped` | **enabled** | `D:\github`, `D:\github_2`, `C:\Users\ynotf\.openclaw` |
+| `filesystem_fulldisk` | **disabled** (`"disabled": true`) | `C:\`, `D:\` |
+| `Filesystem` (old remote HTTP) | **removed** | — |
+
+**Package:** `@modelcontextprotocol/server-filesystem` — pre-cached at `C:\Users\ynotf\AppData\Roaming\npm\node_modules\`
+
+**Cursor restart required** to activate new servers.
+
+### C) Proof Reads
+
+| Tool | Path | Result | Excerpt |
+|---|---|---|---|
+| Cursor Read (native) | `D:\github\open--claw\README.md` | **PASS** | `# Open Claw — A modular AI assistant platform...` |
+| Cursor Read (native) | `D:\github\AI-Project-Manager\AGENTS.md` | **PASS** | `# AGENTS.md — This repo uses a five-tab Cursor workflow...` |
+| `filesystem_scoped` MCP tool | Any path | **PENDING** — Cursor restart required |
+| WSL UNC read | `\\wsl.localhost\Ubuntu\mnt\d\github\...` | **BLOCKED** — see WSL_UNC_BLOCKED above |
+
+### Post-Restart Verification (TODO)
+After Cursor restart:
+- [ ] Confirm `filesystem_scoped` shows connected in MCP panel
+- [ ] Call `list_directory` on `D:\github` via `filesystem_scoped`
+- [ ] Call `read_file` on `D:\github\open--claw\README.md` via `filesystem_scoped`
+- [ ] Update this entry with PASS evidence
+
+---
+
 ## Entry: 2026-02-23 — Filesystem MCP Proof + Cross-Platform Path Test
 
 **Timestamp:** 2026-02-23 23:50 local (UTC-5 EST)
