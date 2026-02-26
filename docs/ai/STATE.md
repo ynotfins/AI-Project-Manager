@@ -8,6 +8,46 @@ Bootstrapped; nothing executed yet.
 
 <!-- AGENT appends entries below this line after each execution block. -->
 
+## 2026-02-26 — Global MCP Setup (Laptop → ChaosCentral parity)
+
+### Summary
+Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server global `mcp.json` at `C:\Users\ynotf\.cursor\mcp.json`. Created `~/.serena/serena_config.yml`. Created `docs/tooling/MCP_CANONICAL_CONFIG.md`.
+
+### Evidence
+
+| Check | Status | Detail |
+|-------|--------|--------|
+| Node.js install | **PASS** | v24.14.0 via `winget install OpenJS.NodeJS.LTS` |
+| uv/uvx install | **PASS** | v0.10.6 via `winget install astral-sh.uv` |
+| shell-mcp-server install | **PASS** | v0.1.0 via `uv tool install shell-mcp-server`; exe at `C:\Users\ynotf\.local\bin\shell-mcp-server.exe` |
+| shell-mcp-server sync main() | **PASS** | No patch needed — `__init__.py` already wraps `asyncio.run()` |
+| Conflict check (both repos) | **PASS** | No per-project `.cursor\mcp.json` or `.vscode\mcp.json` found |
+| mcp.json written | **PASS** | 16 servers, JSON valid, backed up first |
+| `~/.serena/serena_config.yml` | **PASS** | Created with `D:\github\open--claw` + `D:\github\AI-Project-Manager` |
+| `MCP_CANONICAL_CONFIG.md` | **PASS** | Created at `docs/tooling/MCP_CANONICAL_CONFIG.md` |
+| 4 secret-dependent servers | **BLOCKED** | `github`, `firecrawl-mcp`, `Magic MCP`, `googlesheets-tvi8pq-94` — user must fill from Bitwarden |
+| Cursor restart + verification | **PENDING** | User action required |
+
+### What's next
+1. Fill 4 secrets from Bitwarden into `C:\Users\ynotf\.cursor\mcp.json`
+2. Fully restart Cursor
+3. Verify all 16 servers in Settings → Tools & MCP
+4. Update `open--claw/docs/tooling/MCP_HEALTH.md` Section F with per-server PASS/FAIL
+
+---
+
+## 2026-02-26 — Update PLAN bootstrap prompt
+
+### Changes
+- Updated `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` PLAN-tab prompt to enforce: tab separation, required reads, MCP-first + fallback, PASS/FAIL evidence expectations, and a deterministic 3-item output contract.
+
+### Evidence
+- **Doc edit (Cursor)**: **PASS** — updated prompt block under “PLAN tab — first prompt”
+- **Commands run**: **SKIPPED** — PLAN-mode doc edit only
+
+### What's next
+- Use the updated PLAN-tab prompt in new sessions; Phase planning should now consistently produce a single AGENT execution prompt with explicit exit criteria and evidence requirements.
+
 ## 2026-02-24 — Publish AI-Project-Manager to GitHub
 
 ### Changes
