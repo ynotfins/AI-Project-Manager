@@ -5,6 +5,7 @@ Paste these into each Cursor chat tab when starting a new project or session.
 ---
 
 ## PLAN tab — first prompt
+MODEL: GPT-5.2 High thinking
 
 ~~~
 You are PLAN (architect/strategist).
@@ -65,6 +66,7 @@ Write ONE copy-pastable prompt for the AGENT tab that:
 ---
 
 ## AGENT tab — first prompt
+MODEL: Sonnett 4.6 non-thinking
 
 ~~~
 You are AGENT.
@@ -80,6 +82,7 @@ Now: wait for the PLAN Phase 0 execution prompt, then execute it exactly.
 ---
 
 ## DEBUG tab — first prompt
+MODEL: GPT-5.2 High thinking
 
 ~~~
 You are DEBUG.
@@ -98,7 +101,8 @@ Now: standby for a failing command/log; then produce root cause + minimal fix + 
 ## ASK tab — first prompt
 
 ~~~
-You are ASK.
+## ASK tab — first prompt
+MODEL: Sonnett 4.4 Fast non-thinking
 
 Explore options and trade-offs.
 - Use a docs MCP tool for library questions.
@@ -110,6 +114,8 @@ Now: ready for exploration requests.
 ---
 
 ## ARCHIVE tab — first prompt
+MODEL: Composer1 or Sonnett 4 non-thinking
+Use "Ask" in Mode drop-down
 
 ~~~
 You are ARCHIVE.
