@@ -50,6 +50,23 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 
 ---
 
+## 2026-02-27 — Bitwarden Secrets Manager: OpenClaw Project Setup
+
+### Changes
+- Created `OpenClaw` project in Bitwarden Secrets Manager
+
+### Evidence
+- **bws --version**: **PASS** — v2.0.0
+- **bws project list (before)**: **PASS** — `[]` authenticated
+- **bws project create "OpenClaw"**: **PASS** — ID `9e81608a-7391-436c-b838-b3fe00315f9e`
+- **bws project list (after)**: **PASS** — OpenClaw visible, machine account has access
+
+### What's next
+- Add secrets (`GITHUB_PAT`, `FIRECRAWL_API_KEY`, `MAGIC_API_KEY`, `COMPOSIO_URL`) to OpenClaw project
+- Wire `mcp.json` to use `bws run` for secret injection instead of hardcoded values
+
+---
+
 ## 2026-02-25 — Bitwarden Secrets Manager CLI (bws) Install
 
 ### Changes

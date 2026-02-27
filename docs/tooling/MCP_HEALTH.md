@@ -1,5 +1,25 @@
 # MCP Health Log
 
+## Entry: 2026-02-27 — Bitwarden Secrets Manager: OpenClaw Project Setup
+
+**Timestamp:** 2026-02-27 02:59 UTC
+
+| Check | Result | Detail |
+|---|---|---|
+| `bws --version` | **PASS** | v2.0.0 |
+| `bws project list` (before) | **PASS** | `[]` — authenticated, no projects |
+| `bws project create "OpenClaw"` | **PASS** | Project ID: `9e81608a-7391-436c-b838-b3fe00315f9e` |
+| `bws project list` (after) | **PASS** | `OpenClaw` visible — machine account has access |
+
+**Status: PASS** — OpenClaw project created and accessible to ChaosCentral machine account.
+
+**Next steps:**
+- Add secrets to `OpenClaw` project via Bitwarden Secrets Manager UI or `bws secret create`
+- Secrets to add: `GITHUB_PAT`, `FIRECRAWL_API_KEY`, `MAGIC_API_KEY`, `COMPOSIO_URL`
+- Update `mcp.json` servers to use `bws run -- npx ...` for secret injection
+
+---
+
 ## Entry: 2026-02-25 — Bitwarden Secrets Manager CLI (bws) Install
 
 **Timestamp:** 2026-02-25 17:45 local (UTC-5 EST)
