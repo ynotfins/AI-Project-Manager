@@ -1,5 +1,24 @@
 # MCP Health Log
 
+## Entry: 2026-02-25 — Bitwarden Secrets Manager CLI (bws) Install
+
+**Timestamp:** 2026-02-25 17:45 local (UTC-5 EST)
+
+| Check | Result | Detail |
+|---|---|---|
+| `BWS_ACCESS_TOKEN` set | **PASS** | Env var present (value not printed) |
+| bws.exe pre-existing | SKIP | Not found — downloaded |
+| Release found | **PASS** | `bws-v2.0.0` — `bws-x86_64-pc-windows-msvc-2.0.0.zip` |
+| Download (5.6 MB) | **PASS** | From `github.com/bitwarden/sdk-sm` |
+| Install to `~/.local/bin` | **PASS** | `C:\Users\ynotf\.local\bin\bws.exe` |
+| `~/.local/bin` in User PATH | **PASS** | Already present |
+| `bws --version` | **PASS** | `bws 2.0.0` |
+| `bws project list` | **PASS** | Authenticated — returns `[]` (no projects yet) |
+
+**Status: PASS** — bws v2.0.0 installed and authenticates with existing BWS_ACCESS_TOKEN.
+
+---
+
 ## Entry: 2026-02-25 — filesystem_scoped + shell-mcp Tool Evidence Log
 
 **Timestamp:** 2026-02-25 17:30 local (UTC-5 EST)

@@ -50,6 +50,26 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 
 ---
 
+## 2026-02-25 — Bitwarden Secrets Manager CLI (bws) Install
+
+### Changes
+- Downloaded `bws-x86_64-pc-windows-msvc-2.0.0.zip` from `github.com/bitwarden/sdk-sm`
+- Installed `bws.exe` v2.0.0 to `C:\Users\ynotf\.local\bin\bws.exe`
+
+### Evidence
+- **BWS_ACCESS_TOKEN**: **PASS** — set in environment
+- **Download**: **PASS** — bws-v2.0.0, 5.6 MB
+- **Install**: **PASS** — `C:\Users\ynotf\.local\bin\bws.exe`
+- **PATH**: **PASS** — `~\.local\bin` already in User PATH
+- **bws --version**: **PASS** — `bws 2.0.0`
+- **bws project list**: **PASS** — authenticated, returns `[]`
+
+### What's next
+- Create Bitwarden projects + secrets to replace hardcoded keys in `mcp.json`
+- Integrate `bws run` into MCP server launch scripts for secret injection
+
+---
+
 ## 2026-02-25 — filesystem_scoped + shell-mcp Tool Evidence Log
 
 ### What was tested
