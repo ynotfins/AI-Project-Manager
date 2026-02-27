@@ -1,5 +1,28 @@
 # MCP Health Log
 
+## Entry: 2026-02-27 — Bitwarden Secrets Manager: OpenClaw Project (Session 2)
+
+**Timestamp:** 2026-02-27 03:19 UTC
+
+| Check | Result | Detail |
+|---|---|---|
+| `bws --version` | **PASS** | v2.0.0 |
+| `bws project list` (before) | **PASS** | `[]` — token sees no prior projects |
+| `bws project create "OpenClaw"` | **PASS** | ID: `02e3b352-94b4-4b72-a7e2-b3fe0036d7b5` |
+| `bws project list` (after) | **PASS** | OpenClaw visible to this machine account |
+
+**Note — duplicate project:** Two `OpenClaw` projects now exist in org `8098135b`:
+- `9e81608a` — created in session 1 (ChaosCentral machine account A)
+- `02e3b352` — created in session 2 (visible to current token)
+
+**Clean-up action required (Bitwarden UI):**
+1. Log into Bitwarden Secrets Manager
+2. Go to **Projects**
+3. Identify which `OpenClaw` to keep (recommend keeping `02e3b352` — visible to current token)
+4. Delete the orphaned one (`9e81608a`) OR grant both machine accounts access to a single project
+
+---
+
 ## Entry: 2026-02-27 — Bitwarden Secrets Manager: OpenClaw Project Setup
 
 **Timestamp:** 2026-02-27 02:59 UTC

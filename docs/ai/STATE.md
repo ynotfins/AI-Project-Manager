@@ -50,6 +50,23 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 
 ---
 
+## 2026-02-27 — Bitwarden Secrets Manager: OpenClaw Project (Session 2)
+
+### Changes
+- Created second `OpenClaw` project (ID `02e3b352`) — prior session's project (`9e81608a`) not visible to this token
+
+### Evidence
+- **bws --version**: **PASS** — v2.0.0
+- **bws project list (before)**: **PASS** — `[]`
+- **bws project create "OpenClaw"**: **PASS** — `02e3b352-94b4-4b72-a7e2-b3fe0036d7b5`
+- **bws project list (after)**: **PASS** — OpenClaw visible
+
+### What's next
+- **CLEANUP REQUIRED**: Delete orphaned `OpenClaw` project `9e81608a` in Bitwarden UI, or consolidate into one project with both machine accounts granted access
+- After cleanup: add secrets to the surviving project
+
+---
+
 ## 2026-02-27 — Bitwarden Secrets Manager: OpenClaw Project Setup
 
 ### Changes
