@@ -343,6 +343,31 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 - [ ] Wire `bws run` injection for `github`, `firecrawl-mcp`, `Magic MCP` secrets
 - [ ] Clean up Bitwarden: consolidate `OPENMEMORY_API_KEY` + `OPENMEMORY_API_KEY_2` (delete `_2` once confirmed working)
 
+---
+
+## 2026-03-01 — OpenMemory Auth Double-Token Fix (ChaosCentral)
+
+### Changes
+- Diagnosed: previous patch wrote `"Token Token om-..."` — `OPENMEMORY_API_KEY` secret value itself included `"Token "` prefix, causing duplication
+- Corrected patch script: strips existing `Token ` prefix before writing header
+- Removed stray `type` field from openmemory entry if present
+- Final header: `Token <35-char raw key>` — clean, single prefix
+- /health endpoint confirmed HTTP 200
+
+### Evidence
+- **`OPENMEMORY_API_KEY` in Bitwarden**: **PASS** — `6c9955ba`
+- **Backup**: **PASS** — `mcp.json.backup.20260301-232149`
+- **bws run patch (double-Token fix)**: **PASS** — `PATCH_OK`
+- **No double-Token prefix**: **PASS**
+- **JSON parse**: **PASS**
+- **API /health**: **PASS** — HTTP 200
+- **Secret exposure**: **PASS (none)**
+
+### What's next
+- [ ] Restart Cursor → verify `openmemory` tools appear in Settings → Tools & MCP
+- [ ] Update `OPENMEMORY_API_KEY` secret in Bitwarden to store raw key only (strip `Token ` prefix from stored value to avoid future confusion)
+- [ ] Wire `bws run` for `github`, `firecrawl-mcp`, `Magic MCP`
+
 <!--
 Format:
 

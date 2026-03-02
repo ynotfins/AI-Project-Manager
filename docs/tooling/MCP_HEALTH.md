@@ -454,3 +454,26 @@ px @openmemory/install) was blocked: requires interactive TTY, fails with ERR_TT
 
 ### Cleanup Needed
 - Delete OPENMEMORY_API_KEY_2 from Bitwarden once OPENMEMORY_API_KEY is confirmed working across both machines
+
+---
+
+## 2026-03-01 — OpenMemory Auth Fix (ChaosCentral — double-Token correction)
+
+### Problem Found
+Previous patch produced "Token Token om-..." — the Bitwarden secret value itself began with "Token ", causing the prefix to be applied twice.
+
+### Fix Applied
+Rewrote patch script to strip any existing Token  prefix via -replace '^Token\s+', '' before writing "Token <raw_key>". Also removed any stray 	ype field from the openmemory entry.
+
+### Evidence
+| Check | Result |
+|---|---|
+| bws version | **PASS** — 2.0.0 |
+| OPENMEMORY_API_KEY in Bitwarden | **PASS** — 6c9955ba |
+| mcp.json backup | **PASS** — mcp.json.backup.20260301-232149 |
+| Double-Token stripped | **PASS** — header is Token <35-char>, not Token Token ... |
+| Type field absent | **PASS** |
+| JSON parse | **PASS** |
+| /health probe | **PASS** — HTTP 200 |
+| openmemory tools visible | **PENDING** — requires Cursor restart |
+| Secret exposure | **PASS (none)** |
