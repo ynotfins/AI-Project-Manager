@@ -423,3 +423,34 @@ Three malformed entries left blank values (invalid JSON):
 3. Verify MCP server `user-serena` is enabled in Settings → MCP
 4. If still stale: check `C:\Users\ynotf\.serena\serena_config.yml` is correctly written (use `Get-Content` to verify)
 5. If config is wrong, restore from backup: `Copy-Item <backupPath> $cfgPath -Force` and re-apply edits
+
+---
+
+## 2026-03-01 — OpenMemory Auth Fix
+
+### Method Used
+Option 2 (manual patch via bws run + temp PowerShell script). Option 1 (official 
+px @openmemory/install) was blocked: requires interactive TTY, fails with ERR_TTY_INIT_FAILED in non-TTY shells.
+
+### Steps
+1. ws secret list — found only OPENMEMORY_API_KEY_2, no canonical OPENMEMORY_API_KEY
+2. Created OPENMEMORY_API_KEY in Bitwarden from _2 value (no value printed)
+3. Wrote temp script patch-openmemory.ps1 that reads injected env var and patches mcp.json
+4. Ran: ws run --project-id f14a97bb... -- pwsh -NonInteractive -File patch-openmemory.ps1
+5. Validated auth header set and JSON parses clean
+
+### Evidence
+| Check | Result |
+|---|---|
+| bws version | **PASS** — 2.0.0 |
+| OpenClaw project found | **PASS** — f14a97bb-5183-4b11-a6eb-b3fe0015fedf |
+| OPENMEMORY_API_KEY secret created | **PASS** — 6c9955ba-a991-4d26-92b9-b4010043efde |
+| mcp.json backup | **PASS** — mcp.json.backup.20260301-230722 |
+| Authorization header written | **PASS** — Token <41-char key>, no value in output |
+| JSON parse after patch | **PASS** |
+| /health probe | **PASS** — HTTP 200 |
+| openmemory tools visible | **PENDING** — requires Cursor restart to confirm |
+| Secret exposure | **PASS (none)** |
+
+### Cleanup Needed
+- Delete OPENMEMORY_API_KEY_2 from Bitwarden once OPENMEMORY_API_KEY is confirmed working across both machines

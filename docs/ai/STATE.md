@@ -315,6 +315,34 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 - [ ] Wire `bws run` injection for github/firecrawl/magic secrets
 - [ ] Remove redundant `open--claw/.cursor/mcp.json` (or update its paths to match global)
 
+---
+
+## 2026-03-01 — OpenMemory Auth Fix via bws
+
+### Changes
+- Confirmed `OPENMEMORY_API_KEY` did not exist in Bitwarden OpenClaw project — only `OPENMEMORY_API_KEY_2` was present
+- Created canonical `OPENMEMORY_API_KEY` secret in Bitwarden from `_2` value (no value printed)
+- Option 1 (official installer) attempted — blocked: `npx @openmemory/install` requires interactive TTY (ERR_TTY_INIT_FAILED in non-TTY shell)
+- Option 2 (manual patch via `bws run` + temp script): patched `mcp.json` `openmemory.headers.Authorization` to `"Token <key>"` using `bws`-injected env var — secret never surfaced in terminal
+- `openmemory.md` and `.cursor/rules/openmemory.mdc` committed (prior session)
+- Duplicate `Memory Tool` server removed from `mcp.json` (prior session)
+
+### Evidence
+- **`bws --version`**: **PASS** — 2.0.0
+- **`bws project list`**: **PASS** — OpenClaw ID `f14a97bb-5183-4b11-a6eb-b3fe0015fedf`
+- **`bws secret list`**: **PASS** — `OPENMEMORY_API_KEY_2` found; canonical key missing
+- **`bws secret create OPENMEMORY_API_KEY`**: **PASS** — ID `6c9955ba-a991-4d26-92b9-b4010043efde`
+- **Backup mcp.json**: **PASS** — `mcp.json.backup.20260301-230722`
+- **Option 1 installer**: **BLOCKED** — TTY required, non-interactive shell incompatible
+- **Option 2 bws run patch**: **PASS** — `Authorization: Token <41-char>` written, JSON validates
+- **`/health` endpoint probe**: **PASS** — HTTP 200 (auth accepted)
+- **Secret exposure**: **PASS (none)** — no secret values appeared in any terminal output
+
+### What's next
+- [ ] Restart Cursor and confirm `openmemory` shows tools in Settings → Tools & MCP
+- [ ] Wire `bws run` injection for `github`, `firecrawl-mcp`, `Magic MCP` secrets
+- [ ] Clean up Bitwarden: consolidate `OPENMEMORY_API_KEY` + `OPENMEMORY_API_KEY_2` (delete `_2` once confirmed working)
+
 <!--
 Format:
 
