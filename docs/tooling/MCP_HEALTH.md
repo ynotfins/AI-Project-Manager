@@ -369,6 +369,53 @@ After Cursor restart:
 
 **Config repair: COMPLETE**
 
+---
+
+## 2026-03-01 — Global mcp.json JSON Fix + Secret Scrub
+
+### Problem
+`ConvertFrom-Json` failed with: `Unexpected character encountered while parsing value: }. Path 'mcpServers.github.env.GITHUB_PERSONAL_ACCESS_TOKEN'`
+
+### Root Cause
+Three malformed entries left blank values (invalid JSON):
+- `github.env.GITHUB_PERSONAL_ACCESS_TOKEN:` ← missing value
+- `firecrawl-mcp.env.FIRECRAWL_API_KEY:` ← missing value
+- `Magic MCP.args` contained `"API_KEY=\""` ← empty remnant
+
+### Fixes Applied
+| Fix | Action |
+|---|---|
+| `github.env` | Set to `{}` — secret to be injected via `bws run` when wired |
+| `firecrawl-mcp.env` | Set to `{}` — secret to be injected via `bws run` when wired |
+| `Magic MCP.args` | Removed `"API_KEY=\""` arg entirely — args end at `@21st-dev/magic@latest` |
+
+### Evidence
+| Check | Result |
+|---|---|
+| Backup created | **PASS** — `mcp.json.backup.20260301-211451` |
+| JSON parse after fix | **PASS** — 14 servers loaded |
+| Secret literals in file | **PASS (none)** — all env blocks empty `{}` |
+| Project `open--claw/.cursor/mcp.json` parse | **PASS** — valid JSON |
+| Project mcp.json conflict | **WARN** — defines `filesystem-windows` (redundant with global `filesystem_scoped`); recommend removing it |
+
+### Server Status (post-fix, requires Cursor restart to confirm)
+| Server | Expected Status |
+|---|---|
+| Context7 | PASS (HTTP) |
+| Exa Search | PASS (HTTP) |
+| Memory Tool | PASS (HTTP) |
+| Clear Thought 1.5 | PASS (HTTP) |
+| serena | PASS (stdio) |
+| sequential-thinking | PASS (stdio) |
+| playwright | PASS (stdio) |
+| filesystem_scoped | PASS (stdio) |
+| shell-mcp | PASS (stdio) |
+| github | BLOCKED — needs `GITHUB_PERSONAL_ACCESS_TOKEN` via bws |
+| firecrawl-mcp | BLOCKED — needs `FIRECRAWL_API_KEY` via bws |
+| Magic MCP | BLOCKED — needs `@21st-dev/magic` API key via bws |
+| googlesheets-tvi8pq-94 | BLOCKED — Composio HTTP, needs valid session |
+| firestore-mcp | WARN — Smithery CLI wrapper; verify Firestore project access |
+
 ### Recovery Steps (if restart fails)
 
 1. Close all Cursor windows completely

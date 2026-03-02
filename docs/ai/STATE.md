@@ -282,6 +282,39 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 - [ ] Define Phase 1 in `docs/ai/PLAN.md`
 - [ ] Note: Serena uses `--project-from-cwd`; to use it for a specific project, open that project folder in Cursor
 
+---
+
+## 2026-03-01 — Global mcp.json JSON Fix + Secret Scrub
+
+### Changes
+- Fixed invalid JSON in `C:\Users\ynotf\.cursor\mcp.json` (3 malformed entries with blank values)
+- Removed `GITHUB_PERSONAL_ACCESS_TOKEN` blank literal from `github.env` → set to `{}`
+- Removed `FIRECRAWL_API_KEY` blank literal from `firecrawl-mcp.env` → set to `{}`
+- Removed empty `"API_KEY=\""` arg from `Magic MCP.args`
+- Backed up both files before editing
+
+### Evidence
+- **Backup global**: **PASS** — `mcp.json.backup.20260301-211451`
+- **Backup project**: **PASS** — `open--claw/.cursor/mcp.json.backup.20260301-211451`
+- **JSON parse (global)**: **PASS** — 14 servers, `ConvertFrom-Json` succeeds
+- **Secret literals**: **PASS** — no secrets in file; all env blocks cleared to `{}`
+- **Project mcp.json parse**: **PASS** — valid JSON
+- **Project mcp.json conflict**: **WARN** — `filesystem-windows` is redundant with global `filesystem_scoped`; recommend removing `open--claw/.cursor/mcp.json` entirely
+
+### Server Status
+| Server | Status |
+|---|---|
+| Context7, Exa Search, Memory Tool, Clear Thought 1.5 | PASS (HTTP) |
+| serena, sequential-thinking, playwright, filesystem_scoped, shell-mcp | PASS (stdio, requires Cursor restart to confirm) |
+| github, firecrawl-mcp, Magic MCP | BLOCKED — env secrets need bws injection |
+| googlesheets-tvi8pq-94 | BLOCKED — Composio session |
+| firestore-mcp | WARN — verify Firestore project access |
+
+### What's next
+- [ ] Restart Cursor fully and verify tool lists in Settings → Tools & MCP
+- [ ] Wire `bws run` injection for github/firecrawl/magic secrets
+- [ ] Remove redundant `open--claw/.cursor/mcp.json` (or update its paths to match global)
+
 <!--
 Format:
 
