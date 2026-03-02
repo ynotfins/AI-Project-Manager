@@ -2,7 +2,7 @@
 
 **project_id:** `ynotfins/AI-Project-Manager`
 **client:** cursor
-**server:** openmemory (hosted at api.openmemory.dev)
+**server:** `openmemory` (hosted upstream; connected via local proxy for secret-free config)
 
 ## Overview
 
@@ -28,8 +28,28 @@ AI-Project-Manager/
 
 ## User Defined Namespaces
 
-- `AI-Project-Manager` — project facts, implementations, configs
 - `global` — user preferences applicable across all projects
+- `AI-Project-Manager` — project facts, implementations, configs
+- `open--claw` — OpenClaw project facts (stored with `project_id="ynotfins/open--claw"`)
+
+## OpenMemory Auth Model (secret-free MCP config)
+
+We do **not** persist auth headers in `%USERPROFILE%\\.cursor\\mcp.json`.
+
+Instead:
+
+- `%USERPROFILE%\\.cursor\\mcp.json` points `openmemory.url` to a **local proxy**: `http://127.0.0.1:8766/mcp-stream?client=cursor`
+- `C:\\Users\\ynotf\\.openclaw\\scripts\\openmemory-proxy.mjs` forwards to `https://api.openmemory.dev/...` and injects `Authorization: Token <OPENMEMORY_API_KEY>` from the **process environment**.
+- Cursor is launched with secrets injected via `bws run ...`, so both:
+  - the proxy process, and
+  - any MCP stdio servers (GitHub/Firecrawl/Magic/etc.)
+  inherit secrets without writing them to disk.
+
+Local scripts (not in git):
+
+- `C:\\Users\\ynotf\\.openclaw\\patch-mcp.ps1` (enforces secret-free `mcp.json`)
+- `C:\\Users\\ynotf\\.openclaw\\start-cursor-with-secrets.ps1` (patches MCP, starts proxy, launches Cursor)
+- `C:\\Users\\ynotf\\.openclaw\\scripts\\start-openmemory-proxy.ps1` / `stop-openmemory-proxy.ps1`
 
 ## Components
 
@@ -63,10 +83,31 @@ AI-Project-Manager/
 
 ## Patterns
 
-- **Secret management**: No secrets in source or git. `functions/.env.local` is truth; `bws run` injection planned for github/firecrawl/magic.
-- **MCP health**: After any mcp.json edit, validate with `ConvertFrom-Json` before saving.
+- **Secret management**: No secrets in source, git, or `mcp.json`. Secrets are injected at runtime (Bitwarden Secrets Manager via `bws run`).
+- **MCP health**: After any `mcp.json` change, validate with `ConvertFrom-Json` before saving.
 - **State tracking**: Every task block updates `docs/ai/STATE.md` with PASS/FAIL evidence.
 - **Serena**: Uses `--project-from-cwd`; must open the target project folder to activate.
+- **Async ingestion**: `add-memory` may not be immediately searchable; retry `search-memory` after a short wait (2–4s).
+
+## Memory Taxonomy (what we store)
+
+We use a fixed set of `memory_types` values (in metadata):
+
+- `component` — stable description of a module/service/tool and its I/O
+- `implementation` — durable “how we did it” patterns (not ephemeral logs)
+- `debug` — root cause + fix pattern for recurring issues
+- `project_info` — governance facts, invariants, build determinism rules
+- `user_preference` — durable preferences about workflow, style, risk tolerance
+
+## Scoping Rules (prevent leakage)
+
+Mem0’s filter guidance applies: memories are stored per entity scope; do not mix scopes incorrectly. In particular, if you later use Mem0 Platform filters, note that combining `user_id` and `agent_id` in a single `AND` commonly returns empty results; query one scope at a time or use `OR` (see `v2-memory-filters` docs).
+
+For OpenMemory MCP (Cursor tool calls), we follow:
+
+- **Project facts**: `project_id="<repo>"` only
+- **Global preferences**: `user_preference=true` only
+- **Project-specific preferences**: `user_preference=true` + `project_id="<repo>"`
 
 ## Key Decisions
 
