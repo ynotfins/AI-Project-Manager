@@ -8,6 +8,28 @@ Bootstrapped; nothing executed yet.
 
 <!-- AGENT appends entries below this line after each execution block. -->
 
+## 2026-03-02 — OpenMemory hardening: secret-free mcp.json + local proxy
+
+### Summary
+- Removed persisted OpenMemory auth headers from `%USERPROFILE%\\.cursor\\mcp.json` and switched Cursor to a **local proxy** (`127.0.0.1:8766`) so secrets are injected only via environment (`bws run`).
+- Added local automation scripts under `C:\\Users\\ynotf\\.openclaw\\` (not in git) to patch MCP config, start the proxy, and launch Cursor with injected env vars.
+- Added governed seed/verification docs in-repo.
+
+### Evidence
+| Check | Status | Detail |
+|---|---|---|
+| `mcp.json` Authorization header absent | **PASS** | `Select-String Authorization` → `AUTH_HEADER_NOT_FOUND` |
+| OpenMemory url points to proxy | **PASS** | `OPENMEMORY_URL=http://127.0.0.1:8766/mcp-stream?client=cursor` |
+| Local scripts created | **PASS** | `~/.openclaw/patch-mcp.ps1`, `~/.openclaw/start-cursor-with-secrets.ps1`, `~/.openclaw/verify-openmemory.ps1`, proxy start/stop scripts |
+| Repo docs added | **PASS** | `docs/tooling/OPENMEMORY_VERIFICATION.md`, `docs/tooling/OPENMEMORY_SEED.md` |
+| Proxy runtime proof | **BLOCKED** | Requires `OPENMEMORY_API_KEY` via `bws run` to validate `http://127.0.0.1:8766/health` = 200 |
+
+### What’s next
+Run:
+
+- `bws run --project-id <OPENCLAW_BWS_PROJECT_ID> -- pwsh -NoProfile -File "$HOME\\.openclaw\\verify-openmemory.ps1"`
+- Then restart Cursor and confirm `openmemory` tools list is present/green.
+
 ## 2026-02-26 — Global MCP Setup (Laptop → ChaosCentral parity)
 
 ### Summary
@@ -382,3 +404,31 @@ Format:
 ### What's next
 - ...
 -->
+
+---
+
+## 2026-03-02 — OpenMemory Proxy Verification via bws run
+
+### Changes
+- Fixed two bugs in `~/.openclaw/scripts/start-openmemory-proxy.ps1`:
+  1. `param()` block preceded by `$ErrorActionPreference` (invalid PS) — moved param to line 1
+  2. stdout + stderr both redirected to same log file (disallowed) — split into `.log` / `.err.log`
+- Confirmed docs had stale OpenClaw project GUID; bws is now the authoritative source
+- Full verification pipeline passes end-to-end
+
+### Evidence
+- **bws version**: **PASS** — 2.0.0
+- **OpenClaw project id**: **PASS** — `f14a97bb-5183-4b11-a6eb-b3fe0015fedf`
+- **mcp.json Authorization absent**: **PASS** — hardened secret-free state
+- **openmemory.url**: **PASS** — `http://127.0.0.1:8766/mcp-stream?client=cursor`
+- **VERIFY_MCP_JSON_OK**: **PASS**
+- **OPENMEMORY_PROXY_STARTED**: **PASS** — pid=46148
+- **OPENMEMORY_PROXY_HEALTH_HTTP_200**: **PASS**
+- **VERIFY_OPENMEMORY_OK**: **PASS**
+- **bws run exit code**: **PASS** — 0
+- **Secret exposure**: **PASS (none)**
+
+### What's next
+- [ ] Restart Cursor via `start-cursor-with-secrets.ps1` to confirm openmemory tools appear in MCP panel
+- [ ] Update stale OpenClaw GUID in docs to `f14a97bb-5183-4b11-a6eb-b3fe0015fedf`
+- [ ] Wire same `bws run` injection for `github`, `firecrawl-mcp`, `Magic MCP`

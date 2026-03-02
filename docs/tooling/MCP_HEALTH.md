@@ -1,5 +1,23 @@
 # MCP Health Log
 
+## Entry: 2026-03-02 — OpenMemory: secret-free mcp.json + local proxy
+
+**Timestamp:** 2026-03-02 local
+
+Goal: keep OpenMemory auth **out of** `%USERPROFILE%\\.cursor\\mcp.json` while still supporting the hosted OpenMemory MCP.
+
+| Check | Result | Detail |
+|---|---|---|
+| `mcp.json` contains `Authorization` header | **PASS** | Not present (`Select-String Authorization` = none) |
+| `openmemory.url` | **PASS** | `http://127.0.0.1:8766/mcp-stream?client=cursor` |
+| Local proxy script | **PASS** | `C:\\Users\\ynotf\\.openclaw\\scripts\\openmemory-proxy.mjs` |
+| Local patch script | **PASS** | `C:\\Users\\ynotf\\.openclaw\\patch-mcp.ps1` removes `openmemory.headers` |
+| Proxy health check | **BLOCKED** | Requires `OPENMEMORY_API_KEY` injected via `bws run` (not available in plain shell env) |
+
+**Status:** PASS (config hardened), BLOCKED (runtime auth injection proof pending via `bws run`).
+
+---
+
 ## Entry: 2026-02-27 — Bitwarden Secrets Manager: OpenClaw Project (Session 2)
 
 **Timestamp:** 2026-02-27 03:19 UTC
@@ -476,4 +494,31 @@ Rewrote patch script to strip any existing Token  prefix via -replace '^Token\s+
 | JSON parse | **PASS** |
 | /health probe | **PASS** — HTTP 200 |
 | openmemory tools visible | **PENDING** — requires Cursor restart |
+| Secret exposure | **PASS (none)** |
+
+---
+
+## 2026-03-02 14:30 — OpenMemory Proxy Verification via bws run
+
+### Architecture
+openmemory entry in mcp.json targets local proxy http://127.0.0.1:8766 (no auth headers in mcp.json). Proxy injects OPENMEMORY_API_KEY at runtime, forwarding to https://api.openmemory.dev. Secret never persisted in Cursor config.
+
+### Bugs Fixed (start-openmemory-proxy.ps1)
+- param() block was preceded by \Continue = "Stop" — invalid PowerShell; moved param() to line 1
+- RedirectStandardOutput and RedirectStandardError pointed to same log file — split into .log (stdout) and .err.log (stderr)
+
+### Evidence
+| Check | Result |
+|---|---|
+| bws version | **PASS** — 2.0.0 |
+| OpenClaw project id | **PASS** — f14a97bb-5183-4b11-a6eb-b3fe0015fedf (bws-authoritative; docs had stale GUID) |
+| verify-openmemory.ps1 exists | **PASS** |
+| start-cursor-with-secrets.ps1 exists | **PASS** |
+| mcp.json Authorization absent | **PASS** — secret-free hardened state |
+| openmemory.url targets proxy | **PASS** — http://127.0.0.1:8766/mcp-stream?client=cursor |
+| VERIFY_MCP_JSON_OK | **PASS** |
+| OPENMEMORY_PROXY_STARTED | **PASS** — pid=46148 port=8766 |
+| OPENMEMORY_PROXY_HEALTH_HTTP_200 | **PASS** |
+| VERIFY_OPENMEMORY_OK | **PASS** |
+| bws run exit code | **PASS** — 0 |
 | Secret exposure | **PASS (none)** |
