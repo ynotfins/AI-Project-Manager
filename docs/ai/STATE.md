@@ -458,3 +458,57 @@ Format:
 - [ ] Tony: Consolidate OPENMEMORY_API_KEY vs _2 in Bitwarden (keep raw `om-...` value, delete `_2`)
 - [ ] Phase 5: Wire bws run for github, firecrawl-mcp, Magic MCP
 - [ ] Laptop: Set up bws + proxy automation scripts (after ChaosCentral Phase 5)
+
+---
+
+## 2026-03-04 — Zero-Trust MCP Audit (ChaosCentral)
+
+### Audit Results
+
+| Server | Connected | Tools | Auth | Verdict |
+|---|---|---|---|---|
+| Context7 | YES | Present | N/A | **PASS** |
+| playwright | YES | 22 | N/A | **PASS** |
+| github | YES | 26 | FAIL (unauthenticated) | **FAIL** |
+| Exa Search | YES | 2 | N/A | **PASS** |
+| serena | YES | 27 | N/A | **PASS** |
+| sequential-thinking | YES | 1 | N/A | **PASS** |
+| firecrawl-mcp | NO | 0 | FAIL (server errored) | **FAIL** |
+| Magic MCP | YES | 4 | WARN (no key in BWS) | **WARN** |
+| googlesheets | YES | 9 | Via URL | **PASS** |
+| firestore-mcp | YES | 7 | Unknown | **WARN** |
+| Clear Thought 1.5 | YES | Present | N/A | **PASS** |
+| filesystem_scoped | YES | 14 | N/A | **PASS** |
+| shell-mcp | YES | Present | N/A | **PASS** |
+| openmemory | NO | 0 | FAIL (proxy off) | **FAIL** |
+
+### Root Cause
+
+Cursor launched directly, not via `bws run ... start-cursor-with-secrets.ps1`.
+No secrets in environment. OpenMemory proxy not started.
+
+### Fixes Applied
+
+- `start-cursor-with-secrets.ps1`: fixed param() ordering bug, added validation
+  for GITHUB_PERSONAL_ACCESS_TOKEN, FIRECRAWL_API_KEY, TWENTY_FIRST_API_KEY
+- `MCP_CANONICAL_CONFIG.md`: added TWENTY_FIRST_API_KEY to secrets table
+
+### Tony Manual Actions (Bitwarden)
+
+- [ ] Delete OPENMEMORY_API_KEY_2 (duplicate)
+- [ ] Rename Composio-Playground → COMPOSIO_API_KEY
+- [ ] Add TWENTY_FIRST_API_KEY from 21st.dev/magic/console
+- [ ] Rotate all 8 secrets (exposed via bws secret list in PLAN chat)
+
+### Verification (after relaunch)
+
+After Tony completes Bitwarden steps and relaunches Cursor via:
+```
+bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -File "$HOME\.openclaw\start-cursor-with-secrets.ps1"
+```
+
+Verify:
+- [ ] All 14 servers show green/tools in Cursor Settings
+- [ ] github MCP: search_repositories returns private AI-Project-Manager
+- [ ] openmemory: add-memory + search-memory round-trip
+- [ ] firecrawl-mcp: shows tools (> 0)

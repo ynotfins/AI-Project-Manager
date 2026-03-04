@@ -150,9 +150,9 @@ file — they are injected at runtime via `bws run` (see "Secret injection" sect
 ```
 
 > **Note:** `github.env`, `firecrawl-mcp.env`, and `Magic MCP.env` are empty `{}`.
-> These servers require `GITHUB_PERSONAL_ACCESS_TOKEN`, `FIRECRAWL_API_KEY`, and the
-> `@21st-dev` API key respectively. Secrets are injected via `bws run` at Cursor launch
-> time (see below). Without secrets, these servers will start but fail auth on first call.
+> These servers require `GITHUB_PERSONAL_ACCESS_TOKEN`, `FIRECRAWL_API_KEY`, and
+> `TWENTY_FIRST_API_KEY` respectively. Secrets are injected via `bws run` at Cursor
+> launch time (see below). Without secrets, these servers will start but fail auth on first call.
 
 ---
 
@@ -184,7 +184,11 @@ This command:
 | Secret name | Used by |
 |---|---|
 | `OPENMEMORY_API_KEY` | OpenMemory proxy (`openmemory-proxy.mjs`) |
-| `GITHUB_PERSONAL_ACCESS_TOKEN` | `github` MCP server (wiring in progress) |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | `github` MCP server |
+| `FIRECRAWL_API_KEY` | `firecrawl-mcp` server |
+| `TWENTY_FIRST_API_KEY` | Magic MCP (`@21st-dev/magic`) |
+| `ANTHROPIC_API_KEY` | OpenClaw model routing (optional) |
+| `OPENAI_API_KEY` | OpenClaw model routing (optional) |
 | `BWS_ACCESS_TOKEN` | `bws` CLI auth (stored outside Bitwarden) |
 
 ### OpenMemory proxy architecture
