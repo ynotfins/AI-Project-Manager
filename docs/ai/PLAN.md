@@ -1,25 +1,112 @@
 # Project Plan
 
-## Phase 0
+## Phase 0: Scaffold + Workflow (COMPLETE)
 
-**Goal:**
-<!-- Describe the objective of this phase -->
+**Goal:** Initialize repo, establish 5-tab Cursor workflow, configure Serena, publish to GitHub.
 
 **Exit criteria:**
-- [ ] ...
-
-**AGENT prompt:**
-<!-- Single prompt to hand to AGENT tab for execution -->
+- [x] Repo initialized with `git init -b main` at `D:\github\AI-Project-Manager`
+- [x] `.cursor/rules/` contains layered rules: `00-global-core.md`, `05-global-mcp-usage.md`, `10-project-workflow.md`, `20-project-quality.md`
+- [x] `docs/ai/STATE.md`, `PLAN.md`, `CURSOR_WORKFLOW.md`, `ARCHIVE.md` exist
+- [x] `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` has bootstrap prompts for all 5 tabs
+- [x] `docs/ai/memory/MEMORY_CONTRACT.md`, `DECISIONS.md`, `PATTERNS.md` exist
+- [x] `AGENTS.md` at repo root
+- [x] Serena config repaired: `open-claw` (single dash) removed, `open--claw` + `AI-Project-Manager` added to `~/.serena/serena_config.yml`
+- [x] Published to GitHub: `ynotfins/AI-Project-Manager` (private)
+- [x] Secret scan PASS (no tokens/keys committed)
 
 ---
 
-## Phase 1
+## Phase 1: MCP Infrastructure (COMPLETE)
 
-**Goal:**
-<!-- Describe the objective of this phase -->
+**Goal:** Install and configure all MCP servers globally so every Cursor project inherits a working toolset.
 
 **Exit criteria:**
-- [ ] ...
+- [x] `filesystem_scoped` installed via `npx @modelcontextprotocol/server-filesystem` — scoped to `D:\github`, `D:\github_2`, `~/.openclaw`
+- [x] `shell-mcp` installed via `uv tool install shell-mcp-server` — patched for async bug on Windows
+- [x] 14 servers configured in global `%USERPROFILE%\.cursor\mcp.json`
+- [x] `docs/tooling/MCP_CANONICAL_CONFIG.md` created as authoritative reference
+- [x] `docs/tooling/MCP_HEALTH.md` created with per-server PASS/FAIL evidence
+- [x] Smithery CLI connection attempt for `marco280690/mcp` — BLOCKED (server does not exist on registry)
 
-**AGENT prompt:**
-<!-- Single prompt to hand to AGENT tab for execution -->
+---
+
+## Phase 2: Secrets Management (COMPLETE)
+
+**Goal:** Replace all hardcoded secrets in `mcp.json` with Bitwarden Secrets Manager (`bws`) injection.
+
+**Exit criteria:**
+- [x] `bws` CLI v2.0.0 installed at `~/.local/bin/bws.exe`
+- [x] `BWS_ACCESS_TOKEN` set in environment (not committed)
+- [x] `OpenClaw` project created in Bitwarden Secrets Manager (ID: `f14a97bb-5183-4b11-a6eb-b3fe0015fedf`)
+- [x] `mcp.json` scrubbed: all `env` blocks set to `{}`, no secret literals
+- [x] `GITHUB_PERSONAL_ACCESS_TOKEN`, `OPENMEMORY_API_KEY` stored in Bitwarden
+- [x] Invalid JSON in `mcp.json` fixed (blank values, unterminated args)
+
+---
+
+## Phase 3: OpenMemory Integration (COMPLETE)
+
+**Goal:** Replace `Memory Tool` (mem0 Smithery) with `openmemory` (official hosted), using a secret-free local proxy architecture.
+
+**Exit criteria:**
+- [x] `Memory Tool` entry removed from `mcp.json`
+- [x] `openmemory` entry points to local proxy: `http://127.0.0.1:8766/mcp-stream?client=cursor`
+- [x] No `Authorization` header persisted in `mcp.json`
+- [x] Local proxy scripts created at `~/.openclaw/`: `openmemory-proxy.mjs`, `start-openmemory-proxy.ps1`, `stop-openmemory-proxy.ps1`, `patch-mcp.ps1`, `start-cursor-with-secrets.ps1`, `verify-openmemory.ps1`
+- [x] Proxy health check PASS: `bws run ... verify-openmemory.ps1` returns HTTP 200
+- [x] OpenMemory tools visible in Cursor (7 tools: add-memory, search-memory, list-memories, delete-memory, delete-memories-by-namespace, update-memory, health-check)
+- [x] Functional test PASS: `add-memory` + `search-memory` round-trip verified
+- [x] Memory taxonomy defined in `openmemory.md` (component, implementation, debug, project_info, user_preference)
+- [x] Seed memories documented in `docs/tooling/OPENMEMORY_SEED.md`
+- [x] Verification suite documented in `docs/tooling/OPENMEMORY_VERIFICATION.md`
+- [x] Upgrade recommendation documented in `docs/tooling/OPENMEMORY_UPGRADE.md` (upgraded to Pro)
+
+---
+
+## Phase 4: Multi-Machine Parity (COMPLETE)
+
+**Goal:** Ensure ChaosCentral (primary) and Laptop (warm-standby) have identical toolchains, repos, and MCP configs.
+
+**Exit criteria:**
+- [x] GitHub repo renamed: `ynotfins/open-claw` to `ynotfins/open--claw`
+- [x] ChaosCentral origin URL updated to `https://github.com/ynotfins/open--claw.git`
+- [x] All stale `open-claw` (single dash) references corrected in `open--claw` repo docs
+- [x] Laptop recloned from updated GitHub
+- [x] ChaosCentral canonical push PASS (no force push, no divergence)
+- [x] `.vscode/` added to `.gitignore` in `open--claw`
+- [x] Extension recommendations documented in `docs/ai/extensions-2-projects.md` (4 lists: ChaosCentral + Laptop x 2 projects)
+- [x] Laptop MCP config: 16-server global `mcp.json` written
+
+---
+
+## Phase 5: Remaining Automation (OPEN)
+
+**Goal:** Complete `bws run` secret injection for all MCP servers that need credentials, and make `start-cursor-with-secrets.ps1` the standard launch path.
+
+**Exit criteria:**
+- [ ] `github` MCP server gets `GITHUB_PERSONAL_ACCESS_TOKEN` via `bws run` env injection
+- [ ] `firecrawl-mcp` gets `FIRECRAWL_API_KEY` via `bws run`
+- [ ] `Magic MCP` gets API key via `bws run`
+- [ ] `start-cursor-with-secrets.ps1` handles all secret-dependent servers (not just openmemory)
+- [ ] All 14 MCP servers show green/tools in Cursor after `bws run` launch
+- [ ] Laptop has identical automation scripts and `bws` configured
+- [ ] Evidence logged in `docs/ai/STATE.md`
+
+---
+
+## Phase 6: open--claw Build Completion (OPEN)
+
+**Goal:** Complete OpenClaw setup as a fully autonomous AI operations assistant on both machines.
+
+**Exit criteria:**
+- [ ] Model API key injected via Bitwarden into `~/.openclaw/.env`
+- [ ] `openclaw onboard` completed on ChaosCentral (loopback bind, auth token mode)
+- [ ] Gateway health check returns 200 on `http://127.0.0.1:18789/health`
+- [ ] Hybrid model routing configured: local models for routine tasks, Claude Sonnet/Opus for complex reasoning
+- [ ] Approval gates implemented for high-risk actions (prod deploy, payments, admin)
+- [ ] Twilio/WhatsApp/SMS integration wired
+- [ ] Laptop warm-standby: identical build, gateway normally stopped
+- [ ] AI Node (WSL2 + local models) architecture validated
+- [ ] Vault Node (laptop) for Bitwarden, secrets, approvals, hardware 2FA — design documented
+- [ ] Evidence logged in both `AI-Project-Manager/docs/ai/STATE.md` and `open--claw/docs/ai/STATE.md`

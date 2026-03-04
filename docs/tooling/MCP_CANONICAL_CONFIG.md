@@ -1,10 +1,11 @@
 # MCP Canonical Configuration
 
-**Last verified:** 2026-02-25 — all servers showing tools and connected.
+**Last verified:** 2026-03-04 — all non-secret-dependent servers showing tools and connected.
 
 This is the authoritative reference for the global Cursor MCP setup.
-Apply this to every machine and every project. Secrets live in the machine's
-keyring / `.env.local` — never in this file or git.
+Apply this to every machine and every project. Secrets are injected at runtime
+via Bitwarden Secrets Manager (`bws run`) — never stored in this file, in git,
+or in `mcp.json`.
 
 ---
 
@@ -19,7 +20,7 @@ keyring / `.env.local` — never in this file or git.
 
 ---
 
-## Working server list (2026-02-25)
+## Working server list (2026-03-04)
 
 ### HTTP / remote servers (no local process)
 
@@ -27,7 +28,7 @@ keyring / `.env.local` — never in this file or git.
 |---|---|---|
 | `Context7` | `https://server.smithery.ai/@upstash/context7-mcp` | Library docs lookup |
 | `Exa Search` | `https://mcp.exa.ai` | Web search |
-| `Memory Tool` | `https://server.smithery.ai/@mem0ai/mem0-memory-mcp` | Cross-session memory |
+| `openmemory` | `http://127.0.0.1:8766/mcp-stream?client=cursor` | Cross-session memory (via local proxy) |
 | `Clear Thought 1.5` | `https://clear-thought--waldzellai.run.tools` | Reasoning/thinking |
 | `Stripe` | `https://stripe.run.tools` | Stripe API |
 | `googlesheets-tvi8pq-94` | `https://mcp.composio.dev/...` | Google Sheets |
@@ -50,8 +51,8 @@ keyring / `.env.local` — never in this file or git.
 
 ## Full `mcp.json` template
 
-Copy this to `%USERPROFILE%\.cursor\mcp.json`. Fill in `YOUR_*` placeholders from
-your secrets store (1Password / keyring). Never commit secrets.
+Copy this to `%USERPROFILE%\.cursor\mcp.json`. Secrets are **not** stored in this
+file — they are injected at runtime via `bws run` (see "Secret injection" section below).
 
 ```json
 {
@@ -66,10 +67,9 @@ your secrets store (1Password / keyring). Never commit secrets.
       "url": "https://mcp.exa.ai",
       "headers": {}
     },
-    "Memory Tool": {
+    "openmemory": {
       "type": "http",
-      "url": "https://server.smithery.ai/@mem0ai/mem0-memory-mcp",
-      "headers": {}
+      "url": "http://127.0.0.1:8766/mcp-stream?client=cursor"
     },
     "Clear Thought 1.5": {
       "type": "http",
@@ -82,7 +82,7 @@ your secrets store (1Password / keyring). Never commit secrets.
       "headers": {}
     },
     "googlesheets-tvi8pq-94": {
-      "url": "https://mcp.composio.dev/partner/composio/googlesheets/mcp?customerId=YOUR_COMPOSIO_CUSTOMER_ID&agent=cursor"
+      "url": "https://mcp.composio.dev/partner/composio/googlesheets/mcp?customerId=COMPOSIO_CUSTOMER_ID&agent=cursor"
     },
     "filesystem_scoped": {
       "command": "npx",
@@ -91,15 +91,15 @@ your secrets store (1Password / keyring). Never commit secrets.
         "@modelcontextprotocol/server-filesystem",
         "D:\\github",
         "D:\\github_2",
-        "C:\\Users\\YOUR_USERNAME\\.openclaw"
+        "C:\\Users\\USERNAME\\.openclaw"
       ]
     },
     "shell-mcp": {
-      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\shell-mcp-server.exe",
+      "command": "C:\\Users\\USERNAME\\.local\\bin\\shell-mcp-server.exe",
       "args": [
         "D:\\github",
         "D:\\github_2",
-        "C:\\Users\\YOUR_USERNAME\\.openclaw",
+        "C:\\Users\\USERNAME\\.openclaw",
         "--shell", "pwsh",       "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
         "--shell", "powershell", "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
         "--shell", "cmd",        "C:\\WINDOWS\\System32\\cmd.exe",
@@ -129,16 +129,12 @@ your secrets store (1Password / keyring). Never commit secrets.
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_PAT"
-      }
+      "env": {}
     },
     "firecrawl-mcp": {
       "command": "npx",
       "args": ["-y", "firecrawl-mcp"],
-      "env": {
-        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY"
-      }
+      "env": {}
     },
     "firestore-mcp": {
       "command": "npx",
@@ -146,15 +142,71 @@ your secrets store (1Password / keyring). Never commit secrets.
     },
     "Magic MCP": {
       "command": "cmd",
-      "args": [
-        "/c", "npx", "-y", "@21st-dev/magic@latest",
-        "API_KEY=\"YOUR_MAGIC_API_KEY\""
-      ],
+      "args": ["/c", "npx", "-y", "@21st-dev/magic@latest"],
       "env": {}
     }
   }
 }
 ```
+
+> **Note:** `github.env`, `firecrawl-mcp.env`, and `Magic MCP.env` are empty `{}`.
+> These servers require `GITHUB_PERSONAL_ACCESS_TOKEN`, `FIRECRAWL_API_KEY`, and the
+> `@21st-dev` API key respectively. Secrets are injected via `bws run` at Cursor launch
+> time (see below). Without secrets, these servers will start but fail auth on first call.
+
+---
+
+## Secret injection via Bitwarden (`bws run`)
+
+Secrets **never** appear in `mcp.json` or in git. They are injected at runtime:
+
+```
+bws run --project-id <OPENCLAW_PROJECT_ID> -- pwsh -NoProfile -File ~\.openclaw\start-cursor-with-secrets.ps1
+```
+
+This command:
+1. Exports all secrets from the Bitwarden `OpenClaw` project as environment variables
+2. Runs `patch-mcp.ps1` to enforce secret-free `mcp.json` state
+3. Starts the OpenMemory local proxy (`openmemory-proxy.mjs`) which reads `OPENMEMORY_API_KEY` from env
+4. Launches Cursor — all child processes (MCP servers) inherit the injected env vars
+
+### Bitwarden project
+
+| Field | Value |
+|---|---|
+| Project name | `OpenClaw` |
+| Project ID | `f14a97bb-5183-4b11-a6eb-b3fe0015fedf` |
+| CLI | `bws` v2.0.0 at `~/.local/bin/bws.exe` |
+| Auth | `BWS_ACCESS_TOKEN` set in machine environment (not in git) |
+
+### Secrets stored (names only — values never printed)
+
+| Secret name | Used by |
+|---|---|
+| `OPENMEMORY_API_KEY` | OpenMemory proxy (`openmemory-proxy.mjs`) |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | `github` MCP server (wiring in progress) |
+| `BWS_ACCESS_TOKEN` | `bws` CLI auth (stored outside Bitwarden) |
+
+### OpenMemory proxy architecture
+
+```
+Cursor ──HTTP──▶ 127.0.0.1:8766 (openmemory-proxy.mjs)
+                      │
+                      │ injects Authorization: Token $OPENMEMORY_API_KEY
+                      ▼
+              https://api.openmemory.dev
+```
+
+Local scripts (not in git, under `~/.openclaw/`):
+
+| Script | Purpose |
+|---|---|
+| `patch-mcp.ps1` | Ensures `mcp.json` has no persisted auth headers; normalizes env blocks to `{}` |
+| `start-cursor-with-secrets.ps1` | Patches MCP config, starts proxy, launches Cursor |
+| `verify-openmemory.ps1` | Validates `mcp.json` hygiene + proxy health (HTTP 200) |
+| `scripts/openmemory-proxy.mjs` | Node.js proxy that injects `Authorization` header from env |
+| `scripts/start-openmemory-proxy.ps1` | Starts proxy in hidden window, writes PID file |
+| `scripts/stop-openmemory-proxy.ps1` | Stops proxy via PID file |
 
 ---
 
@@ -162,12 +214,13 @@ your secrets store (1Password / keyring). Never commit secrets.
 
 | Tool | Install command | Notes |
 |---|---|---|
-| Node.js ≥ 18 | https://nodejs.org | Required for all `npx` servers |
+| Node.js >= 18 | https://nodejs.org | Required for all `npx` servers and openmemory proxy |
 | pnpm | `npm i -g pnpm` | Optional but faster |
 | uv | https://docs.astral.sh/uv/getting-started/installation/ | Required for Serena |
 | uvx | ships with uv | Required for Serena |
 | shell-mcp-server | `uv tool install shell-mcp-server` | Then patch — see below |
 | Git | https://git-scm.com | Required for github MCP |
+| bws | https://github.com/bitwarden/sdk-sm/releases | Bitwarden Secrets Manager CLI v2.0.0 |
 
 ### shell-mcp-server patch (required — v0.1.0 has async bug)
 
@@ -227,6 +280,9 @@ then restart Serena (toggle in MCP panel or restart Cursor).
 | Serena only shows one project | Process loaded old config | Full Cursor restart (not just toggle) |
 | `filesystem_fulldisk` running unscoped | Cursor ignores `disabled: true` | Remove the entry entirely |
 | WSL UNC `\\wsl$\...` access denied | PowerShell permission restriction | Use `wsl` shell commands as workaround |
+| OpenMemory red / no tools | Proxy not running or `OPENMEMORY_API_KEY` missing | Launch via `bws run ... start-cursor-with-secrets.ps1` |
+| OpenMemory `Token Token ...` error | Bitwarden secret has `Token ` prefix in value | Store raw key only (`om-...`); proxy adds prefix |
+| `github` / `firecrawl-mcp` / `Magic MCP` fail auth | `env: {}` in mcp.json, secrets not injected | Launch Cursor via `bws run` (Phase 5 wiring) |
 
 ### Kill stale MCP processes (PowerShell)
 ```powershell
