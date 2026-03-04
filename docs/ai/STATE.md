@@ -432,3 +432,29 @@ Format:
 - [ ] Restart Cursor via `start-cursor-with-secrets.ps1` to confirm openmemory tools appear in MCP panel
 - [ ] Update stale OpenClaw GUID in docs to `f14a97bb-5183-4b11-a6eb-b3fe0015fedf`
 - [ ] Wire same `bws run` injection for `github`, `firecrawl-mcp`, `Magic MCP`
+
+---
+
+## 2026-03-04 — Handoff Snapshot (ChaosCentral)
+
+### Changes
+- README.md rewritten from "Cursor Project Template" to governance hub description
+- PLAN.md populated with Phases 0-6 (derived from STATE.md evidence)
+- MCP_CANONICAL_CONFIG.md updated: mem0 replaced with openmemory proxy, bws run section added
+- .gitignore verified clean (bad entries for tracked files were in HEAD's clean state; working tree anomaly from crash restored)
+- Handoff zip created at `.zip/project-handoff-20260304.zip`
+
+### Evidence
+- **README.md content**: **PASS** — "Governance hub" found on line 3
+- **PLAN.md content**: **PASS** — "Phase 6" found on line 98
+- **MCP_CANONICAL_CONFIG.md content**: **PASS** — `openmemory-proxy` referenced in 6 locations
+- **.gitignore cleanup**: **PASS** — HEAD was already clean; working tree restored to match
+- **Secret scan (staged files)**: **PASS** — all matches are doc references, no actual secrets
+- **Secret scan (docs/ai/context/)**: **PASS** — 84 pattern matches but directory excluded from commit (untracked)
+- **Commit + push**: **PASS** — `5e9efd1` pushed to origin/main
+- **Zip created**: **PASS** — 134,717 bytes at `.zip/project-handoff-20260304.zip`
+
+### What's next
+- [ ] Tony: Consolidate OPENMEMORY_API_KEY vs _2 in Bitwarden (keep raw `om-...` value, delete `_2`)
+- [ ] Phase 5: Wire bws run for github, firecrawl-mcp, Magic MCP
+- [ ] Laptop: Set up bws + proxy automation scripts (after ChaosCentral Phase 5)
