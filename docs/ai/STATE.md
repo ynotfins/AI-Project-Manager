@@ -534,6 +534,29 @@ Verify:
 - Context7 and Clear Thought 1.5 blocked by Smithery HTTP 402 (usage limit exceeded — external, not our config).
 
 ### What's next
-- [ ] Confirm github auth with direct repo call: `get_file_contents` on `ynotfins/AI-Project-Manager`
+- [x] Confirm github auth with direct repo call: `get_file_contents` on `ynotfins/AI-Project-Manager`
 - [ ] Re-run openmemory search in 60s to confirm async memory indexed
 - [ ] Verify Context7/Clear Thought once Smithery resets their rate limit
+
+---
+
+## 2026-03-04 — Phase 5 Completion Verification
+
+### Results
+
+| Server | Test | Result | Evidence |
+|---|---|---|---|
+| openmemory | proxy health (HTTP) | **PASS** | `127.0.0.1:8766/health` → HTTP 200 |
+| openmemory | MCP health-check tool | **PASS** | `{"status":"healthy","tools_available":7}` |
+| github | `get_file_contents` on private repo | **PASS** | Read `AGENTS.md` (sha `b525245`, 1169 bytes) from `ynotfins/AI-Project-Manager` |
+| firecrawl-mcp | `firecrawl_scrape` tool call | **PASS** | Scraped `example.com`, returned markdown, HTTP 200 |
+| $Pid collision fix | `start-openmemory-proxy.ps1` | **PASS** | Already uses `$ProcessId` on L23/L25/L36 |
+| bws injection | env vars present in Cursor | **PASS** | OPENMEMORY_API_KEY, GITHUB_PERSONAL_ACCESS_TOKEN, FIRECRAWL_API_KEY all SET |
+
+### Phase 5 Status: **COMPLETE**
+
+All three secret-dependent MCP servers (github, firecrawl-mcp, openmemory) are authenticated and returning real data via `bws run` injection. No secrets persisted in `mcp.json`.
+
+### Remaining (not Phase 5)
+- [ ] Context7/Clear Thought 1.5: blocked by Smithery HTTP 402 (external rate limit)
+- [ ] Magic MCP: `TWENTY_FIRST_API_KEY` injected but not used by MCP server (env-based auth not wired in upstream)
