@@ -512,3 +512,28 @@ Verify:
 - [ ] github MCP: search_repositories returns private AI-Project-Manager
 - [ ] openmemory: add-memory + search-memory round-trip
 - [ ] firecrawl-mcp: shows tools (> 0)
+
+---
+
+## 2026-03-04 — Post-Relaunch MCP Verification
+
+### Results
+
+| Server | Test | Result | Detail |
+|---|---|---|---|
+| github | search private repo (`user:ynotfins AI-Project-Manager`) | **FAIL** | Returns 0 results — GitHub Search API does not surface private repos even with PAT via MCP. Generic search works (825 results), confirming server is connected and token is accepted. Private repo visibility requires `repos` scope + direct `get_file_contents` or `list_issues` on the repo. |
+| openmemory | health-check | **PASS** | `{"status":"healthy","tools_available":7,"version":"1.0.0"}` |
+| openmemory | add-memory | **PASS** | Memory ingestion started successfully |
+| openmemory | search-memory round-trip | **PARTIAL** | Search returned 0 results immediately after add — async ingestion lag. Memory was accepted; retrieval expected within seconds. |
+| firecrawl-mcp | tool call (scrape example.com) | **PASS** | Returned markdown content, HTTP 200, creditsUsed=1 |
+| Magic MCP | tool call (component inspiration) | **PASS** | Returned 3 React component examples with full code |
+
+### Notes
+- github FAIL is expected behavior: GitHub's search index does not include private repos via the Search API. Use `get_file_contents` or `list_issues` with explicit `owner/repo` to prove private auth.
+- openmemory proxy running stable (pid=86528) after ERR_STREAM_DESTROYED fix applied to `openmemory-proxy.mjs`.
+- Context7 and Clear Thought 1.5 blocked by Smithery HTTP 402 (usage limit exceeded — external, not our config).
+
+### What's next
+- [ ] Confirm github auth with direct repo call: `get_file_contents` on `ynotfins/AI-Project-Manager`
+- [ ] Re-run openmemory search in 60s to confirm async memory indexed
+- [ ] Verify Context7/Clear Thought once Smithery resets their rate limit
