@@ -60,14 +60,14 @@ Installed Node.js 24.14.0, uv 0.10.6, shell-mcp-server 0.1.0. Wrote 16-server gl
 
 ## 2026-02-26 — Update PLAN bootstrap prompt
 
-### Changes
+### Prompt Alignment Changes
 - Updated `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` PLAN-tab prompt to enforce: tab separation, required reads, MCP-first + fallback, PASS/FAIL evidence expectations, and a deterministic 3-item output contract.
 
-### Evidence
+### Prompt Alignment Evidence
 - **Doc edit (Cursor)**: **PASS** — updated prompt block under "PLAN tab — first prompt"
 - **Commands run**: **SKIPPED** — PLAN-mode doc edit only
 
-### What's next
+### Prompt Alignment Next Steps
 - Use the updated PLAN-tab prompt in new sessions; Phase planning should now consistently produce a single AGENT execution prompt with explicit exit criteria and evidence requirements.
 
 ---
@@ -633,7 +633,8 @@ All three secret-dependent MCP servers (github, firecrawl-mcp, openmemory) are a
 | openmemory | health-check | **PASS** | {"status":"healthy","tools_available":7,"version":"1.0.0"} |
 | github | get_file_contents README.md | **PASS** | sha c406ff1, 2356 bytes, private repo content returned |
 | firecrawl-mcp | irecrawl_scrape example.com | **FAIL** | Unauthorized: Invalid token — rotated FIRECRAWL_API_KEY not yet in Cursor process |
-| Context7 | esolve-library-id openclaw | **PASS** | 5 libraries returned; /openclaw/openclaw has 5736 snippets, High reputation |
+| Context7 | 
+esolve-library-id openclaw | **PASS** | 5 libraries returned; /openclaw/openclaw has 5736 snippets, High reputation |
 
 ### Serena Evidence
 
@@ -721,4 +722,36 @@ Every ws run launch now opens both AI-Project-Manager and open--claw in one det
 
 ### What's next
 
+- Phase 6B: openclaw onboard + Gateway health check
+
+---
+
+## 2026-03-06 — PLAN Bootstrap Prompt Alignment
+
+### Prompt Alignment Changes
+
+- Updated `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` PLAN block only (`lines 11-64`) to reflect the current shared workspace model without changing the five-tab workflow.
+- Added a short workspace-context note:
+  - `AI-Project-Manager` = orchestrator / governor / workflow manager
+  - `open--claw` = autonomous operator / executor
+  - both repos are treated as one coordinated system when opened together in the shared multi-root workspace
+- Refined the PLAN task sentence so cross-repo state is considered only when directly relevant, without changing workflow or phase structure.
+- Clarified the Phase 0 current-state summary to include directly relevant shared cross-repo state.
+- Clarified item 3 so PLAN produces the AGENT execution prompt when edits or commands are required.
+
+### Prompt Alignment Evidence
+
+- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` re-read after edit — **PASS**
+- Existing three-section PLAN output contract preserved (`Phase 0`, `Phase 1 outline`, `One AGENT prompt`) — **PASS**
+- Shared workspace model now explicit in PLAN prompt — **PASS**
+- Referenced architecture paths verified:
+  - `docs/ai/architecture/OPENCLAW_MODULES.md` — **PASS**
+  - `docs/ai/architecture/GOVERNANCE_MODEL.md` — **PASS**
+  - `docs/ai/architecture/AUTONOMY_LOOPS.md` — **PASS**
+- No duplicate process/rule block added; `.cursor/rules/*` remains authoritative — **PASS**
+- No secrets introduced in the doc update — **PASS**
+
+### Prompt Alignment Next Steps
+
+- Optional: refresh the non-PLAN sections in `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` separately (`Sonnett` typos, ASK duplicate heading, model-label cleanup)
 - Phase 6B: openclaw onboard + Gateway health check
