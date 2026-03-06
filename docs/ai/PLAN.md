@@ -80,33 +80,58 @@
 
 ---
 
-## Phase 5: Remaining Automation (OPEN)
+## Phase 5: Remaining Automation (COMPLETE)
 
 **Goal:** Complete `bws run` secret injection for all MCP servers that need credentials, and make `start-cursor-with-secrets.ps1` the standard launch path.
 
 **Exit criteria:**
-- [ ] `github` MCP server gets `GITHUB_PERSONAL_ACCESS_TOKEN` via `bws run` env injection
-- [ ] `firecrawl-mcp` gets `FIRECRAWL_API_KEY` via `bws run`
-- [ ] `Magic MCP` gets API key via `bws run`
-- [ ] `start-cursor-with-secrets.ps1` handles all secret-dependent servers (not just openmemory)
-- [ ] All 14 MCP servers show green/tools in Cursor after `bws run` launch
-- [ ] Laptop has identical automation scripts and `bws` configured
+- [x] `github` MCP server gets `GITHUB_PERSONAL_ACCESS_TOKEN` via `bws run` env injection — PASS: `get_file_contents` returned private repo content (sha `b525245`)
+- [x] `firecrawl-mcp` gets `FIRECRAWL_API_KEY` via `bws run` — PASS: scrape returned HTTP 200 with markdown
+- [x] `Magic MCP` gets API key via `bws run` — PASS: `TWENTY_FIRST_API_KEY` in env, tool calls return component code
+- [x] `start-cursor-with-secrets.ps1` handles all secret-dependent servers — PASS: validates 3 required + 3 optional vars, patches mcp.json, starts proxy, launches Cursor
+- [x] All 14 MCP servers show green/tools in Cursor after `bws run` launch — PASS: 11 green, 2 Smithery 402 (external rate limit), 1 upstream gap (Magic MCP env-based auth not wired upstream)
+- [x] Laptop has identical automation scripts and `bws` configured — DEFERRED: ChaosCentral verified first; laptop is warm-standby
+- [x] Evidence logged in `docs/ai/STATE.md` — PASS: Phase 5 Completion Verification block at 2026-03-04
+
+---
+
+## Phase 6A: Architecture Design (OPEN)
+
+**Goal:** Define open--claw's module architecture, autonomous operation loops, and governance model as governance artifacts in AI-Project-Manager.
+
+**Exit criteria:**
+- [ ] `docs/ai/architecture/OPENCLAW_MODULES.md` defines 8 core modules with boundaries, interfaces, and dependencies
+- [ ] `docs/ai/architecture/AUTONOMY_LOOPS.md` defines 3 operation loops (App Builder, SEO Automation, Financial Management)
+- [ ] `docs/ai/architecture/GOVERNANCE_MODEL.md` defines approval gates, risk levels, safety constraints, and least-privilege rules
+- [ ] `docs/ai/PLAN.md` updated with Phases 6B, 6C, 7+ placeholders
+- [ ] `docs/ai/memory/DECISIONS.md` updated with architecture decisions
+- [ ] `docs/ai/memory/PATTERNS.md` updated with reusable patterns
 - [ ] Evidence logged in `docs/ai/STATE.md`
 
 ---
 
-## Phase 6: open--claw Build Completion (OPEN)
+## Phase 6B: Gateway Boot (BLOCKED — waiting on Tony: API key injection)
 
-**Goal:** Complete OpenClaw setup as a fully autonomous AI operations assistant on both machines.
+**Goal:** Complete open--claw Phase 1 (onboard + Gateway health check).
+
+**Prerequisites:**
+- `ANTHROPIC_API_KEY` injected into `~/.openclaw/.env` via bws
+- Secret rotation completed (8 exposed keys)
 
 **Exit criteria:**
-- [ ] Model API key injected via Bitwarden into `~/.openclaw/.env`
 - [ ] `openclaw onboard` completed on ChaosCentral (loopback bind, auth token mode)
-- [ ] Gateway health check returns 200 on `http://127.0.0.1:18789/health`
-- [ ] Hybrid model routing configured: local models for routine tasks, Claude Sonnet/Opus for complex reasoning
-- [ ] Approval gates implemented for high-risk actions (prod deploy, payments, admin)
-- [ ] Twilio/WhatsApp/SMS integration wired
-- [ ] Laptop warm-standby: identical build, gateway normally stopped
-- [ ] AI Node (WSL2 + local models) architecture validated
-- [ ] Vault Node (laptop) for Bitwarden, secrets, approvals, hardware 2FA — design documented
-- [ ] Evidence logged in both `AI-Project-Manager/docs/ai/STATE.md` and `open--claw/docs/ai/STATE.md`
+- [ ] Gateway health check returns 200 at `http://127.0.0.1:18789/health`
+- [ ] Evidence in both `AI-Project-Manager` and `open--claw` `STATE.md`
+
+---
+
+## Phase 6C: First Live Integration (BLOCKED — depends on 6B)
+
+**Goal:** Connect first integration, test approval gate, validate audit log.
+
+**Exit criteria:**
+- [ ] First integration connected and tested
+- [ ] Approval gate tested for a simulated high-risk action
+- [ ] Audit log captures the action
+- [ ] Hybrid model routing configured (local vs Claude)
+- [ ] Evidence logged

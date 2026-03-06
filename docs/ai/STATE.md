@@ -560,3 +560,54 @@ All three secret-dependent MCP servers (github, firecrawl-mcp, openmemory) are a
 ### Remaining (not Phase 5)
 - [ ] Context7/Clear Thought 1.5: blocked by Smithery HTTP 402 (external rate limit)
 - [ ] Magic MCP: `TWENTY_FIRST_API_KEY` injected but not used by MCP server (env-based auth not wired in upstream)
+
+---
+
+## 2026-02-23 — Phase 6A: Architecture Design
+
+### Tool usage
+
+| Tool | Call | Result |
+|---|---|---|
+| Exa Search | web_search_exa — openclaw.ai architecture | **PASS** — 8 results; openclawlab.com official docs, Medium analyses, Substack deep-dive |
+| firecrawl-mcp | firecrawl_scrape — openclawlab.com/docs | **FAIL** — Unauthorized: Invalid token (key may be rotated since last bws launch) |
+| openmemory | add-memory x3 (Phase 5 closure, Phase 6 split, module architecture) | **PASS** — 3 memories ingested asynchronously |
+
+### Changes
+
+| File | Action | Status |
+|---|---|---|
+| docs/ai/PLAN.md | Phase 5 closed (COMPLETE), Phase 6 decomposed into 6A/6B/6C | PASS |
+| docs/ai/architecture/OPENCLAW_MODULES.md | Created — 8 modules with mermaid dependency diagram | PASS |
+| docs/ai/architecture/AUTONOMY_LOOPS.md | Created — 3 loops with mermaid sequence diagrams | PASS |
+| docs/ai/architecture/GOVERNANCE_MODEL.md | Created — risk levels, action classification, safety constraints, escalation path, audit requirements, least-privilege rules | PASS |
+| docs/ai/memory/DECISIONS.md | 3 decision entries added | PASS |
+| docs/ai/memory/PATTERNS.md | 2 pattern entries added | PASS |
+
+### Self-consistency checklist
+
+- [x] No duplicate files differing only by case — no duplicates detected in docs/ai/architecture/
+- [x] Every path referenced in docs exists — OPENCLAW_MODULES.md, AUTONOMY_LOOPS.md, GOVERNANCE_MODEL.md all created
+- [x] No secrets committed — files contain no API keys, tokens, or credentials
+- [x] No circular references — architecture docs reference modules, not each other circularly
+- [x] STATE.md updated with PASS/FAIL evidence — this entry
+
+### Phase 6A exit criteria status
+
+- [x] OPENCLAW_MODULES.md — 8 modules defined with boundaries, interfaces, dependencies, mermaid diagram
+- [x] AUTONOMY_LOOPS.md — 3 loops defined with sequence diagrams
+- [x] GOVERNANCE_MODEL.md — risk levels, action classification, safety constraints, audit requirements
+- [x] PLAN.md updated with 6B, 6C placeholders
+- [x] DECISIONS.md updated — 3 entries
+- [x] PATTERNS.md updated — 2 entries
+- [x] Evidence logged — this block
+
+### Phase 6A Status: **COMPLETE**
+
+### Blockers for Phase 6B (Tony action required)
+
+- [ ] Inject ANTHROPIC_API_KEY into Bitwarden OpenClaw project (ID: 14a97bb) and wire into start-cursor-with-secrets.ps1
+- [ ] Complete secret rotation (8 keys exposed via bws secret list in prior PLAN chat)
+- [ ] Delete OPENMEMORY_API_KEY_2 (duplicate) — keep only raw om-... value in OPENMEMORY_API_KEY
+- [ ] Rename Composio-Playground → COMPOSIO_API_KEY (POSIX-compliant name) — optional but eliminates bws warning
+- [ ] Confirm firecrawl-mcp key is current (MCP server returning Unauthorized — may need re-injection)
