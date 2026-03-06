@@ -694,3 +694,31 @@ All 3 secret-dependent MCP servers PASS with rotated keys after ws run relaunch
 **Pre-flight blocker cleared.** Phase 6B is ready to execute pending:
 - [ ] Tony approval + application of .code-workspace launch script fix
 - [ ] Phase 6B AGENT prompt execution (openclaw onboard + Gateway health check)
+
+---
+
+## 2026-03-06 — Launch Script Workspace Fix (approved by Tony)
+
+### Changes
+
+- Created ~/.openclaw/openclaw.code-workspace — multi-root workspace containing both repos:
+  - D:\github\AI-Project-Manager
+  - D:\github\open--claw
+- Updated ~/.openclaw/start-cursor-with-secrets.ps1 line 75:
+  - Before: Start-Process -FilePath $CursorExe | Out-Null
+  - After: Start-Process -FilePath $CursorExe -ArgumentList ""$workspace"" | Out-Null
+  - Added guard: throws if workspace file is missing
+
+### Evidence
+
+- Workspace file written: C:\Users\ynotf\.openclaw\openclaw.code-workspace — PASS
+- Script line 75-80 verified via Read tool — PASS
+- No secrets in either file — PASS
+
+### Effect
+
+Every ws run launch now opens both AI-Project-Manager and open--claw in one deterministic Cursor window. No more relying on Cursor's last-opened workspace history.
+
+### What's next
+
+- Phase 6B: openclaw onboard + Gateway health check
