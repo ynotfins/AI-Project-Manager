@@ -14,7 +14,7 @@ AGENT must use installed MCP tools by name. Manual approaches are fallbacks, nev
 | Web extraction        | firecrawl-mcp          | Manual fetch + parse                           |
 | Repo operations       | github                 | CLI git + manual hosting UI                    |
 | Web search            | Exa Search             | Manual search                                  |
-| Memory                | mem0 (if installed)    | File-based memory in `docs/ai/memory/`         |
+| Memory                | openmemory             | File-based memory in `docs/ai/memory/`         |
 
 AGENT must use the preferred tool by name. If it is unavailable, use the fallback and record a FAIL entry in `docs/ai/STATE.md`.
 
@@ -62,9 +62,9 @@ AGENT must use the preferred tool by name. If it is unavailable, use the fallbac
 - Searching for current information, news, or technical content across the web
 - Finding code examples or documentation not covered by Context7
 
-### mem0 / memory MCP — REQUIRED:
-- Before planning: retrieve prior decisions and patterns related to the current task
-- After completing a phase: store new decisions, patterns, or stable facts
+### openmemory — REQUIRED:
+- Before planning: call `search-memory` to retrieve prior decisions and patterns related to the current task
+- After completing a phase: call `add-memory` to store new decisions, patterns, or stable facts
 - See `docs/ai/memory/MEMORY_CONTRACT.md` for what must and must not be stored
 
 ## PASS/FAIL evidence for tool usage

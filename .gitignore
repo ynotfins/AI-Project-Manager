@@ -35,3 +35,6 @@ Thumbs.db
 *.swo
 *~
 
+
+# Serena LSP cache
+.serena/

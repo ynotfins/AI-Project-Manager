@@ -611,3 +611,66 @@ All three secret-dependent MCP servers (github, firecrawl-mcp, openmemory) are a
 - [ ] Delete OPENMEMORY_API_KEY_2 (duplicate) — keep only raw om-... value in OPENMEMORY_API_KEY
 - [ ] Rename Composio-Playground → COMPOSIO_API_KEY (POSIX-compliant name) — optional but eliminates bws warning
 - [ ] Confirm firecrawl-mcp key is current (MCP server returning Unauthorized — may need re-injection)
+
+---
+
+## 2026-03-06 — Pre-flight + PLAN.md Reconciliation + Rule Fix
+
+### Changes
+
+| File | Change | Status |
+|---|---|---|
+| .cursor/rules/05-global-mcp-usage.md | mem0 (if installed) → openmemory; section heading + tool names updated | PASS |
+| ~/.serena/serena_config.yml | Added D:\github\AI-Project-Manager and D:\github\open--claw to projects: list | PASS |
+| D:\github\AI-Project-Manager\.serena\project.yml | Created — declares language: markdown so Serena can activate the docs repo | PASS |
+| .gitignore | Added .serena/ entry | PASS |
+| docs/ai/PLAN.md | Phase 6A → (COMPLETE) with c303326 evidence; Phase 6B → (OPEN) with resolved prerequisites and pre-flight checklist | PASS |
+
+### MCP Re-Verification Results (post key rotation)
+
+| Server | Test | Result | Evidence |
+|---|---|---|---|
+| openmemory | health-check | **PASS** | {"status":"healthy","tools_available":7,"version":"1.0.0"} |
+| github | get_file_contents README.md | **PASS** | sha c406ff1, 2356 bytes, private repo content returned |
+| firecrawl-mcp | irecrawl_scrape example.com | **FAIL** | Unauthorized: Invalid token — rotated FIRECRAWL_API_KEY not yet in Cursor process |
+| Context7 | esolve-library-id openclaw | **PASS** | 5 libraries returned; /openclaw/openclaw has 5736 snippets, High reputation |
+
+### Serena Evidence
+
+- ctivate_project (AI-Project-Manager): **PASS** — Created and activated a new project with name 'AI-Project-Manager'
+- get_current_config: **PASS** — Active project: AI-Project-Manager; Serena v0.1.4; LSP backend; markdown language
+- open--claw: registered in config file; not yet activated this session (no project.yml created — has TypeScript source so Serena will auto-detect on next activation)
+
+### Launch Script Investigation
+
+- **File:** ~/.openclaw/start-cursor-with-secrets.ps1 line 75
+- **Finding:** Start-Process -FilePath  | Out-Null — NO workspace argument passed
+- **a) Arguments to Cursor.exe:** None (no -ArgumentList)
+- **b) Workspace path passed:** None — Cursor opens last-used workspace from its own history (non-deterministic)
+- **c) Opens script file itself:** No
+- **Proposed fix (NOT YET APPLIED — shared infrastructure, requires Tony approval):**
+  1. Create ~/.openclaw/openclaw.code-workspace with both repos as folders
+  2. Change line 75 to: Start-Process -FilePath  -ArgumentList """" | Out-Null
+  - This ensures every bws launch opens both AI-Project-Manager + open--claw in one deterministic Cursor window
+
+### Pre-flight Verdict
+
+| Check | Status | Notes |
+|---|---|---|
+| Serena: AI-Project-Manager registered | **PASS** | Active this session; config updated |
+| Serena: open--claw registered | **PARTIAL** | In config file; TypeScript detected; activate on next session |
+| Launch script workspace behavior | **IDENTIFIED** | Fix proposed, awaiting Tony approval to apply |
+| github MCP (rotated key) | **PASS** | Private repo accessible |
+| openmemory (rotated key) | **PASS** | Healthy, 7 tools |
+| firecrawl-mcp (rotated key) | **FAIL** | Needs bws run relaunch to pick up new FIRECRAWL_API_KEY |
+| Context7 | **PASS** | Restored; OpenClaw library available |
+
+**Overall verdict: BLOCKED on 1 item before Phase 6B execution can begin**
+- Relaunch Cursor via ws run to inject the rotated FIRECRAWL_API_KEY into the firecrawl-mcp server process
+
+### What's next
+
+- [ ] Tony: approve and apply launch script .code-workspace fix
+- [ ] Relaunch Cursor via ws run to pick up rotated FIRECRAWL_API_KEY
+- [ ] After relaunch: re-verify firecrawl-mcp (expect PASS)
+- [ ] Then: begin Phase 6B (openclaw onboard + Gateway health check)

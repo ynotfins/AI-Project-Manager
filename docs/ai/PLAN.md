@@ -95,28 +95,35 @@
 
 ---
 
-## Phase 6A: Architecture Design (OPEN)
+## Phase 6A: Architecture Design (COMPLETE)
 
 **Goal:** Define open--claw's module architecture, autonomous operation loops, and governance model as governance artifacts in AI-Project-Manager.
 
 **Exit criteria:**
-- [ ] `docs/ai/architecture/OPENCLAW_MODULES.md` defines 8 core modules with boundaries, interfaces, and dependencies
-- [ ] `docs/ai/architecture/AUTONOMY_LOOPS.md` defines 3 operation loops (App Builder, SEO Automation, Financial Management)
-- [ ] `docs/ai/architecture/GOVERNANCE_MODEL.md` defines approval gates, risk levels, safety constraints, and least-privilege rules
-- [ ] `docs/ai/PLAN.md` updated with Phases 6B, 6C, 7+ placeholders
-- [ ] `docs/ai/memory/DECISIONS.md` updated with architecture decisions
-- [ ] `docs/ai/memory/PATTERNS.md` updated with reusable patterns
-- [ ] Evidence logged in `docs/ai/STATE.md`
+- [x] `docs/ai/architecture/OPENCLAW_MODULES.md` defines 8 core modules with boundaries, interfaces, and dependencies — commit c303326
+- [x] `docs/ai/architecture/AUTONOMY_LOOPS.md` defines 3 operation loops (App Builder, SEO Automation, Financial Management) — commit c303326
+- [x] `docs/ai/architecture/GOVERNANCE_MODEL.md` defines approval gates, risk levels, safety constraints, and least-privilege rules — commit c303326
+- [x] `docs/ai/PLAN.md` updated with Phases 6B, 6C, 7+ placeholders — commit c303326
+- [x] `docs/ai/memory/DECISIONS.md` updated with architecture decisions — commit c303326
+- [x] `docs/ai/memory/PATTERNS.md` updated with reusable patterns — commit c303326
+- [x] Evidence logged in `docs/ai/STATE.md` — commit c303326
 
 ---
 
-## Phase 6B: Gateway Boot (BLOCKED — waiting on Tony: API key injection)
+## Phase 6B: Gateway Boot (OPEN)
 
 **Goal:** Complete open--claw Phase 1 (onboard + Gateway health check).
 
-**Prerequisites:**
-- `ANTHROPIC_API_KEY` injected into `~/.openclaw/.env` via bws
-- Secret rotation completed (8 exposed keys)
+**Prerequisites (resolved):**
+- `ANTHROPIC_API_KEY` in Bitwarden — DONE
+- `OPENAI_API_KEY` in Bitwarden — DONE
+- Secret rotation completed — DONE
+- `OPENMEMORY_API_KEY_2` deleted — DONE
+
+**Pre-flight (must pass before execution):**
+- [ ] Serena: AI-Project-Manager + open--claw registered and active
+- [ ] Launch script: workspace behavior verified (`.code-workspace` fix applied)
+- [ ] MCP re-verification: github, firecrawl, openmemory PASS with rotated keys (requires `bws run` relaunch)
 
 **Exit criteria:**
 - [ ] `openclaw onboard` completed on ChaosCentral (loopback bind, auth token mode)
