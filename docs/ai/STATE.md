@@ -770,3 +770,32 @@ per-repo behavior in multi-root workspace — PASS
 
 ### What's next
 Apply rule to future execution blocks.
+
+---
+
+## 2026-03-06 — GitHub Sync Checkpoint
+
+### Sync Scope
+- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `docs/ai/STATE.md`
+
+### Evidence
+- git status reviewed — PASS
+- diff reviewed — PASS
+- excluded files left uncommitted (`.gitignore`, `docs/ai/context/`, `docs/archive/`, `docs/global-rules.md`) — PASS
+
+### What's next
+Push checkpoint to origin/main
+
+---
+
+## 2026-03-06 — GitHub Push Evidence
+
+### Evidence
+- checkpoint commit `5c9b831` (`docs: checkpoint PLAN prompt alignment`) — PASS
+- push rule commit `ed492c9` (`docs: require regular push after verified work`) — PASS
+- push to `origin/main` — PASS
+- no skipped items; all excluded files remain uncommitted per task spec
+
+### What's next
+Phase 6B: openclaw onboard + Gateway health check
