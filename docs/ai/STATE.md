@@ -674,3 +674,23 @@ All three secret-dependent MCP servers (github, firecrawl-mcp, openmemory) are a
 - [ ] Relaunch Cursor via ws run to pick up rotated FIRECRAWL_API_KEY
 - [ ] After relaunch: re-verify firecrawl-mcp (expect PASS)
 - [ ] Then: begin Phase 6B (openclaw onboard + Gateway health check)
+
+---
+
+## 2026-03-06 — Post-Relaunch Verification (rotated keys)
+
+### Results
+
+| Server | Test | Result | Evidence |
+|---|---|---|---|
+| firecrawl-mcp | irecrawl_scrape example.com | **PASS** | HTTP 200, markdown returned, scrapeId  19cc1d8, creditsUsed=1 |
+| openmemory | health-check | **PASS** | {"status":"healthy","tools_available":7,"version":"1.0.0"} |
+| github | get_file_contents README.md | **PASS** | sha c406ff1, 2356 bytes, private repo content returned |
+
+### Pre-flight status
+
+All 3 secret-dependent MCP servers PASS with rotated keys after ws run relaunch.
+
+**Pre-flight blocker cleared.** Phase 6B is ready to execute pending:
+- [ ] Tony approval + application of .code-workspace launch script fix
+- [ ] Phase 6B AGENT prompt execution (openclaw onboard + Gateway health check)
