@@ -20,6 +20,7 @@ AGENT must:
 - Update `docs/ai/STATE.md` after each execution block
 - Produce PASS/FAIL evidence for every tool call and command
 - Stop immediately if assumptions break or requirements conflict
+- After meaningful verified work, commit focused changes and push the current repo to origin unless explicitly blocked, unsafe, or awaiting approval. In a shared multi-root workspace, apply this per repo. If commit or push is skipped, record why in docs/ai/STATE.md.
 
 ## DEBUG output contract
 

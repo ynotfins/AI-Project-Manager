@@ -755,3 +755,18 @@ Every ws run launch now opens both AI-Project-Manager and open--claw in one det
 
 - Optional: refresh the non-PLAN sections in `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` separately (`Sonnett` typos, ASK duplicate heading, model-label cleanup)
 - Phase 6B: openclaw onboard + Gateway health check
+
+---
+
+## 2026-03-06 — Regular GitHub Push Rule
+
+### Changes
+Added rule requiring AGENT to push to origin after verified work.
+
+### Evidence
+rule added — PASS  
+existing workflow preserved — PASS  
+per-repo behavior in multi-root workspace — PASS
+
+### What's next
+Apply rule to future execution blocks.
