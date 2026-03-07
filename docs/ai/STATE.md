@@ -758,6 +758,88 @@ Every ws run launch now opens both AI-Project-Manager and open--claw in one det
 
 ---
 
+## 2026-03-07 — Phase 6B Pre-flight Verification
+
+### Checks
+
+- Workspace context
+- MCP re-verification
+- Serena readiness
+- OpenMemory prior-decision lookup
+- Windows + WSL environment
+- Secret presence / Bitwarden access
+- Vendor OpenClaw readiness
+- Port 18789 readiness
+
+### Evidence
+
+- Workspace context: **PASS**
+  - `D:\github\AI-Project-Manager` exists — verified during repo operations in this workspace
+  - `D:\github\open--claw` exists — verified during repo operations in this workspace
+  - `C:\Users\ynotf\.openclaw\openclaw.code-workspace` exists — previously verified in `2026-03-06 — Launch Script Workspace Fix`
+
+- MCP re-verification:
+  - `openmemory` `health-check` — **PASS** — `{"status":"healthy","timestamp":"2026-03-07T00:06:33.730146+00:00","server":"OpenMemory MCP Server","version":"1.0.0","tools_available":7,"message":"MCP server is running and accepting connections"}`
+  - `github` `get_file_contents` (`ynotfins/open--claw`, `README.md`) — **PASS** — sha `0142b180eb5c0e47189934e467959decf6b605b4`, size `946`
+  - `firecrawl-mcp` `firecrawl_scrape` (`https://example.com`) — **PASS** — HTTP `200`, scrapeId `019cc59e-05bb-7588-9426-06166f8f34f5`, creditsUsed `1`
+  - `Context7` `resolve-library-id` (`openclaw`) — **PASS** — primary match `/openclaw/openclaw`, `5992` snippets, High reputation, version `v2026.3.2`
+
+- Serena readiness:
+  - `serena activate_project` (`D:\github\AI-Project-Manager`) — **PASS**
+  - `serena activate_project` (`D:\github\open--claw`) — **FAIL** — `No source files found in D:\github\open--claw`
+  - Fallback (`Glob` for `docs/ai/{PLAN,STATE}.md` in `D:\github\open--claw`) — **PASS** — both files found
+  - `serena get_current_config` — **PASS** — active project remains `AI-Project-Manager`
+
+- OpenMemory prior-decision lookup:
+  - `openmemory search-memory` (`gateway boot openclaw onboard API key injection WSL`) — **FAIL** — `MCP error -32602: At least one of 'user_preference' or 'project_id' must be provided`
+  - Fallback (`rg` in `AI-Project-Manager/docs/ai/memory/*.md`) — **PASS** — found Phase 6 decomposition, Gateway Boot decision, `bws-run Secret Injection`, and `Two-Layer Autonomous System`
+  - Fallback (`rg` in `open--claw/docs/ai/*.md`) — **PASS** — found prior `Onboard + Gateway` blocked state, WSL setup notes, config references, and exact unblock steps
+
+- Windows + WSL environment:
+  - `wsl bash -c "node --version"` — **FAIL** — `bash: line 1: node: command not found`
+  - `wsl bash -c "pnpm --version"` — **FAIL** — `/mnt/c/Users/ynotf/AppData/Roaming/npm/pnpm: 15: exec: node: not found`
+  - Fallback `wsl bash -lc "source /home/ynotf/.nvm/nvm.sh && node --version"` — **PASS** — `v22.22.0`
+  - Fallback `wsl bash -lc "source /home/ynotf/.nvm/nvm.sh && pnpm --version"` — **PASS** — `10.23.0`
+  - `wsl bash -c "ls -la /mnt/d/github/open--claw/vendor/openclaw/package.json"` — **PASS** — file exists
+  - `wsl bash -c "ls -la ~/.openclaw/ 2>/dev/null || echo NOT FOUND"` — **PASS** — directory exists
+
+- Secret presence / Bitwarden access:
+  - `bws secret list --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf` — **FAIL** — `error: unexpected argument '--project-id' found`
+  - `bws secret list --help` — **PASS** — confirmed correct syntax is positional `bws secret list [PROJECT_ID]`
+  - `bws secret list f14a97bb-5183-4b11-a6eb-b3fe0015fedf` — **FAIL** — `Error: Missing access token`
+  - Supplemental check `wsl bash -c "test -f ~/.openclaw/.env && echo ENV FILE PRESENT || echo ENV FILE MISSING"` — **FAIL** — `ENV FILE MISSING`
+  - Supplemental check `wsl bash -c "grep -q '^ANTHROPIC_API_KEY=' ~/.openclaw/.env 2>/dev/null && echo ANTHROPIC KEY PRESENT || echo ANTHROPIC KEY MISSING"` — **FAIL** — `ANTHROPIC KEY MISSING`
+  - Supplemental check `wsl bash -c "grep -q '^OPENAI_API_KEY=' ~/.openclaw/.env 2>/dev/null && echo OPENAI KEY PRESENT || echo OPENAI KEY MISSING"` — **FAIL** — `OPENAI KEY MISSING`
+
+- Vendor OpenClaw readiness:
+  - `wsl bash -c "cd /mnt/d/github/open--claw/vendor/openclaw && git log --oneline -1"` — **PASS** — `b228c06 chore: polish PR review skills`
+  - Read `D:\github\open--claw\vendor\openclaw\package.json` — **PASS** — version `2026.2.18`, `bin.openclaw = openclaw.mjs`, `engines.node = >=22.12.0`, `packageManager = pnpm@10.23.0`
+  - `Context7` `query-docs` (`/openclaw/openclaw`) — **PASS** — current docs describe `openclaw onboard --install-daemon`, `openclaw gateway install`, `openclaw health`, `openclaw status --deep`, Windows via WSL2
+  - Version comparison — **WARN** — local vendor package `2026.2.18`; Context7 library index reports `v2026.3.2`
+
+- Port 18789 readiness:
+  - `wsl bash -c "ss -tlnp | grep 18789 || echo PORT FREE"` — **PASS** — `PORT FREE`
+  - `netstat -ano | findstr 18789` — **PASS** — no output; no Windows listener found
+
+### Verdict
+
+- **BLOCKED**
+
+### Blockers
+
+- `serena` cannot activate `D:\github\open--claw` at the repo root: `No source files found in D:\github\open--claw`
+- `bws` access is unavailable in this shell: `Error: Missing access token`
+- `~/.openclaw/.env` is missing in WSL
+- `ANTHROPIC_API_KEY` is missing from `~/.openclaw/.env`
+- `OPENAI_API_KEY` is missing from `~/.openclaw/.env`
+
+### What's next
+
+- Resolve the blockers above before Phase 6B execution.
+- After blockers are cleared, run the Phase 6B execution prompt (`openclaw onboard` + Gateway health check).
+
+---
+
 ## 2026-03-06 — Regular GitHub Push Rule
 
 ### Changes
@@ -770,6 +852,92 @@ per-repo behavior in multi-root workspace — PASS
 
 ### What's next
 Apply rule to future execution blocks.
+
+---
+
+## 2026-03-06 — Phase 6B Pre-flight Verification
+
+### Checks
+- Workspace context
+- MCP re-verification
+- Serena readiness
+- Windows + WSL environment
+- Secret presence
+- OpenClaw command readiness
+- Port 18789 readiness
+
+### Evidence
+
+#### STEP 1 — Workspace context
+| Check | Command | Result |
+|-------|---------|--------|
+| `D:\github\AI-Project-Manager` exists | `Test-Path` | **PASS** |
+| `D:\github\open--claw` exists | `Test-Path` | **PASS** |
+| `C:\Users\ynotf\.openclaw\openclaw.code-workspace` exists | `Test-Path` | **PASS** |
+
+#### STEP 2 — MCP re-verification
+| Tool | Call | Result |
+|------|------|--------|
+| `openmemory` | `health-check` | **PASS** — status: healthy, 7 tools available |
+| `github` | `get_file_contents ynotfins/open--claw README.md` | **PASS** — sha `0142b18`, 946 bytes returned |
+| `firecrawl-mcp` | `scrape https://example.com` | **PASS** — HTTP 200, markdown content returned |
+| `Context7` | `resolve-library-id openclaw` | **PASS** — `/openclaw/openclaw` resolved, 5992 snippets, High reputation |
+
+#### STEP 3 — Serena readiness
+| Check | Result |
+|-------|--------|
+| `serena activate AI-Project-Manager` | **PASS** — activated, 4 memories available |
+| `serena activate open--claw` (by name) | **FAIL** — `ProjectNotFoundError: Not a valid project name` |
+| `serena activate open--claw` (by path `D:\github\open--claw`) | **FAIL** — `ValueError: No source files found` (docs-only repo, no indexed language) |
+| Fallback: targeted file reads (`PLAN.md`, `STATE.md`, `SETUP_NOTES.md`, `BLOCKED_ITEMS.md`) | **PASS** — all files read successfully; sufficient context obtained |
+
+Serena for `open--claw`: **FAIL** (degraded). Fallback to targeted reads: **PASS**. Proceeding with fallback.
+
+#### STEP 4 — Windows + WSL environment
+| Check | Command | Output | Result |
+|-------|---------|--------|--------|
+| Node version | `wsl bash -lc "source ~/.nvm/nvm.sh && node --version"` | `v22.22.0` | **PASS** (≥22 required) |
+| pnpm version | `wsl bash -lc "source ~/.nvm/nvm.sh && pnpm --version"` | `10.23.0` | **PASS** |
+| `~/openclaw-build` exists | `wsl bash -lc "test -d ~/openclaw-build && echo PASS"` | `PASS` | **PASS** |
+| `~/openclaw-build/package.json` exists | `wsl bash -lc "test -f ~/openclaw-build/package.json && echo PASS"` | `PASS` | **PASS** |
+
+#### STEP 5 — Secret presence
+| Check | Command | Output | Result |
+|-------|---------|--------|--------|
+| `~/.openclaw/.env` exists | `wsl bash -lc "test -f ~/.openclaw/.env && echo PASS"` | `FAIL` | **FAIL — BLOCKER** |
+| `ANTHROPIC_API_KEY` present | `grep -q '^ANTHROPIC_API_KEY=' ~/.openclaw/.env` | `No such file` | **FAIL — BLOCKER** |
+| `OPENAI_API_KEY` present | `grep -q '^OPENAI_API_KEY=' ~/.openclaw/.env` | `No such file` | **FAIL — BLOCKER** |
+
+`~/.openclaw/` directory and `.env` file do not exist in WSL. Both required API keys are absent.
+
+#### STEP 6 — OpenClaw command readiness
+| Check | Command | Output | Result |
+|-------|---------|--------|--------|
+| `pnpm exec openclaw --help` | `wsl bash -lc "... pnpm -s exec openclaw --help"` | empty (silent exit) | **FAIL** |
+| `node openclaw.mjs --help` | `wsl bash -lc "node openclaw.mjs --help"` | OpenClaw 2026.2.18 (b228c06) help text | **PASS** |
+| `openclaw.mjs` exists | `test -f ~/openclaw-build/openclaw.mjs` | `PASS` | **PASS** |
+
+CLI is functional via `node openclaw.mjs`. `pnpm exec` silent-fails (likely PATH issue with `-s` flag suppressing output). Gateway binary itself is ready.
+
+#### STEP 7 — Port 18789 readiness
+| Check | Command | Output | Result |
+|-------|---------|--------|--------|
+| WSL port check | `wsl bash -lc "ss -tln | grep 18789"` | `FREE` | **PASS** |
+| Windows port check | `Get-NetTCPConnection -LocalPort 18789` | `FREE` | **PASS** |
+
+### Verdict
+**BLOCKED**
+
+### Blockers
+1. `~/.openclaw/.env` does not exist in WSL (`/home/ynotf/.openclaw/` directory absent)
+2. `ANTHROPIC_API_KEY` not present — required for `openclaw onboard`
+3. `OPENAI_API_KEY` not present — required as fallback model key
+4. Serena `open--claw` project not indexed (docs-only; fallback sufficient for now but Serena will not be available for code navigation in Phase 6B)
+
+### What's next
+Resolve the blockers above before Phase 6B execution:
+1. Create `~/.openclaw/.env` in WSL with at least one model API key (see `open-claw/docs/BLOCKED_ITEMS.md` item #1 for exact commands)
+2. Optionally: register `open--claw` in Serena with `--language markdown` or wait until TypeScript source files are present
 
 ---
 
@@ -799,3 +967,84 @@ Push checkpoint to origin/main
 
 ### What's next
 Phase 6B: openclaw onboard + Gateway health check
+
+---
+
+## 2026-03-07 — Phase 6B Pre-flight Verification (Re-run)
+
+### Checks
+- Workspace context
+- MCP re-verification
+- Serena readiness
+- Windows + WSL environment
+- Secret presence
+- OpenClaw command readiness
+- Port 18789 readiness
+
+### Evidence
+
+#### STEP 1 — Workspace context
+| Check | Command | Result |
+|-------|---------|--------|
+| `D:\github\AI-Project-Manager` exists | `Test-Path` | **PASS** |
+| `D:\github\open--claw` exists | `Test-Path` | **PASS** |
+| `C:\Users\ynotf\.openclaw\openclaw.code-workspace` exists | `Test-Path` | **PASS** |
+
+#### STEP 2 — MCP re-verification
+| Tool | Call | Result |
+|------|------|--------|
+| `openmemory` | `health-check` | **PASS** — status: healthy, 7 tools available |
+| `github` | `get_file_contents ynotfins/open--claw README.md` | **PASS** — sha `0142b18`, 946 bytes |
+| `firecrawl-mcp` | `scrape https://example.com` | **PASS** — HTTP 200, markdown returned |
+| `Context7` | `resolve-library-id openclaw` | **PASS** — `/openclaw/openclaw` resolved |
+
+#### STEP 3 — Serena readiness
+| Check | Result |
+|-------|--------|
+| `serena activate AI-Project-Manager` | **PASS** — activated, 4 memories available |
+| `serena activate open--claw` (by path) | **FAIL** — `ValueError: No source files found` (docs-only repo) |
+| Fallback: targeted file reads | **PASS** — sufficient context; not a blocker for pre-flight |
+
+#### STEP 4 — Windows + WSL environment
+| Check | Command | Output | Result |
+|-------|---------|--------|--------|
+| Node version | `wsl bash -lc "source ~/.nvm/nvm.sh && node --version"` | `v22.22.0` | **PASS** |
+| pnpm version | `wsl bash -lc "source ~/.nvm/nvm.sh && pnpm --version"` | `10.23.0` | **PASS** |
+| `~/openclaw-build` exists | `test -d /home/ynotf/openclaw-build` | `PASS` | **PASS** |
+| `~/openclaw-build/package.json` exists | `test -f /home/ynotf/openclaw-build/package.json` | `PASS` | **PASS** |
+
+#### STEP 5 — Secret presence
+| Check | Command | Result |
+|-------|---------|--------|
+| `~/.openclaw/.env` exists | `test -f ~/.openclaw/.env` | **PASS** |
+| `ANTHROPIC_API_KEY` present | `grep -q '^ANTHROPIC_API_KEY='` | **PASS** |
+| `OPENAI_API_KEY` present | `grep -q '^OPENAI_API_KEY='` | **PASS** |
+
+Primary blocker from previous run now resolved.
+
+#### STEP 6 — OpenClaw command readiness
+| Check | Command | Output | Result |
+|-------|---------|--------|--------|
+| `pnpm exec openclaw --help` | exact spec command | `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL Command "openclaw" not found` | **FAIL** |
+| `node openclaw.mjs --help` | direct invocation | `OpenClaw 2026.2.18 (b228c06)` help text | **PASS** |
+| `openclaw.mjs` exists | `test -f ~/openclaw-build/openclaw.mjs` | `PASS` | **PASS** |
+
+Root cause of FAIL: `~/openclaw-build/package.json` has no `openclaw` bin entry (only `docs:bin`). `pnpm exec` cannot resolve the name. The canonical invocation is `node openclaw.mjs` — verified working. Not a blocker; `openclaw onboard` should be run as `node openclaw.mjs onboard`.
+
+#### STEP 7 — Port 18789 readiness
+| Check | Command | Output | Result |
+|-------|---------|--------|--------|
+| WSL | `ss -tln \| grep 18789` | `FREE` | **PASS** |
+| Windows | `Get-NetTCPConnection -LocalPort 18789` | `FREE` | **PASS** |
+
+### Verdict
+**READY**
+
+### Blockers
+None — all required checks pass. One non-blocking note:
+- `pnpm exec openclaw` does not resolve; use `node openclaw.mjs` as the invocation prefix for all `openclaw` commands in `~/openclaw-build/`
+- Serena cannot index `open--claw` (docs-only repo); targeted reads are the fallback and are sufficient
+
+### What's next
+Run the Phase 6B execution prompt (`openclaw onboard` + Gateway health check).
+Invoke as: `cd ~/openclaw-build && node openclaw.mjs onboard`
