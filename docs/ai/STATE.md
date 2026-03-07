@@ -1048,3 +1048,41 @@ None — all required checks pass. One non-blocking note:
 ### What's next
 Run the Phase 6B execution prompt (`openclaw onboard` + Gateway health check).
 Invoke as: `cd ~/openclaw-build && node openclaw.mjs onboard`
+
+---
+
+## 2026-03-07 — Pre-restart Checkpoint
+
+### State at restart
+| Item | Value |
+|------|-------|
+| AI-Project-Manager HEAD | `f8741c1` — `docs: Phase 6B pre-flight READY — all blockers cleared` |
+| AI-Project-Manager branch | `main` — synced to `origin/main` |
+| open--claw HEAD | `ca26cd0` — `docs: verify openmemory MCP (tools + add/search proof)` |
+| open--claw branch | `master` — synced to `origin/master` |
+| Phase 6B pre-flight | **READY** — all checks passed (see entry above) |
+| Gateway | NOT started — awaiting post-restart Phase 6B execution |
+| `~/.openclaw/.env` | Present in WSL with `ANTHROPIC_API_KEY` + `OPENAI_API_KEY` |
+| Port 18789 | FREE |
+
+### Excluded from commit (intentional)
+| File/Dir | Reason |
+|----------|--------|
+| `.gitignore` (modified) | Pending separate review |
+| `docs/ai/context/` | Local session context, not repo-tracked |
+| `docs/archive/` | Not yet reviewed for inclusion |
+| `docs/global-rules.md` | Not yet reviewed for inclusion |
+| `open--claw` has no pending changes | Clean working tree |
+
+### Post-restart checklist
+1. Launch Cursor via `start-cursor-with-secrets.ps1` (injects BWS secrets + starts openmemory proxy)
+2. Verify MCP servers are green (openmemory, github, firecrawl, Context7)
+3. Run Phase 6B execution prompt: `cd ~/openclaw-build && node openclaw.mjs onboard`
+4. Verify Gateway health: `curl -s http://127.0.0.1:18789/health`
+5. Update `docs/ai/STATE.md` with Phase 6B evidence
+
+### Evidence
+- `git status` reviewed — PASS
+- `docs/ai/STATE.md` committed (`f8741c1`) — PASS
+- pushed to `origin/main` — PASS
+- `open--claw` clean, no pending changes — PASS
