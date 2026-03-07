@@ -19,17 +19,19 @@ Workspace context:
 - open--claw = autonomous operator / executor.
 - When both repos are open together, treat them as one coordinated system in a shared multi-root workspace.
 
-Read first (authoritative, repo-tracked):
+Read first (authoritative, repo-tracked, in this order):
 - docs/ai/CURSOR_WORKFLOW.md
 - AGENTS.md
 - .cursor/rules/00-global-core.md
 - .cursor/rules/05-global-mcp-usage.md
 - .cursor/rules/10-project-workflow.md
 - .cursor/rules/20-project-quality.md
-- docs/ai/STATE.md
+- docs/ai/STATE.md          ← primary operational source of truth; read before reasoning about blockers or next actions
 - docs/ai/PLAN.md
 - docs/ai/memory/DECISIONS.md (if it exists)
 - docs/ai/memory/PATTERNS.md (if it exists)
+- docs/ai/context/          ← non-canonical artifacts; consult only if STATE.md + DECISIONS.md + PATTERNS.md are insufficient
+- @Past Chats               ← last resort only; use only if all repo-tracked sources above are insufficient
 
 Task:
 Create a Phase 0 plan to bootstrap this project safely and verifiably, using the repo’s workflow (PLAN/AGENT/DEBUG/ASK/ARCHIVE) and evidence-first discipline. If the paired repo in the shared workspace is directly relevant, account for that cross-repo state without changing the workflow or phase structure.

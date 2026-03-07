@@ -12,8 +12,17 @@ This repo uses a five-tab Cursor workflow: PLAN / AGENT / DEBUG / ASK / ARCHIVE.
 
 ## State tracking
 
-- `docs/ai/STATE.md` — current state (AGENT updates after each block)
+- `docs/ai/STATE.md` — **primary operational log**; PLAN reads this first to understand current state, blockers, fallbacks, and cross-repo effects. AGENT updates it after every execution block using the enforced template in `10-project-workflow.md`.
 - `docs/ai/PLAN.md` — active plan with phases and exit criteria
+- `docs/ai/context/` — non-canonical artifact storage: session transcripts, bulk dumps, and ephemeral context files. Informative only; never authoritative.
+
+## Context source priority (read in this order)
+
+1. `docs/ai/STATE.md` — primary operational source of truth
+2. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
+3. `docs/ai/memory/PATTERNS.md` — reusable patterns
+4. `docs/ai/context/` — transcript-derived artifacts and session dumps
+5. `@Past Chats` — **last resort only**; use only if the above sources are insufficient
 
 ## MCP policy
 

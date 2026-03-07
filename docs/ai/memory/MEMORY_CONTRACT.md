@@ -4,9 +4,19 @@
 
 Repo docs win. Always.
 
-- `docs/ai/STATE.md`, `docs/ai/memory/DECISIONS.md`, and `docs/ai/memory/PATTERNS.md` are authoritative.
+- `docs/ai/STATE.md` is the **primary operational source of truth** for PLAN. Read it first before consulting any other source.
+- `docs/ai/memory/DECISIONS.md` and `docs/ai/memory/PATTERNS.md` are authoritative for decisions and patterns.
 - Memory MCP tools provide **recall support only** — they do not override repo docs.
 - If memory conflicts with repo docs, **repo docs win**. Update or discard the conflicting memory entry.
+- `docs/ai/context/` is non-canonical artifact storage (session dumps, transcript extracts). Informative only.
+- `@Past Chats` is a **last resort** — consult only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md`, and `docs/ai/context/` are insufficient.
+
+### Context source priority
+1. `docs/ai/STATE.md`
+2. `docs/ai/memory/DECISIONS.md`
+3. `docs/ai/memory/PATTERNS.md`
+4. `docs/ai/context/`
+5. `@Past Chats` (last resort)
 
 ## What to store in memory MCP
 

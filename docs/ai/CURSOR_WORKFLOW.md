@@ -31,9 +31,20 @@ Developer-local (optional):
 
 ## State and Planning
 
-- `docs/ai/STATE.md` — current execution state; updated after every AGENT block
+- `docs/ai/STATE.md` — **primary operational source of truth**; PLAN reads this first before reasoning about blockers, next actions, and cross-repo effects. Every AGENT block must append an entry using the enforced template in `.cursor/rules/10-project-workflow.md`.
 - `docs/ai/PLAN.md` — active plan with phases and exit criteria
 - `docs/ai/ARCHIVE.md` — compressed decisions and knowledge from past sessions
+- `docs/ai/context/` — non-canonical artifact storage: transcript-derived files, bulk session dumps, ephemeral context. Informative only; never authoritative.
+
+## Context source priority
+
+When PLAN or DEBUG needs to understand current state, consult sources in this order:
+
+1. `docs/ai/STATE.md` — primary
+2. `docs/ai/memory/DECISIONS.md` — key decisions
+3. `docs/ai/memory/PATTERNS.md` — reusable patterns
+4. `docs/ai/context/` — session artifacts and dumps
+5. `@Past Chats` — **last resort only**; use only if all above sources are insufficient
 
 ## Memory
 

@@ -1,12 +1,97 @@
 # Execution State
 
-Bootstrapped; nothing executed yet.
+`docs/ai/STATE.md` is the **primary operational source of truth** for PLAN.
+PLAN reads this before reasoning about blockers, fallbacks, next actions, and cross-repo effects.
+`@Past Chats` is a last resort — consult only after this file, `DECISIONS.md`, `PATTERNS.md`, and `docs/ai/context/` are insufficient.
+
+---
+
+## Enforced entry template (apply to ALL future blocks — no sections may be omitted)
+
+```
+## <YYYY-MM-DD> — <task name>
+### Goal
+### Scope
+### Commands / Tool Calls
+### Changes
+### Evidence
+### Verdict
+### Blockers
+### Fallbacks Used
+### Cross-Repo Impact
+### Decisions Captured
+### Pending Actions
+### What Remains Unverified
+### What's Next
+```
+
+Write `None` or `N/A` for any section with nothing to report. Do not omit sections.
 
 ---
 
 ## State Log
 
 <!-- AGENT appends entries below this line after each execution block. -->
+
+## 2026-03-07 — Documentation drift cleanup: upstream OpenClaw alignment
+
+### Summary
+
+- Audited local OpenClaw-related docs against upstream OpenClaw docs and normalized wrapper guidance to match the official runtime command surface and env-loading behavior.
+- Updated `AI-Project-Manager` governance planning to reference the upstream-supported Gateway flow (`openclaw onboard --install-daemon`, `openclaw gateway status`, `openclaw health`).
+- Cleaned live wrapper docs in `open--claw`, archived the stale integration plan, and demoted the old handoff snapshot into a context artifact.
+
+### Evidence
+
+| Check | Status | Detail |
+| --- | --- | --- |
+| Upstream command sources reviewed | **PASS** | Verified against upstream `README.md`, `docs/start/getting-started.md`, `docs/cli/index.md`, `docs/cli/gateway.md`, `docs/help/environment.md`, and `openclaw.mjs` |
+| Wrapper setup docs updated | **PASS** | `open--claw/open-claw/docs/SETUP_NOTES.md`, `BLOCKED_ITEMS.md`, and `VAULT_SETUP.md` rewritten to align with upstream behavior |
+| Handoff doc demoted | **PASS** | `open--claw/docs/ai/HANDOFF.md` replaced with non-canonical pointer; historical content moved to `docs/ai/context/handoff-2026-02-23-phase1.md` |
+| Redundant plan archived | **PASS** | `open--claw/open-claw/docs/INTEGRATIONS_PLAN.md` reduced to archive pointer; historical content moved to `open-claw/docs/archive/INTEGRATIONS_PLAN-2026-02-18.md` |
+| Governance plan aligned | **PASS** | `docs/ai/PLAN.md` Phase 6B now references `openclaw onboard --install-daemon`, `openclaw gateway status`, and `openclaw health` |
+| Live drift keywords reduced | **PASS** | Remaining hits are limited to historical `STATE.md`, archived context snapshots, or explanatory references rather than active setup guidance |
+
+### What's still broken
+
+- Historical logs still contain older terms such as `Memory Tool` and `pnpm openclaw start`; these were intentionally preserved as evidence instead of rewritten retroactively.
+- Upstream and local docs may drift again unless future wrapper docs continue to cite upstream `vendor/openclaw/docs/*` as the runtime source of truth.
+
+### What's next
+
+1. If additional OpenClaw wrapper docs are added, classify them as governance, operational wrapper, or context artifact on creation.
+2. Before changing runtime instructions again, verify against upstream `vendor/openclaw/docs/*` and `package.json`.
+
+## 2026-03-07 — Codebase orientation: governance vs runtime map
+
+### Summary
+
+- Added `docs/ai/architecture/CODEBASE_ORIENTATION.md` to document the two-repo split:
+  `AI-Project-Manager` as governance/workflow and `open--claw/vendor/openclaw` as the real runtime codebase.
+- Captured the default runtime reading path from `openclaw.mjs` through CLI registration and into `src/gateway/server.impl.ts`.
+- Chose `runtime boot path` as the default next deep dive because `docs/ai/PLAN.md` still shows Phase 6B (`Gateway Boot`) as OPEN.
+
+### Evidence
+
+| Check | Status | Detail |
+| --- | --- | --- |
+| Governance boundary confirmed | **PASS** | `README.md` says `AI-Project-Manager` does not contain application code |
+| Repo split confirmed | **PASS** | `docs/ai/architecture/OPENCLAW_MODULES.md` defines governance overlay vs executor split |
+| Runtime architecture anchor confirmed | **PASS** | `open--claw/open-claw/docs/ARCHITECTURE_MAP.md` documents Gateway-centric hub-and-spoke design |
+| Runtime boot path traced | **PASS** | Read `vendor/openclaw/openclaw.mjs`, `src/entry.ts`, `src/cli/run-main.ts`, `src/cli/program/build-program.ts`, `src/cli/program/command-registry.ts`, `src/cli/program/register.onboard.ts`, `src/commands/onboard.ts`, and `src/gateway/server.impl.ts` |
+| Durable orientation doc added | **PASS** | `docs/ai/architecture/CODEBASE_ORIENTATION.md` |
+| Phase alignment checked | **PASS** | `docs/ai/PLAN.md` shows `Phase 6B: Gateway Boot (OPEN)` |
+
+### What's still broken
+
+- No runtime commands were executed in this block, so Gateway boot and health remain unverified.
+- The orientation is now documented, but subsystem-level maps for `agents`, `channels`, and `ui/apps` are still not broken out into separate notes.
+
+### What's next
+
+1. If the next task is implementation or debugging, start from the boot path captured in `docs/ai/architecture/CODEBASE_ORIENTATION.md`.
+2. For Gateway issues, continue into `vendor/openclaw/src/gateway/server.impl.ts` and the command files behind `onboard`, `status`, and `health`.
+3. If needed, produce a second-pass feature map for `vendor/openclaw/src` (`where to change X` by subsystem).
 
 ## 2026-03-02 — OpenMemory hardening: secret-free mcp.json + local proxy
 
@@ -1086,3 +1171,65 @@ Invoke as: `cd ~/openclaw-build && node openclaw.mjs onboard`
 - `docs/ai/STATE.md` committed (`f8741c1`) — PASS
 - pushed to `origin/main` — PASS
 - `open--claw` clean, no pending changes — PASS
+
+---
+
+## 2026-03-07 — STATE.md as primary PLAN source of truth
+
+### Goal
+Make `docs/ai/STATE.md` the primary operational source of truth for PLAN, formalize `docs/ai/context/` as non-canonical artifact storage, demote `@Past Chats` to last resort, and enforce a mandatory section template on all future STATE entries.
+
+### Scope
+- `AI-Project-Manager/AGENTS.md`
+- `AI-Project-Manager/.cursor/rules/00-global-core.md`
+- `AI-Project-Manager/.cursor/rules/10-project-workflow.md`
+- `AI-Project-Manager/docs/ai/CURSOR_WORKFLOW.md`
+- `AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `AI-Project-Manager/docs/ai/memory/MEMORY_CONTRACT.md`
+- `AI-Project-Manager/docs/ai/STATE.md` (header + this entry)
+
+### Commands / Tool Calls
+- `Read` tool — all 7 target files
+- `StrReplace` tool — 7 files edited (AGENTS.md, 00-global-core.md, 10-project-workflow.md, CURSOR_WORKFLOW.md, TAB_BOOTSTRAP_PROMPTS.md, MEMORY_CONTRACT.md, STATE.md)
+
+### Changes
+- **AGENTS.md**: added "Context source priority" section (5-level hierarchy); expanded "State tracking" to describe `docs/ai/context/` as non-canonical and `docs/ai/STATE.md` as primary.
+- **00-global-core.md**: replaced terse "State updates" paragraph with explicit primacy statement, `@Past Chats` demotion, and reference to the enforced template in `10-project-workflow.md`.
+- **10-project-workflow.md**: added "STATE.md entry template" section (13-field enforced template) and "docs/ai/context/ — non-canonical artifact storage" section.
+- **CURSOR_WORKFLOW.md**: expanded "State and Planning" to call `STATE.md` the primary source of truth and added `docs/ai/context/` entry; added "Context source priority" section.
+- **TAB_BOOTSTRAP_PROMPTS.md**: updated PLAN read-first list to annotate `STATE.md` as primary, add `docs/ai/context/` and `@Past Chats` as final entries with explicit priority labels.
+- **MEMORY_CONTRACT.md**: updated "Non-negotiable" section to establish `STATE.md` primacy, add `docs/ai/context/` non-canonical note, `@Past Chats` last-resort rule, and "Context source priority" sub-list.
+- **STATE.md**: updated header with primacy statement and enforced entry template block; added this entry.
+
+### Evidence
+- All 7 files read before editing — PASS
+- All 7 `StrReplace` calls returned without error — PASS
+- No new files created — PASS (existing docs updated only)
+- No rules files conflict with each other (template defined once in `10-project-workflow.md`, referenced from others) — PASS
+
+### Verdict
+READY — all edits applied. Future entries must use the enforced template.
+
+### Blockers
+None
+
+### Fallbacks Used
+None — no MCP tools failed. All edits used Read + StrReplace directly (appropriate for doc-only changes).
+
+### Cross-Repo Impact
+None. All edits are in `AI-Project-Manager` only. `open--claw` has its own STATE.md and is not governed by this repo's rule files.
+
+### Decisions Captured
+- `docs/ai/STATE.md` is the primary operational source of truth for PLAN (forward-only rule; no historical backfill).
+- `docs/ai/context/` is formally non-canonical: informative artifact storage only.
+- `@Past Chats` is demoted to last resort across all tabs and rule files.
+- The 13-section entry template is enforced on all future STATE blocks.
+
+### Pending Actions
+- Promote the `docs/ai/context/` non-canonical and `@Past Chats` last-resort decisions to `docs/ai/memory/DECISIONS.md` (ARCHIVE tab job).
+
+### What Remains Unverified
+- Whether existing PLAN sessions will naturally adopt the new read order without an explicit session restart prompt update (low risk; PLAN bootstrap prompt now lists the order explicitly).
+
+### What's Next
+Commit these 7 file changes and push to `origin/main`. Then proceed to Phase 6B execution (`openclaw onboard`).
