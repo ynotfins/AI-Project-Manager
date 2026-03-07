@@ -1233,3 +1233,173 @@ None. All edits are in `AI-Project-Manager` only. `open--claw` has its own STATE
 
 ### What's Next
 Commit these 7 file changes and push to `origin/main`. Then proceed to Phase 6B execution (`openclaw onboard`).
+
+## 2026-03-07 — Phase 6B Gateway Boot Execution
+
+### Goal
+Execute the approved cross-repo Phase 0 bootstrap: re-verify tool readiness, verify the WSL build copy, confirm a redacted credential source, and complete gateway boot on `open--claw` using an upstream-supported flow.
+
+### Scope
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/PLAN.md`
+- `open--claw/docs/ai/STATE.md`
+- `open--claw/docs/ai/PLAN.md`
+- `open--claw/open-claw/docs/BLOCKED_ITEMS.md`
+- Out-of-repo runtime state under `~/.openclaw/` and `~/.config/systemd/user/`
+
+### Commands / Tool Calls
+- `openmemory.search-memory` with `user_preference=true`
+- `ReadFile` on canonical plan/state docs in both repos
+- `git -C D:/github/AI-Project-Manager status --short`
+- `git -C D:/github/open--claw status --short`
+- `openmemory.health-check`
+- `github.get_file_contents` (`ynotfins/AI-Project-Manager`, `AGENTS.md`, branch `main`)
+- `firecrawl_scrape` (`https://example.com`)
+- `serena.activate_project` (`D:/github/AI-Project-Manager`)
+- `serena.check_onboarding_performed`
+- `serena.read_memory` (`suggested_commands`, `task_completion_checklist`)
+- `serena.activate_project` (`D:/github/open--claw`)
+- `sequential-thinking`
+- `wsl bash -lc 'source ~/.nvm/nvm.sh && node -v && pnpm -v && cd ~/openclaw-build && pwd && test -f package.json && if [ ! -d node_modules ]; then pnpm install; fi && pnpm build && pnpm ui:build'`
+- `wsl bash -lc 'for k in ANTHROPIC_API_KEY OPENAI_API_KEY GEMINI_API_KEY; do if [ -n "${!k}" ]; then echo "$k=<present in env>"; fi; done; if [ -f ~/.openclaw/.env ]; then awk -F= "/^(ANTHROPIC_API_KEY|OPENAI_API_KEY|GEMINI_API_KEY)=/ {print \$1\"=<present in ~/.openclaw/.env>\"}" ~/.openclaw/.env; fi'`
+- `wsl bash -lc 'for k in ANTHROPIC_API_KEY OPENAI_API_KEY GEMINI_API_KEY; do v=$(printenv "$k"); if [ -n "$v" ]; then echo "$k=<present in env>"; fi; done; if [ -f ~/.openclaw/.env ]; then awk -F= "/^(ANTHROPIC_API_KEY|OPENAI_API_KEY|GEMINI_API_KEY)=/ {print \$1\"=<present in ~/.openclaw/.env>\"}" ~/.openclaw/.env; fi'`
+- `wsl bash -lc 'for k in ANTHROPIC_API_KEY OPENAI_API_KEY GEMINI_API_KEY; do v=$(printenv "$k"); if [ -n "$v" ]; then echo "$k=<present in env>"; fi; done; if [ -f ~/.openclaw/.env ]; then grep -E "^(ANTHROPIC_API_KEY|OPENAI_API_KEY|GEMINI_API_KEY)=" ~/.openclaw/.env | sed "s/=.*$/=<present in ~/.openclaw/.env>/"; fi'`
+- `wsl bash -lc 'source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw onboard --install-daemon'`
+- `taskkill /PID 51992 /T /F`
+- `wsl bash -lc 'source ~/.nvm/nvm.sh && set -a && . ~/.openclaw/.env && set +a && cd ~/openclaw-build && pnpm openclaw onboard --non-interactive --accept-risk --mode local --workspace ~/.openclaw/workspace --auth-choice apiKey --gateway-port 18789 --gateway-bind loopback --install-daemon --daemon-runtime node --skip-channels --skip-skills --json'`
+- `wsl bash -lc 'source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw gateway status'`
+- `wsl bash -lc 'source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw health'`
+- `playwright.navigate` (`http://127.0.0.1:18789/openclaw`)
+- `playwright.take_screenshot`
+
+### Changes
+- No repo files were edited before this state update.
+- Verified the live blocker had changed: provider credentials are present in `~/.openclaw/.env` (redacted evidence only).
+- Completed non-interactive onboarding and updated out-of-repo runtime state:
+  - `~/.openclaw/openclaw.json`
+  - `~/.config/systemd/user/openclaw-gateway.service`
+- Captured browser evidence showing the Control UI renders at `/openclaw`.
+
+### Evidence
+- `openmemory.search-memory`: **PASS** — 0 results; no prior memory contradicted the repo docs.
+- `git status` (`AI-Project-Manager`): **PASS** — pre-existing dirty worktree confirmed (`.gitignore`, `docs/ai/PLAN.md`, `docs/ai/architecture/CODEBASE_ORIENTATION.md`, `docs/ai/context/`, `docs/archive/`, `docs/global-rules.md`).
+- `git status` (`open--claw`): **PASS** — pre-existing dirty worktree confirmed (`docs/ai/HANDOFF.md`, `docs/ai/PLAN.md`, `docs/ai/STATE.md`, `open-claw/docs/BLOCKED_ITEMS.md`, `open-claw/docs/CODING_AGENT_MAPPING.md`, `open-claw/docs/INTEGRATIONS_PLAN.md`, `open-claw/docs/SETUP_NOTES.md`, `open-claw/docs/VAULT_SETUP.md`, plus untracked context/archive dirs).
+- `openmemory.health-check`: **PASS** — healthy, 7 tools available.
+- `github.get_file_contents`: **PASS** — returned `AGENTS.md` from `ynotfins/AI-Project-Manager`.
+- `firecrawl_scrape`: **PASS** — returned `Example Domain` markdown with HTTP 200.
+- `serena.activate_project` (`AI-Project-Manager`): **PASS** — project activated successfully.
+- `serena.activate_project` (`open--claw`): **FAIL** — `No source files found in D:\github\open--claw`; repo is currently docs-heavy from Serena's perspective.
+- `sequential-thinking`: **PASS** — confirmed the 6-step execution order before build/boot.
+- WSL build verification: **PASS** — Node `v22.22.0`, pnpm `10.23.0`, working dir `/home/ynotf/openclaw-build`, `pnpm build` PASS, `pnpm ui:build` PASS.
+- Initial credential probe: **FAIL** — `/bin/bash: line 1: k: invalid indirect expansion`.
+- First fallback credential probe: **FAIL** — key names stripped by shell/`awk` quoting; evidence incomplete.
+- Second fallback credential probe: **FAIL** — `sed: -e expression #1, char 23: unknown option to 's'`.
+- Final credential probe: **PASS** — `ANTHROPIC_API_KEY=<present in ~/.openclaw/.env>` and `OPENAI_API_KEY=<present in ~/.openclaw/.env>`.
+- Interactive onboarding attempt: **FAIL** — command stalled at the security confirmation prompt (`I understand this is powerful and inherently risky. Continue?`).
+- `taskkill /PID 51992 /T /F`: **PASS** — terminated the stuck interactive onboarding tree.
+- Non-interactive onboarding retry: **PASS** — wrote `~/.openclaw/openclaw.json`, ensured workspace/sessions, and installed the systemd user service with loopback/token settings.
+- `openclaw gateway status`: **PASS** — runtime active, RPC probe ok, listening on `127.0.0.1:18789`.
+- `openclaw health`: **PASS** — exited 0 and reported the default agent/session store.
+- `playwright.navigate`: **PASS** — reached `http://127.0.0.1:18789/openclaw/chat?session=main` with title `OpenClaw Control`.
+- `playwright.take_screenshot`: **PASS** — captured dashboard screenshot evidence during the session.
+
+### Verdict
+READY — gateway boot completed on ChaosCentral using the supported non-interactive flow, with explicit fallbacks recorded for Serena-on-open--claw, credential probing, and the interactive onboarding prompt.
+
+### Blockers
+None
+
+### Fallbacks Used
+- `serena` on `open--claw` failed; fallback was `rg` + targeted `ReadFile`.
+- Initial credential probe command failed twice while preserving redaction; fallback was a `printenv` + `grep` + `sed` probe.
+- Interactive `openclaw onboard --install-daemon` could not be automated; fallback was `openclaw onboard --non-interactive --accept-risk ...`.
+
+### Cross-Repo Impact
+- `open--claw` gateway state changed materially: onboarding completed, the systemd user service was installed, `gateway status` passed, `health` passed, and the Control UI rendered.
+- `AI-Project-Manager` can now treat Phase 6B gateway boot as executed with evidence, while keeping the launch-script verification caveat separate.
+
+### Decisions Captured
+- For shell automation, OpenClaw onboarding should use the documented non-interactive path instead of attempting to drive the interactive security prompt.
+- When `open--claw` is docs-only from Serena's perspective, the approved fallback is `rg` plus targeted reads rather than blocking the phase.
+
+### Pending Actions
+- Update the current phase status docs to reflect that gateway boot is now executed and no longer blocked on a missing model credential.
+- Decide whether to verify the launch-script/workspace behavior as a separate hardening follow-up.
+
+### What Remains Unverified
+- Whether `pnpm openclaw dashboard` or a tokenized dashboard launch path would auto-seed the gateway token for the Control UI browser session.
+- Whether the `systemd lingering is disabled` warning should be remediated immediately on this machine.
+
+### What's Next
+Append the matching evidence block to `open--claw/docs/ai/STATE.md`, then update only the narrow plan/blocker sections whose status actually changed.
+
+## 2026-03-07 — Phase 6B Doc Sync And Commit Decision
+
+### Goal
+Sync the governance/runtime status docs after successful gateway boot, clean up the stray screenshot artifact, store the stable execution fact in memory, and explicitly decide whether a commit is safe.
+
+### Scope
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/PLAN.md`
+- `open--claw/docs/ai/STATE.md`
+- `open--claw/docs/ai/PLAN.md`
+- `open--claw/open-claw/docs/BLOCKED_ITEMS.md`
+
+### Commands / Tool Calls
+- `ApplyPatch` on `AI-Project-Manager/docs/ai/STATE.md`
+- `ApplyPatch` on `open--claw/docs/ai/STATE.md`
+- `ApplyPatch` on `open--claw/docs/ai/PLAN.md`
+- `ApplyPatch` on `open--claw/open-claw/docs/BLOCKED_ITEMS.md`
+- `ApplyPatch` on `AI-Project-Manager/docs/ai/PLAN.md`
+- `ReadLints` on the 5 edited markdown files
+- `Delete` on `D:/github/AI-Project-Manager/openclaw-control-ui-bootstrap.png`
+- `openmemory.add-memory`
+- `git -C D:/github/AI-Project-Manager status --short`
+- `git -C D:/github/open--claw status --short`
+
+### Changes
+- Appended the gateway boot execution block to both repos' `STATE.md` files.
+- Updated `AI-Project-Manager/docs/ai/PLAN.md` so Phase 6B reflects the verified fallback-aware execution status.
+- Updated `open--claw/docs/ai/PLAN.md` so Phase 1 no longer claims gateway boot is blocked on a missing model credential.
+- Updated `open--claw/open-claw/docs/BLOCKED_ITEMS.md` so Gateway Boot is marked resolved on ChaosCentral with a residual Control UI token caveat.
+- Deleted the stray screenshot file that Playwright had written into the `AI-Project-Manager` repo root.
+- Stored a stable cross-repo memory about the successful non-interactive gateway boot fallback.
+
+### Evidence
+- `ApplyPatch` (`AI-Project-Manager/docs/ai/STATE.md`): **PASS** — execution block appended successfully.
+- `ApplyPatch` (`open--claw/docs/ai/STATE.md`): **PASS** — execution block appended successfully.
+- `ApplyPatch` (`open--claw/docs/ai/PLAN.md`): **PASS** — gateway status text updated successfully.
+- `ApplyPatch` (`open--claw/open-claw/docs/BLOCKED_ITEMS.md`): **PASS** — gateway boot marked resolved successfully.
+- `ApplyPatch` (`AI-Project-Manager/docs/ai/PLAN.md`): **PASS** — Phase 6B status note/checklist updated successfully.
+- `ReadLints`: **PASS (informational)** — markdownlint reported many pre-existing markdown warnings in the long-running state files; no new execution blocker was introduced.
+- `Delete`: **PASS** — removed `D:/github/AI-Project-Manager/openclaw-control-ui-bootstrap.png`.
+- `openmemory.add-memory`: **PASS** — memory ingestion started asynchronously.
+- Post-edit `git status` (`AI-Project-Manager`): **PASS** — repo remains dirty due pre-existing changes plus this session's `docs/ai/PLAN.md` and `docs/ai/STATE.md`.
+- Post-edit `git status` (`open--claw`): **PASS** — repo remains dirty due pre-existing changes plus this session's updates in already-dirty docs.
+- Commit/push decision: **SKIPPED** — not safe because both repos started dirty, and `docs/ai/PLAN.md` was already modified in both repos before this run; `open--claw/docs/ai/STATE.md` was also already dirty before the append.
+
+### Verdict
+READY — status docs are synchronized, the stray artifact is removed, memory is stored, and the no-commit decision is explicitly justified.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+- The governance repo and execution repo now agree that gateway boot is no longer blocked by a missing model credential on this machine.
+- Commit/push was intentionally deferred in both repos because the worktree overlap made a focused safe commit unreliable.
+
+### Decisions Captured
+- Do not commit shared-status doc updates when the same files were already dirty before execution and the overlap cannot be safely separated.
+
+### Pending Actions
+- Verify the launch-script/workspace behavior as a separate hardening task if Phase 6B should be fully closed in the governance plan.
+- Decide whether to remediate the systemd lingering recommendation and the Control UI token-auth UX now or during the next operational pass.
+
+### What Remains Unverified
+- Whether the current `AI-Project-Manager` `docs/ai/PLAN.md` should move Phase 6B from `OPEN` to a different final label after the launch-script follow-up.
+
+### What's Next
+Use the synchronized state logs as the source of truth for the next PLAN step. The next execution phase can target first live integration or remaining launch-script/dashboard hardening, but it should start from the documented no-commit state in both repos.

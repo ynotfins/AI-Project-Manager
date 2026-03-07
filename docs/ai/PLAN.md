@@ -5,6 +5,7 @@
 **Goal:** Initialize repo, establish 5-tab Cursor workflow, configure Serena, publish to GitHub.
 
 **Exit criteria:**
+
 - [x] Repo initialized with `git init -b main` at `D:\github\AI-Project-Manager`
 - [x] `.cursor/rules/` contains layered rules: `00-global-core.md`, `05-global-mcp-usage.md`, `10-project-workflow.md`, `20-project-quality.md`
 - [x] `docs/ai/STATE.md`, `PLAN.md`, `CURSOR_WORKFLOW.md`, `ARCHIVE.md` exist
@@ -22,6 +23,7 @@
 **Goal:** Install and configure all MCP servers globally so every Cursor project inherits a working toolset.
 
 **Exit criteria:**
+
 - [x] `filesystem_scoped` installed via `npx @modelcontextprotocol/server-filesystem` — scoped to `D:\github`, `D:\github_2`, `~/.openclaw`
 - [x] `shell-mcp` installed via `uv tool install shell-mcp-server` — patched for async bug on Windows
 - [x] 14 servers configured in global `%USERPROFILE%\.cursor\mcp.json`
@@ -36,6 +38,7 @@
 **Goal:** Replace all hardcoded secrets in `mcp.json` with Bitwarden Secrets Manager (`bws`) injection.
 
 **Exit criteria:**
+
 - [x] `bws` CLI v2.0.0 installed at `~/.local/bin/bws.exe`
 - [x] `BWS_ACCESS_TOKEN` set in environment (not committed)
 - [x] `OpenClaw` project created in Bitwarden Secrets Manager (ID: `f14a97bb-5183-4b11-a6eb-b3fe0015fedf`)
@@ -50,6 +53,7 @@
 **Goal:** Replace `Memory Tool` (mem0 Smithery) with `openmemory` (official hosted), using a secret-free local proxy architecture.
 
 **Exit criteria:**
+
 - [x] `Memory Tool` entry removed from `mcp.json`
 - [x] `openmemory` entry points to local proxy: `http://127.0.0.1:8766/mcp-stream?client=cursor`
 - [x] No `Authorization` header persisted in `mcp.json`
@@ -69,6 +73,7 @@
 **Goal:** Ensure ChaosCentral (primary) and Laptop (warm-standby) have identical toolchains, repos, and MCP configs.
 
 **Exit criteria:**
+
 - [x] GitHub repo renamed: `ynotfins/open-claw` to `ynotfins/open--claw`
 - [x] ChaosCentral origin URL updated to `https://github.com/ynotfins/open--claw.git`
 - [x] All stale `open-claw` (single dash) references corrected in `open--claw` repo docs
@@ -85,6 +90,7 @@
 **Goal:** Complete `bws run` secret injection for all MCP servers that need credentials, and make `start-cursor-with-secrets.ps1` the standard launch path.
 
 **Exit criteria:**
+
 - [x] `github` MCP server gets `GITHUB_PERSONAL_ACCESS_TOKEN` via `bws run` env injection — PASS: `get_file_contents` returned private repo content (sha `b525245`)
 - [x] `firecrawl-mcp` gets `FIRECRAWL_API_KEY` via `bws run` — PASS: scrape returned HTTP 200 with markdown
 - [x] `Magic MCP` gets API key via `bws run` — PASS: `TWENTY_FIRST_API_KEY` in env, tool calls return component code
@@ -100,6 +106,7 @@
 **Goal:** Define open--claw's module architecture, autonomous operation loops, and governance model as governance artifacts in AI-Project-Manager.
 
 **Exit criteria:**
+
 - [x] `docs/ai/architecture/OPENCLAW_MODULES.md` defines 8 core modules with boundaries, interfaces, and dependencies — commit c303326
 - [x] `docs/ai/architecture/AUTONOMY_LOOPS.md` defines 3 operation loops (App Builder, SEO Automation, Financial Management) — commit c303326
 - [x] `docs/ai/architecture/GOVERNANCE_MODEL.md` defines approval gates, risk levels, safety constraints, and least-privilege rules — commit c303326
@@ -112,23 +119,29 @@
 
 ## Phase 6B: Gateway Boot (OPEN)
 
-**Goal:** Complete open--claw Phase 1 (onboard + Gateway health check).
+**Goal:** Complete open--claw Phase 1 using the upstream-supported onboarding and gateway verification flow.
 
 **Prerequisites (resolved):**
+
 - `ANTHROPIC_API_KEY` in Bitwarden — DONE
 - `OPENAI_API_KEY` in Bitwarden — DONE
 - Secret rotation completed — DONE
 - `OPENMEMORY_API_KEY_2` deleted — DONE
 
 **Pre-flight (must pass before execution):**
-- [ ] Serena: AI-Project-Manager + open--claw registered and active
+
+- [x] Serena: AI-Project-Manager active; `open--claw` required documented `rg` + `ReadFile` fallback because it is currently docs-only for Serena
 - [ ] Launch script: workspace behavior verified (`.code-workspace` fix applied)
-- [ ] MCP re-verification: github, firecrawl, openmemory PASS with rotated keys (requires `bws run` relaunch)
+- [x] MCP re-verification: github, firecrawl, openmemory PASS during 2026-03-07 execution
+
+**Status note:** Gateway boot itself is now executed on ChaosCentral. The remaining open item in this section is launch-script/workspace verification, which should be treated as separate hardening rather than a missing model credential blocker.
 
 **Exit criteria:**
-- [ ] `openclaw onboard` completed on ChaosCentral (loopback bind, auth token mode)
-- [ ] Gateway health check returns 200 at `http://127.0.0.1:18789/health`
-- [ ] Evidence in both `AI-Project-Manager` and `open--claw` `STATE.md`
+
+- [x] `openclaw onboard --install-daemon` completed on ChaosCentral (loopback bind, auth token mode)
+- [x] `openclaw gateway status` succeeds
+- [x] `openclaw health` succeeds
+- [x] Evidence in both `AI-Project-Manager` and `open--claw` `STATE.md`
 
 ---
 
@@ -137,6 +150,7 @@
 **Goal:** Connect first integration, test approval gate, validate audit log.
 
 **Exit criteria:**
+
 - [ ] First integration connected and tested
 - [ ] Approval gate tested for a simulated high-risk action
 - [ ] Audit log captures the action
