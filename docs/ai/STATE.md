@@ -1403,3 +1403,76 @@ None
 
 ### What's Next
 Use the synchronized state logs as the source of truth for the next PLAN step. The next execution phase can target first live integration or remaining launch-script/dashboard hardening, but it should start from the documented no-commit state in both repos.
+
+---
+
+## 2026-03-07 — Pre-restart Checkpoint
+
+### Goal
+Commit all pending session work and record machine state before PC restart.
+
+### Scope
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/PLAN.md`
+- `open--claw/docs/ai/STATE.md`
+- `open--claw/docs/ai/PLAN.md`
+- `open--claw/docs/ai/HANDOFF.md`
+- `open--claw/open-claw/docs/BLOCKED_ITEMS.md`
+- `open--claw/open-claw/docs/CODING_AGENT_MAPPING.md`
+- `open--claw/open-claw/docs/INTEGRATIONS_PLAN.md`
+- `open--claw/open-claw/docs/SETUP_NOTES.md`
+- `open--claw/open-claw/docs/VAULT_SETUP.md`
+
+### Commands / Tool Calls
+- `git status --short --branch` (both repos)
+- `git diff --stat` (`open--claw`)
+- `git add` + `git commit` + `git push` (both repos)
+
+### Changes
+- `AI-Project-Manager` committed `docs/ai/STATE.md` + `docs/ai/PLAN.md` — Phase 6B gateway boot evidence + enforced template STATE entry.
+- `open--claw` committed 8 docs files — Phase 6B gateway boot sync, upstream alignment, BLOCKED_ITEMS resolution, STATE evidence.
+
+### Evidence
+- `AI-Project-Manager` commit `3bcf433` pushed to `origin/main` — **PASS**
+- `open--claw` commit `58c5dad` pushed to `origin/master` — **PASS**
+
+### Verdict
+READY — both repos fully synced to GitHub. Safe to restart.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+Both repos committed and pushed. No uncommitted session work remains (excluding intentionally excluded items below).
+
+### Decisions Captured
+None new.
+
+### Pending Actions
+None — both repos clean on all session-generated files.
+
+### What Remains Unverified
+N/A
+
+### Excluded from commit (intentional)
+| Repo | File/Dir | Reason |
+|------|----------|--------|
+| AI-Project-Manager | `.gitignore` | Pending separate review |
+| AI-Project-Manager | `docs/ai/architecture/CODEBASE_ORIENTATION.md` | Untracked; not reviewed for inclusion |
+| AI-Project-Manager | `docs/ai/context/` | Non-canonical artifact storage; intentionally untracked |
+| AI-Project-Manager | `docs/archive/` | Not yet reviewed |
+| AI-Project-Manager | `docs/global-rules.md` | Not yet reviewed |
+| open--claw | `docs/ai/context/` | Non-canonical artifact storage; intentionally untracked |
+| open--claw | `open-claw/docs/archive/` | Not yet reviewed |
+
+### Post-restart checklist
+1. Launch Cursor via `start-cursor-with-secrets.ps1` (injects BWS secrets + starts openmemory proxy)
+2. Verify MCP servers are green (openmemory, github, firecrawl, Context7)
+3. Check gateway: `wsl bash -lc 'source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw gateway status'`
+4. Decide next phase: first live integration (Phase 6C) or launch-script/dashboard hardening follow-up
+
+### What's Next
+PC restart. After reboot, follow post-restart checklist above.
