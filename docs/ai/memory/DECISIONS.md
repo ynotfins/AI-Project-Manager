@@ -73,3 +73,39 @@ executor. All High-risk actions require explicit human approval; Medium actions 
 **Rationale:** 8 modules match OpenClaw's documented capability layers and align with the
 three autonomy loops (App Builder, SEO Automation, Financial Management). Each module has a
 clear risk level enabling precise governance gate placement.
+
+---
+
+## 2026-03-08 — Canonical runtime sources (Phase 6B.2)
+
+**Context:** Governance audit identified that no rule declared official OpenClaw docs as the
+canonical source for runtime/setup/hosting behavior. Local wrapper docs could drift without
+a clear authority hierarchy. Additionally, the STATE template lacked HH:MM timestamps, making
+same-day ordering ambiguous with 5+ blocks on a single date.
+
+**Decision:**
+- Official OpenClaw docs (https://docs.openclaw.ai/) and upstream repo
+  (https://github.com/openclaw/openclaw) are canonical for runtime behavior, setup, hosting,
+  and operator workflows.
+- Local wrapper docs in `open--claw/open-claw/docs/` are subordinate and must not contradict
+  official sources.
+- AI-Project-Manager owns governance, workflow, and memory rules.
+- HH:MM added to STATE template header for same-day ordering and cross-repo correlation.
+- ClawHub skills: evaluate 5 candidates (gmail, gcal-pro, seo-optimizer, email-to-calendar,
+  invoice-generator) during Phase 6C with mandatory code review before install (ClawHub
+  security incident documented).
+- Lobster: plan for Phase 7+ after first live integration proves stable.
+- openclaw-studio: deferred indefinitely (community project; built-in Control UI is sufficient).
+- Docker: deferred for local dev (official guidance confirms optional; plan for production later
+  using official Hetzner/Oracle Cloud/Ansible guides).
+
+**Alternatives considered:**
+- Adopt cursor_chat20 15-section template (rejected: current 13 sections are sufficient per
+  repo-truth audit)
+- Install ClawHub skills now (rejected: no live integrations yet; security review required)
+- Adopt Lobster now (rejected: early-stage, no workflows to run through it yet)
+- Adopt openclaw-studio (rejected: overlaps with built-in Control UI, single maintainer)
+
+**Rationale:** Minimum viable governance change. Official docs are comprehensive (2700+ pages)
+and actively maintained. Establishing canonical-source hierarchy before Phase 6C prevents
+wrapper drift during integration work. HH:MM is zero-cost prevention of ordering ambiguity.

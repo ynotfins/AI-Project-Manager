@@ -35,7 +35,7 @@ DEBUG must produce:
 Every AGENT execution block appended to `docs/ai/STATE.md` must use this exact structure. Omitting any section is not permitted; write `None` or `N/A` if there is nothing to report.
 
 ```markdown
-## <YYYY-MM-DD> — <task name>
+## <YYYY-MM-DD HH:MM> — <task name>
 
 ### Goal
 One or two sentences stating what this block aimed to achieve.
