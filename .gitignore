@@ -38,3 +38,7 @@ Thumbs.db
 
 # Serena LSP cache
 .serena/
+
+# OpenMemory - IDE/Assistant specific rules
+.cursor\rules\openmemory.mdc
+AGENTS.md
