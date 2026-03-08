@@ -2081,3 +2081,85 @@ None — Phase 6B.2 is complete including supplemental rules.
 
 ### What's Next
 Phase 6C: First live integration (requires Gateway running with ANTHROPIC_API_KEY).
+
+---
+
+## 2026-03-08 19:33 — Add PLAN repo-truth-first source priority rule
+
+### Goal
+Formalize that PLAN must reconstruct system state from repository-tracked sources before consulting artifacts or chat history, with an explicit priority order and a conflict-resolution rule.
+
+### Scope
+- Files edited: `.cursor/rules/10-project-workflow.md`, `AGENTS.md`, `docs/ai/STATE.md`
+- Repo: AI-Project-Manager only
+
+### Commands / Tool Calls
+- `Read .cursor/rules/10-project-workflow.md` — identified insertion point above "docs/ai/context/" section (line 80)
+- `Read AGENTS.md` — identified insertion point in "Context source priority" section (line 19)
+- `StrReplace .cursor/rules/10-project-workflow.md` — inserted new "PLAN source-of-truth priority" section with 6-item priority list and conflict-resolution rule
+- `StrReplace AGENTS.md` — added repo-truth-first principle, cross-reference to `10-project-workflow.md § PLAN source-of-truth priority`, added `HANDOFF.md` as item 4, renumbered `docs/ai/context/` to 5 and chat history to 6
+- `Grep "sk-|ghp_|gho_|AKIA|AIza|xoxb-" *.md` — secret scan across all `.md` files
+- `Glob *.md in .cursor/rules/` — duplicate filename check
+- `Test-Path` for all 6 files referenced in the priority list
+
+### Changes
+**`.cursor/rules/10-project-workflow.md`** — new section inserted between the STATE template block and the `docs/ai/context/` section:
+
+```
+## PLAN source-of-truth priority
+
+PLAN must reconstruct current system state from repository-tracked sources
+before consulting artifacts or chat history.
+
+Priority order:
+1. docs/ai/STATE.md
+2. docs/ai/memory/DECISIONS.md
+3. docs/ai/memory/PATTERNS.md
+4. docs/ai/HANDOFF.md
+5. docs/ai/context/
+6. Chat history / pasted artifacts (last resort)
+
+If repository-tracked sources and chat context disagree, repository-tracked
+sources win unless current execution evidence proves otherwise.
+```
+
+**`AGENTS.md`** — "Context source priority" section updated:
+- Added introductory paragraph stating the repo-truth-first principle with cross-reference to `10-project-workflow.md § PLAN source-of-truth priority`
+- Added `docs/ai/HANDOFF.md` as item 4
+- Renumbered `docs/ai/context/` to 5, chat history to 6
+
+### Evidence
+- Secret scan (all `.md` files): **PASS** — all matches are false positives (grep patterns in documentation, placeholder examples, partial string matches in Mermaid diagrams)
+- Duplicate filename check (`.cursor/rules/`): **PASS** — 4 distinct files
+- All referenced paths exist (`STATE.md`, `DECISIONS.md`, `PATTERNS.md`, `HANDOFF.md`, `AGENTS.md`, `10-project-workflow.md`): **PASS**
+- Rule placement preserves existing file structure (no sections moved or renamed): **PASS**
+- `AGENTS.md` cross-references `10-project-workflow.md` instead of duplicating full rule text: **PASS**
+
+### Verdict
+READY — rule added surgically with no structural changes.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+AI-Project-Manager only. open--claw was not modified. The rule governs PLAN behavior within AI-Project-Manager; open--claw inherits governance direction via PLAN prompts, not by mirroring this rule.
+
+### Decisions Captured
+None — this formalizes an existing implicit practice into an explicit rule.
+
+### Pending Actions
+None
+
+### What Remains Unverified
+
+**Machine-local items:**
+None — this is a docs/rules-only change.
+
+**Repo-tracked items:**
+- `docs/ai/HANDOFF.md` is currently untracked (shown in `git status` as `??`). The priority list references it. It will become effective once tracked/committed in a future phase.
+
+### What's Next
+Phase 6C: First live integration (requires Gateway running with ANTHROPIC_API_KEY).

@@ -77,6 +77,20 @@ Anything that was assumed but not confirmed by evidence.
 The immediate next action for AGENT or PLAN.
 ```
 
+## PLAN source-of-truth priority
+
+PLAN must reconstruct current system state from repository-tracked sources before consulting artifacts or chat history.
+
+Priority order:
+1. `docs/ai/STATE.md`
+2. `docs/ai/memory/DECISIONS.md`
+3. `docs/ai/memory/PATTERNS.md`
+4. `docs/ai/HANDOFF.md`
+5. `docs/ai/context/`
+6. Chat history / pasted artifacts (last resort)
+
+If repository-tracked sources and chat context disagree, repository-tracked sources win unless current execution evidence proves otherwise.
+
 ## docs/ai/context/ — non-canonical artifact storage
 
 `docs/ai/context/` stores transcript-derived artifacts, bulk session dumps, and ephemeral context files. It is **informative only** — never authoritative. PLAN should consult it only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md` are insufficient. Do not promote content from `docs/ai/context/` into rules or architecture docs without explicit review.

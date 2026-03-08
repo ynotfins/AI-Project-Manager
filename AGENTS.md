@@ -18,11 +18,14 @@ This repo uses a five-tab Cursor workflow: PLAN / AGENT / DEBUG / ASK / ARCHIVE.
 
 ## Context source priority (read in this order)
 
+PLAN must reconstruct current system state from repo-tracked sources before consulting artifacts or chat history. If repo sources and chat context disagree, repo sources win unless current execution evidence proves otherwise. Full rule: `10-project-workflow.md § PLAN source-of-truth priority`.
+
 1. `docs/ai/STATE.md` — primary operational source of truth
 2. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
 3. `docs/ai/memory/PATTERNS.md` — reusable patterns
-4. `docs/ai/context/` — transcript-derived artifacts and session dumps
-5. `@Past Chats` — **last resort only**; use only if the above sources are insufficient
+4. `docs/ai/HANDOFF.md` — session handoff context
+5. `docs/ai/context/` — transcript-derived artifacts and session dumps
+6. Chat history / `@Past Chats` — **last resort only**; use only if the above sources are insufficient
 
 ## MCP policy
 
