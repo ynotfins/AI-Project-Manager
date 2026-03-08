@@ -1873,3 +1873,134 @@ None
 
 ### What's Next
 - Proceed to Phase 6C or next operational step per `docs/ai/PLAN.md`.
+
+---
+
+## 2026-03-08 — Fix nvm not auto-loading after reboot (hardcoded PATH clobber)
+
+### Goal
+Make `node` and `pnpm` available automatically in fresh WSL interactive shells without manual `source ~/.nvm/nvm.sh`. Root-cause and permanently fix.
+
+### Scope
+- File edited: `~/.bashrc` (WSL home, machine-local, not repo-tracked)
+- Files appended: `D:/github/AI-Project-Manager/docs/ai/STATE.md`, `D:/github/open--claw/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+- `git -C D:/github/AI-Project-Manager status --short` — pre-state
+- `git -C D:/github/open--claw status --short` — pre-state
+- `wsl bash --noprofile --norc -c "sed -n '118,140p' /home/ynotf/.bashrc"` — inspect nvm/fnm region
+- `wsl bash --noprofile --norc -c "bash -n /home/ynotf/.bashrc"` — syntax check (SYNTAX_OK)
+- `wsl bash --noprofile --norc -c "grep -n 'export PATH=' /home/ynotf/.bashrc"` — find all PATH exports
+- `wsl bash --noprofile --norc -c "tail -8 /home/ynotf/.bashrc"` — confirm hardcoded PATH is last line
+- `wsl bash --noprofile --norc -c "cat /home/ynotf/.profile"` — confirm .profile sources .bashrc
+- `wsl bash --noprofile --norc -c "test -f /home/ynotf/.bash_profile ..."` — confirm absent (expected)
+- `wsl bash --noprofile --norc -c "cp /home/ynotf/.bashrc /home/ynotf/.bashrc.bak.nvm_path_fix"` — backup
+- `wsl bash --noprofile --norc -c "sed -i '133d' /home/ynotf/.bashrc"` — delete hardcoded PATH line
+- `wsl bash --noprofile --norc -c "tail -8 /home/ynotf/.bashrc"` — verify file ends with nvm init
+- `wsl bash --noprofile --norc -c "bash -n /home/ynotf/.bashrc"` — syntax check post-fix
+- `wsl bash -ic "command -v nvm && node -v && pnpm -v"` — interactive shell auto-load test
+- `wsl bash -ic "cd ~/openclaw-build && pnpm openclaw gateway status"` — gateway
+- `wsl bash -ic "cd ~/openclaw-build && pnpm openclaw health"` — health
+- `wsl bash -ic "cd ~/openclaw-build && pnpm openclaw config get gateway.auth.token"` — token
+- `wsl bash -ic "cd ~/openclaw-build && pnpm openclaw dashboard --no-open"` — tokenized URL
+
+### Changes
+- `~/.bashrc` line 133 deleted. This was a hardcoded `export PATH="..."` containing a frozen snapshot of the Windows+WSL PATH. It appeared **after** the nvm init (lines 130-132) and overwrote PATH on every shell startup, wiping out the nvm node bin directory that `nvm.sh` had just added.
+
+### Evidence
+- Root cause: line 133 was `export PATH="/home/ynotf/.local/bin:/usr/local/sbin:...:/mnt/c/Users/ynotf/AppData/Local/Microsoft/WindowsApps"` — a ~2KB hardcoded PATH that did not include nvm's node bin. It appeared after `[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"` (line 131), so it clobbered the nvm-modified PATH every time.
+- Backup created at `~/.bashrc.bak.nvm_path_fix`: **PASS**
+- `sed -i '133d'` — line removed: **PASS**
+- `bash -n` post-fix: `SYNTAX_OK`: **PASS**
+- `wsl bash -ic "command -v nvm && node -v && pnpm -v"`: `nvm`, `v22.22.0`, `10.23.0`: **PASS**
+- `wsl bash -lc "command -v nvm && node -v && pnpm -v"`: empty output, exit 1: **EXPECTED** — `.bashrc` has `case $- in *i*) ;; *) return;; esac` early return for non-interactive shells; nvm is in `.bashrc` so it only loads for interactive shells. This is standard Ubuntu behavior.
+- `pnpm openclaw config get gateway.auth.token`: token present (`<REDACTED>`): **PASS**
+- `pnpm openclaw dashboard --no-open`: `Dashboard URL: http://127.0.0.1:18789/#token=<REDACTED>`: **PASS**
+- `pnpm openclaw gateway status`: `Runtime: running (pid 366)`, `RPC probe: ok`, `Listening: 127.0.0.1:18789`: **PASS**
+- `pnpm openclaw health`: `Agents: main (default)`, heartbeat `30m`: **PASS**
+
+### Verdict
+READY — nvm auto-loads in interactive shells, node/pnpm available without manual recovery, gateway healthy.
+
+### Blockers
+None
+
+### Fallbacks Used
+None — all commands succeeded directly.
+
+### Cross-Repo Impact
+- `open--claw/docs/ai/STATE.md` receives a mirrored execution block.
+
+### Decisions Captured
+- The hardcoded `export PATH=...` at EOF of `.bashrc` was a frozen snapshot that clobbered nvm's PATH additions. Removing it is safe because the system PATH is already inherited from WSL init and `.profile`.
+- `bash -lc` (non-interactive login shell) not loading nvm is expected Ubuntu default behavior, not a bug. nvm is in `.bashrc` behind an interactive-only guard.
+- Previous backups preserved at `~/.bashrc.bak.pre_fi_fix` and `~/.bashrc.bak.nvm_path_fix`.
+
+### Pending Actions
+- Optional: `openclaw doctor --repair` for nvm-vs-system-Node service warning.
+
+### What Remains Unverified
+- Whether a brand-new WSL terminal window (opened from Windows Terminal) auto-loads nvm without any manual step. The `bash -ic` test simulates this, but a real window test was not performed.
+
+### What's Next
+- Proceed to Phase 6C or next operational step per `docs/ai/PLAN.md`.
+
+---
+
+## 2026-03-08 18:38 — Phase 6B.2: Canonical Source Alignment + HH:MM
+
+### Goal
+Add HH:MM timestamps to STATE template, establish canonical runtime sources rule, fix Control UI URL drift, and record governance decisions from the comprehensive audit.
+
+### Scope
+Files touched: AI-PM `.cursor/rules/10-project-workflow.md`, AI-PM `docs/ai/memory/DECISIONS.md`, open--claw `.cursor/rules/10-project-workflow.md`, open--claw `open-claw/docs/SETUP_NOTES.md`, open--claw `docs/ai/PLAN.md`, both `docs/ai/STATE.md`. Both repos affected.
+
+### Commands / Tool Calls
+- `StrReplace` (6 edits across 5 files)
+- `git ls-files | Sort-Object | Get-Unique` (case-duplicate scan, both repos)
+- `Grep` for secret patterns (both repos)
+- `git add`, `git commit`, `git push` (both repos)
+
+### Changes
+1. STATE template header changed from `<YYYY-MM-DD>` to `<YYYY-MM-DD HH:MM>` in both repos' `10-project-workflow.md`
+2. Canonical runtime sources paragraph added to open--claw's `10-project-workflow.md`
+3. Official docs URL added to `open-claw/docs/SETUP_NOTES.md` header
+4. Control UI URL fixed in `open--claw/docs/ai/PLAN.md` (`/openclaw` → `/`)
+5. Phase 6B.2 governance decisions recorded in `AI-PM/docs/ai/memory/DECISIONS.md`
+
+### Evidence
+- PASS: AI-PM template header now reads `## <YYYY-MM-DD HH:MM> — <task name>`
+- PASS: open--claw template header matches
+- PASS: Canonical sources paragraph added after "Project notes" section
+- PASS: SETUP_NOTES.md starts with `> Official docs: https://docs.openclaw.ai/`
+- PASS: PLAN.md URL changed to `http://127.0.0.1:18789/`
+- PASS: DECISIONS.md appended with 8 governance decisions
+- PASS: No case-duplicate files (AI-PM: 26/26, open--claw: 40/40)
+- PASS: No secrets detected in either repo
+- PASS: No circular rule references
+- PASS: AI-PM commit `662be3f` pushed to origin/main
+- PASS: open--claw commit `3a4ec1a` pushed to origin/master
+
+### Verdict
+READY — all Phase 6B.2 exit criteria met.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+Both repos updated in lockstep. Template and canonical-source changes mirror across the workspace.
+
+### Decisions Captured
+Recorded in `docs/ai/memory/DECISIONS.md`: canonical runtime sources, HH:MM adoption, ClawHub skill evaluation plan, Lobster deferral, openclaw-studio deferral, Docker deferral.
+
+### Pending Actions
+None for this phase.
+
+### What Remains Unverified
+None — all changes are documentation/governance with no runtime component.
+
+### What's Next
+Phase 6C: First live integration (requires Gateway running with ANTHROPIC_API_KEY).
