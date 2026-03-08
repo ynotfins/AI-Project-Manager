@@ -2004,3 +2004,80 @@ None — all changes are documentation/governance with no runtime component.
 
 ### What's Next
 Phase 6C: First live integration (requires Gateway running with ANTHROPIC_API_KEY).
+
+---
+
+## 2026-03-08 19:00 — Supplemental: Host Restart Verification Pattern + Evidence Density
+
+### Goal
+Execute supplemental rules for Phase 6B.2: add the "Host Restart Verification" pattern to `PATTERNS.md` and confirm all prior Phase 6B.2 deliverables satisfy the enhanced evidence density requirements.
+
+### Scope
+- Files edited: `D:/github/AI-Project-Manager/docs/ai/memory/PATTERNS.md`, `D:/github/AI-Project-Manager/docs/ai/STATE.md`, `D:/github/open--claw/docs/ai/STATE.md`
+- Repos affected: `AI-Project-Manager` (canonical governance repo — owns the pattern), `open--claw` (wrapper/runtime repo — receives mirrored STATE entry)
+
+### Commands / Tool Calls
+- `git -C D:/github/AI-Project-Manager status --short --branch` — pre-state: untracked `docs/ai/HANDOFF.md`, `docs/ai/architecture/CODEBASE_ORIENTATION.md`, `docs/ai/context/`, `docs/archive/`, `docs/global-rules.md`; no modified tracked files
+- `git -C D:/github/open--claw status --short --branch` — pre-state: modified `docs/ai/HANDOFF.md`; untracked `docs/ai/context/`, `open-claw/docs/archive/`
+- `Read AI-Project-Manager/docs/ai/memory/PATTERNS.md` — confirmed "Host Restart Verification" pattern not yet present
+- `Read AI-Project-Manager/.cursor/rules/10-project-workflow.md` — confirmed line 38 already has `## <YYYY-MM-DD HH:MM>`
+- `Read open--claw/.cursor/rules/10-project-workflow.md` — confirmed line 53 already has `## <YYYY-MM-DD HH:MM>`
+- `Read AI-Project-Manager/docs/ai/memory/DECISIONS.md` — confirmed Phase 6B.2 entry exists at lines 79-112
+- `Grep "Phase 6B.2" in both STATE.md files` — confirmed HH:MM entries already committed (`## 2026-03-08 18:38`)
+- `git -C D:/github/AI-Project-Manager log --oneline -5` — confirmed `68d13b5` (STATE entry) came after `662be3f` (template update), satisfying execution order guard
+- `git -C D:/github/open--claw log --oneline -5` — confirmed `7b720cd` (STATE entry) came after `3a4ec1a` (template update)
+- `Grep for secrets (sk-, ghp_, gho_, AKIA, AIza, xoxb-)` in both repos' `.md` files — zero matches
+- `Glob` for case-duplicate filenames in `.cursor/rules/` — no duplicates in either repo
+- `StrReplace AI-Project-Manager/docs/ai/memory/PATTERNS.md` — appended "Host Restart Verification" pattern
+- `StrReplace AI-Project-Manager/docs/ai/STATE.md` — this entry
+- `StrReplace open--claw/docs/ai/STATE.md` — mirrored entry
+
+### Changes
+- `AI-Project-Manager/docs/ai/memory/PATTERNS.md`: Appended "Host Restart Verification" pattern with verification commands (`node -v`, `pnpm -v`, `gateway status`, `health`), expected evidence table, and caveats (PATH clobber regression, systemd linger, onboard fallback).
+- `AI-Project-Manager/docs/ai/STATE.md`: This entry.
+- `open--claw/docs/ai/STATE.md`: Mirrored entry.
+
+### Evidence
+- Execution order guard: template commit `662be3f` (AI-PM) / `3a4ec1a` (open--claw) precedes first HH:MM STATE entry `68d13b5` / `7b720cd`: **PASS**
+- HH:MM template present in AI-PM `10-project-workflow.md` line 38: **PASS**
+- HH:MM template present in open--claw `10-project-workflow.md` line 53: **PASS**
+- Canonical sources section in open--claw `10-project-workflow.md` lines 20-26: **PASS**
+- Canonical header in open--claw `SETUP_NOTES.md` line 3: **PASS**
+- PLAN.md URL correct (`http://127.0.0.1:18789/`, no `/openclaw` suffix): **PASS**
+- DECISIONS.md Phase 6B.2 entry at lines 79-112: **PASS**
+- No case-duplicate filenames in either repo's rules/docs: **PASS**
+- No secrets in committed `.md` files: **PASS**
+- Self-consistency checklist (00-global-core.md): **PASS** (all 5 checks)
+- Host Restart Verification pattern appended to PATTERNS.md: **PASS**
+
+### Verdict
+READY — all Phase 6B.2 deliverables and supplemental requirements are satisfied.
+
+### Blockers
+None
+
+### Fallbacks Used
+None — all tools and commands succeeded directly.
+
+### Cross-Repo Impact
+- **AI-Project-Manager** (canonical governance repo): owns `PATTERNS.md`, `DECISIONS.md`, `10-project-workflow.md` STATE template, and `00-global-core.md` state discipline. These are the authoritative sources.
+- **open--claw** (wrapper/runtime repo): mirrors the STATE template in its own `10-project-workflow.md` with a `> Canonical source: AI-Project-Manager/...` note. Receives a mirrored STATE.md entry. Does not own the pattern or the decisions — it references them.
+
+### Decisions Captured
+- "Host Restart Verification" is now a durable pattern in `docs/ai/memory/PATTERNS.md`, referenceable by PLAN after any reboot.
+- The pattern explicitly notes that systemd linger (`loginctl enable-linger`) is required for the gateway service to survive reboots without re-onboarding.
+
+### Pending Actions
+None — Phase 6B.2 is complete including supplemental rules.
+
+### What Remains Unverified
+
+**Machine-local items:**
+- Whether `loginctl enable-linger ynotf` is currently active (determines if gateway survives reboot without re-onboarding). Not tested in this pass.
+- Whether a brand-new WSL terminal window (opened from Windows Terminal after a cold reboot) auto-loads nvm without any manual step. The `bash -ic` test was verified in prior sessions, but a true cold-reboot window test was not performed in this pass.
+
+**Repo-tracked items:**
+- None. All rule files, templates, decisions, and patterns are committed and pushed.
+
+### What's Next
+Phase 6C: First live integration (requires Gateway running with ANTHROPIC_API_KEY).

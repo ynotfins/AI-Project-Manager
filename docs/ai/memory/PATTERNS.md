@@ -68,3 +68,43 @@ open--claw (executor)
 - Only one active Gateway at a time (ChaosCentral primary, Laptop warm-standby)
 - Governance Model document must be read by open--claw at Gateway startup
 - Changes to governance rules require a PLAN-approved PLAN.md update before enforcement
+
+---
+
+## Host Restart Verification
+
+**Context:** After a machine reboot or WSL restart, PLAN needs a minimal deterministic procedure to confirm runtime readiness before scheduling any gateway-dependent phase. This pattern documents machine-local operational verification, not application feature behavior.
+
+**Pattern:**
+
+```bash
+# Run from an interactive WSL shell after reboot.
+# nvm must auto-load from ~/.bashrc (no manual 'source' needed).
+
+# 1. Verify Node + pnpm are available
+node -v        # expect: v22.x
+pnpm -v        # expect: 10.x
+
+# 2. Verify gateway is running
+cd ~/openclaw-build && pnpm openclaw gateway status
+# expect: "Runtime: running", "RPC probe: ok"
+
+# 3. Verify gateway health
+pnpm openclaw health
+# expect: "Agents: main (default)", exit 0
+```
+
+**Expected evidence:**
+
+| Check | PASS criteria |
+|---|---|
+| `node -v` | Prints `v22.x` without manual `source ~/.nvm/nvm.sh` |
+| `pnpm -v` | Prints `10.x` |
+| `gateway status` | `Runtime: running`, `RPC probe: ok` |
+| `health` | `Agents: main (default)`, exits 0 |
+
+**Caveats:**
+- If `node -v` fails, the hardcoded PATH clobber in `~/.bashrc` may have returned (check for `export PATH="..."` after the nvm init lines)
+- If gateway is not running after reboot, re-onboard with `pnpm openclaw onboard --install-daemon`
+- The systemd user service survives reboots only if `loginctl enable-linger ynotf` was set; verify with `loginctl show-user ynotf -p Linger`
+- This pattern verifies local machine state only; it says nothing about repo cleanliness or governance rule drift
