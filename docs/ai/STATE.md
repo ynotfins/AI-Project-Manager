@@ -2256,3 +2256,94 @@ None
 
 ### What's Next
 Phase 6C: First integration — connect one external integration, test approval gate, validate audit log.
+
+---
+
+## 2026-03-08 20:37 — GitHub Restore Point: restore-20260308-2037-phase6c0
+
+### Goal
+Create a durable, named GitHub-backed restore point for both repos capturing the post-governance / post-6C.0 state, and update HANDOFF.md so recovery context is repo-tracked.
+
+### Scope
+- Files edited: `docs/ai/HANDOFF.md` (AI-Project-Manager, newly tracked), `docs/ai/HANDOFF.md` (open--claw, updated), `docs/ai/STATE.md` (both repos), `control-ui-agent-response.png`, `control-ui-disconnected.png` (AI-Project-Manager, newly tracked)
+- Tags created: `restore-20260308-2037-phase6c0` in both repos
+- Repos affected: AI-Project-Manager (canonical governance repo), open--claw (wrapper/runtime repo)
+
+### Commands / Tool Calls
+- `git -C D:/github/AI-Project-Manager status --short --branch` — pre-state check
+- `git -C D:/github/open--claw status --short --branch` — pre-state check
+- `git -C AI-Project-Manager log --oneline -3` / `git -C open--claw log --oneline -3` — recent commits
+- `Read AI-Project-Manager/docs/ai/HANDOFF.md` — full content review (302 lines)
+- `Read open--claw/docs/ai/HANDOFF.md` — full content review (359 lines)
+- `StrReplace AI-Project-Manager/docs/ai/HANDOFF.md` ×5 — date, phase status, git history, blocked items, playwright status, next-steps sections
+- `StrReplace open--claw/docs/ai/HANDOFF.md` ×3 — date, phase status, git history, playwright status
+- `git add docs/ai/HANDOFF.md control-ui-agent-response.png control-ui-disconnected.png` (AI-PM)
+- `git add docs/ai/HANDOFF.md` (open--claw)
+- `git commit -m "docs: update HANDOFF to Phase 6C.0 state + add Control UI screenshots"` → `4c404fe`
+- `git commit -m "docs: update HANDOFF to Phase 1 complete / Phase 2 open"` → `3807712`
+- `git push origin main` (AI-PM: `9a7e58b..4c404fe`)
+- `git push origin master` (open--claw: `6ae7753..3807712`)
+- `git rev-parse HEAD` (AI-PM): `4c404fe14967681a2d1da869b14d29e1319cc861`
+- `git rev-parse HEAD` (open--claw): `380771275f6afe4245c2da61dfa0832c1d7fcb18`
+- `powershell Get-Date -Format 'yyyyMMdd-HHmm'` → `20260308-2037`
+- `git tag -a restore-20260308-2037-phase6c0` (AI-PM) — annotated tag at `4c404fe`
+- `git tag -a restore-20260308-2037-phase6c0` (open--claw) — annotated tag at `3807712`
+- `git push origin restore-20260308-2037-phase6c0` (both repos) — both pushed successfully
+
+### Changes
+- `AI-Project-Manager/docs/ai/HANDOFF.md`: tracked for first time; updated date (2026-03-07 → 2026-03-08), phase status (6B OPEN → COMPLETE, 6C BLOCKED → OPEN), git history, WSL environment (nvm PATH fix, gateway pid, first session), unverified items, blocked items table, playwright status, next-agent steps
+- `AI-Project-Manager/control-ui-agent-response.png`: tracked for first time (visual evidence of first agent chat)
+- `AI-Project-Manager/control-ui-disconnected.png`: tracked for first time (visual evidence of authenticated Control UI)
+- `open--claw/docs/ai/HANDOFF.md`: date, phase status (Phase 1 partial → COMPLETE, Phase 2 NOT STARTED → OPEN), git history, Phase 1/6C.0 evidence, unverified items, playwright status
+- `AI-Project-Manager/docs/ai/STATE.md`: this entry
+- `open--claw/docs/ai/STATE.md`: mirrored entry
+
+### Evidence
+- Both repos clean before staging: **PASS**
+- AI-PM commit `4c404fe` pushed to `origin/main`: **PASS**
+- open--claw commit `3807712` pushed to `origin/master`: **PASS**
+- Tag `restore-20260308-2037-phase6c0` created in AI-PM at `4c404fe`: **PASS**
+- Tag `restore-20260308-2037-phase6c0` created in open--claw at `3807712`: **PASS**
+- Tag pushed to `origin` in both repos: **PASS** (`[new tag]` confirmed in push output)
+- HANDOFF.md now repo-tracked in both repos: **PASS**
+- Control UI screenshots now repo-tracked: **PASS**
+
+### Verdict
+READY — restore point created. Both tags pushed. HANDOFF.md repo-tracked in both repos.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+- **AI-Project-Manager** (canonical governance repo): HANDOFF.md first committed; screenshots committed; annotated tag `restore-20260308-2037-phase6c0` at `4c404fe`.
+- **open--claw** (wrapper/runtime repo): HANDOFF.md updated with Phase 1 complete status; annotated tag `restore-20260308-2037-phase6c0` at `3807712`.
+
+### Decisions Captured
+None — operational checkpoint only.
+
+### Pending Actions
+None
+
+### What Remains Unverified
+
+**Machine-local items (NOT covered by GitHub restore point):**
+
+The following are required to restore a working runtime but are NOT in any git repo:
+
+| Item | Location | Restore action |
+|---|---|---|
+| Model credentials | `~/.openclaw/.env` | Must be manually recreated (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`) |
+| Gateway config + auth token | `~/.openclaw/openclaw.json` | Re-run `pnpm openclaw onboard --install-daemon` if missing |
+| Bitwarden access token | Host environment variable (`BWS_ACCESS_TOKEN`) | Set in PowerShell session before `bws run` |
+| OpenClaw build | `~/openclaw-build/` (WSL ext4) | Re-run `pnpm install && pnpm build && pnpm ui:build` from `~/openclaw-build/` |
+| Live gateway sessions | In-memory / `~/.openclaw/agents/main/sessions/` | Sessions not backed up; session history lost on clean install |
+| nvm / `.bashrc` fix | `~/.bashrc` lines 125-128 (fnm block commented out) | Verify after any distro reset |
+
+**Repo-tracked items:**
+- `docs/ai/HANDOFF.md` in AI-Project-Manager was untracked until this checkpoint. It is now committed and tracked.
+
+### What's Next
+Phase 6C: First integration — connect one external integration (Google Cloud is highest-leverage), test approval gate, validate audit log.
