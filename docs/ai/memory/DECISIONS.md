@@ -153,3 +153,30 @@ Port 3000 is incorrect and should not be used in commands or documentation.
 **Alternatives considered:** None — this is a factual correction.
 
 **Rationale:** Prevents false-negative health checks in future session bootstraps.
+
+---
+
+### 2026-03-09: ClawHub batch install of 12 skills approved
+
+**Context:** Previous DECISIONS.md entry (2026-03-08) required "mandatory code review before ClawHub install" with a 5-candidate gate. User explicitly requested installing 12 specific skills in this session.
+
+**Decision:** User approved batch install of 12 ClawHub skills, superseding the cautious 5-candidate code-review gate. Metadata inspection via `npx clawhub inspect` applied as a trust-but-verify measure for each skill before install. Two skills (proactive-agent-skill, api-gateway-zito) were flagged as suspicious by ClawHub; installed with `--force` per user approval.
+
+**Skills installed:** self-improving-agent, proactive-agent-skill, openai-whisper, api-gateway-zito, humanize-ai-text, youtube-watcher, gmail, imap-smtp-email, whatsapp-business, web-search-exa, playwright-mcp, superdesign.
+
+**Alternatives considered:** Blocking flagged skills — rejected because user explicitly approved all 12 and the metadata inspection showed legitimate content from known owners.
+
+**Rationale:** Moving from cautious evaluation to operational usage. The gateway rollback mechanism (`npx clawhub uninstall` + restart) provides sufficient safety net.
+
+---
+
+### 2026-03-09: SOP documentation hardening
+
+**Context:** After completing Phase 0 bootstrap and confirming stable operational facts (ports, paths, commands), the team decided to capture these as permanent reference documents.
+
+**Decision:** Created three SOP documents:
+1. `open--claw/docs/ai/operations/RUNTIME_REFERENCE.md` — gateway, WSL, node/pnpm, systemd, secrets
+2. `open--claw/docs/ai/operations/SKILL_MANAGEMENT.md` — bundled/ClawHub skill lifecycle, credential mapping
+3. `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md` — 7-step bootstrap procedure with evidence requirements
+
+**Rationale:** Hardening known-stable facts into permanent docs prevents re-discovery costs in future sessions and provides onboarding material for new agents.

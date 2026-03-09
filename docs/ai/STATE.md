@@ -2563,3 +2563,111 @@ None for bootstrap. Pre-existing blockers (approval-gate, mem0-bridge) deferred 
 
 ### What's Next
 PLAN cycle for Phase 1 (Phase 6C.1): weather skill integration test — invoke weather skill through gateway, verify response, confirm audit log captures the action.
+
+---
+
+## Execution Block: Phase 6C.1 — SOP Documentation, Skill Installation, and First Tests
+**Timestamp:** 2026-03-09 22:50
+**Branch:** main (AI-PM), master (open--claw)
+**Agent:** AGENT
+
+### 1. What Happened
+Executed three-phase plan: (1) Created 3 SOP documentation files hardening operational facts, (2) Batch-installed 12 ClawHub skills into open--claw, (3) Smoke-tested 7 skills across two tiers.
+
+### 2. Commands Run
+```
+mkdir open--claw/docs/ai/operations, AI-Project-Manager/docs/ai/operations
+# Created RUNTIME_REFERENCE.md, SKILL_MANAGEMENT.md, SESSION_BOOTSTRAP_SOP.md
+curl -s http://localhost:18792/  → OK
+npx clawhub inspect <slug>  → all 12 inspected
+npx clawhub install <slug>  → 10 direct, 2 with --force
+pnpm openclaw gateway --force  → restart
+pnpm openclaw skills list  → 19/60 ready
+pnpm openclaw agent --agent main --message "What is the weather in New York?"  → 71°F
+pnpm openclaw agent --agent main --message "Run a healthcheck..."  → security audit plan
+pnpm openclaw agent --agent main --message "Humanize this text:..."  → natural rewrite
+pnpm openclaw agent --agent main --message "List my GitHub repos"  → 20 repos
+pnpm openclaw agent --agent main --message "...self-improvement log"  → coherent response
+npm install -g @playwright/mcp playwright && npx playwright install chromium
+```
+
+### 3. Outcome
+**PASS — 12/12 installs, 5/7 smoke tests PASS, 2 need config**
+
+### 4. Evidence
+
+**Phase 1 — SOP Docs Created:**
+- `open--claw/docs/ai/operations/RUNTIME_REFERENCE.md`
+- `open--claw/docs/ai/operations/SKILL_MANAGEMENT.md`
+- `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
+
+**Phase 2 — ClawHub Install Results (12/12):**
+
+| Skill | Status |
+|-------|--------|
+| self-improving-agent | ✓ installed |
+| proactive-agent-skill | ✓ installed (--force, flagged suspicious) |
+| openai-whisper | ✓ installed |
+| api-gateway-zito | ✓ installed (--force, flagged suspicious) |
+| humanize-ai-text | ✓ installed |
+| youtube-watcher | ✓ installed |
+| gmail | ✓ installed |
+| imap-smtp-email | ✓ installed |
+| whatsapp-business | ✓ installed |
+| web-search-exa | ✓ installed |
+| playwright-mcp | ✓ installed |
+| superdesign | ✓ installed |
+
+Installed to: `~/.openclaw/workspace/skills/` (workspace dir, not build dir)
+Post-restart: **19/60 ready** (up from 10/50)
+
+**Phase 3 — Smoke Tests:**
+
+| Skill | Result | Evidence |
+|-------|--------|----------|
+| weather | PASS | "71°F... Clear and nice out" |
+| healthcheck | PASS | Security audit plan response |
+| github | PASS | 20 repos listed correctly |
+| self-improving-agent | PASS | Coherent fresh-memory response |
+| humanize-ai-text | PASS | Clean natural-language rewrite |
+| web-search-exa | BLOCKED | Exa MCP endpoint not configured in gateway |
+| playwright-mcp | PARTIAL | ✓ ready, chromium cached, WSL needs system deps |
+
+### 5. Blockers
+- web-search-exa: needs `openclaw configure --section web` for Exa MCP endpoint
+- playwright-mcp: WSL needs system-level Chromium for full browser automation
+- Tier 3 skills (gmail, whatsapp, imap, whisper, youtube): need respective credentials
+
+### 6. Decisions Made
+- User approved ClawHub batch install of 12 skills, superseding 5-candidate code-review gate (2026-03-08)
+- `npx clawhub inspect` used as trust-but-verify step for all 12 skills
+- Two flagged-suspicious skills (proactive-agent-skill, api-gateway-zito) installed with --force
+
+### 7. Config/Infra Changes
+- Playwright + @playwright/mcp installed globally in WSL
+- Chromium browser downloaded to `~/.cache/ms-playwright/`
+- 12 new skill dirs in `~/.openclaw/workspace/skills/`
+
+### 8. Files Changed
+**Created:** RUNTIME_REFERENCE.md, SKILL_MANAGEMENT.md, SESSION_BOOTSTRAP_SOP.md
+**Modified:** STATE.md (both repos), DECISIONS.md
+
+### 9. Tests Ran
+5/5 Tier 1 PASS. 2 Tier 2 documented (BLOCKED/PARTIAL — need config, not code).
+
+### 10. Risk Assessment
+Low. Skills are additive. Rollback: `npx clawhub uninstall <slug>` + gateway restart.
+
+### 11. Cross-Repo Impact
+- open--claw: 12 skills + 2 SOP docs + STATE.md
+- AI-Project-Manager: 1 SOP doc + STATE.md + DECISIONS.md
+
+### 12. Secrets
+None committed. All secrets in Bitwarden/bws.
+
+### What's Next
+1. Wire Exa MCP endpoint for web-search-exa
+2. Install system Chromium in WSL for Playwright
+3. Set up Tier 3 credentials (gmail, whatsapp, imap)
+4. Test youtube-watcher with a real URL
+5. Build multi-skill agent workflows
