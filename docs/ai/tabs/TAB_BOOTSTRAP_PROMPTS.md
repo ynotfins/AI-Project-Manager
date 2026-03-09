@@ -33,11 +33,29 @@ Read first (authoritative, repo-tracked, in this order):
 - docs/ai/context/          ← non-canonical artifacts; consult only if STATE.md + DECISIONS.md + PATTERNS.md are insufficient
 - @Past Chats               ← last resort only; use only if all repo-tracked sources above are insufficient
 
+Context reconstruction requirement:
+
+Before creating any plan, reconstruct the current system state using the repo-tracked documents.
+
+Derive:
+- current phase
+- last verified evidence
+- open blockers
+- pending actions
+- cross-repo dependencies
+
+Use the following priority order:
+1. docs/ai/STATE.md
+2. docs/ai/PLAN.md
+3. docs/ai/memory/DECISIONS.md
+4. docs/ai/memory/PATTERNS.md
+5. HANDOFF.md (if present)
+
 Task:
 Create a Phase 0 plan to bootstrap this project safely and verifiably, using the repo’s workflow (PLAN/AGENT/DEBUG/ASK/ARCHIVE) and evidence-first discipline. If the paired repo in the shared workspace is directly relevant, account for that cross-repo state without changing the workflow or phase structure.
 
 Reasoning tool gate:
-- If Phase 0 has >5 connected steps, use the “sequential-thinking” reasoning tool before finalizing.
+- If Phase has >5 connected steps, use the “sequential-thinking” reasoning tool before finalizing.
 - If that tool is unavailable, explicitly state: “sequential-thinking: FAIL (unavailable)” and proceed with a clearly structured step breakdown anyway.
 
 Output (markdown), EXACTLY these 3 top-level items:
