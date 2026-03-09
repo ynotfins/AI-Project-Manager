@@ -9,7 +9,7 @@ PLAN reads this before reasoning about blockers, fallbacks, next actions, and cr
 ## Enforced entry template (apply to ALL future blocks — no sections may be omitted)
 
 ```
-## <YYYY-MM-DD> — <task name>
+## <YYYY-MM-DD HH:MM> — <task name>
 ### Goal
 ### Scope
 ### Commands / Tool Calls
@@ -2347,3 +2347,121 @@ The following are required to restore a working runtime but are NOT in any git r
 
 ### What's Next
 Phase 6C: First integration — connect one external integration (Google Cloud is highest-leverage), test approval gate, validate audit log.
+
+---
+
+## 2026-03-09 19:10 — Phase 6C.1 Attempt: approval-gate + mem0-bridge activation
+
+### Goal
+Enable approval-gate and mem0-bridge skills in the live OpenClaw runtime and verify they intercept actions / query memory. Fix stale STATE.md template header.
+
+### Scope
+- AI-Project-Manager: fix STATE.md template line 12 (HH:MM header).
+- WSL: run `pnpm openclaw config set` for both skills; restart gateway; verify.
+- Record exact outcomes including blockers.
+- open--claw: mirror STATE entry.
+
+### Commands / Tool Calls
+```
+# Step 1 — Template fix (AI-PM docs/ai/STATE.md line 12)
+StrReplace: "## <YYYY-MM-DD> — <task name>" → "## <YYYY-MM-DD HH:MM> — <task name>"
+# open--claw STATE.md: no template block present — skipped per task spec
+
+# Step 2 — Gateway liveness (already running from Phase 6C.0)
+wsl bash -c "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw gateway status"
+wsl bash -c "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw health"
+
+# Step 3 — Pre-flight: check what skills actually exist in live runtime
+wsl bash -c "ls ~/openclaw-build/skills/ | grep -E 'approval|mem0'"
+→ no output (exit 1)
+
+# Step 4 — Skills list (live runtime)
+wsl bash -c "timeout 10 pnpm openclaw skills list"
+→ 9/50 ready; all "openclaw-bundled"; approval-gate and mem0-bridge not present
+
+# Step 5 — Config set (per task spec, even though skills not in build)
+wsl bash -c "cd ~/openclaw-build && pnpm openclaw config set skills.entries.approval-gate.enabled true"
+wsl bash -c "cd ~/openclaw-build && pnpm openclaw config set skills.entries.mem0-bridge.enabled true"
+wsl bash -c "cd ~/openclaw-build && pnpm openclaw config set skills.entries.mem0-bridge.env.MEM0_API_URL http://127.0.0.1:8766"
+
+# Step 6 — Restart gateway + verify
+wsl bash -c "cd ~/openclaw-build && pnpm openclaw gateway restart"
+wsl bash -c "sleep 4 && cd ~/openclaw-build && pnpm openclaw gateway status"
+
+# Step 7 — Check gateway log for skill loading
+wsl bash -c "tail -30 /tmp/openclaw/openclaw-2026-03-09.log"
+
+# Step 8 — Check OpenMemory proxy
+wsl bash -c "curl -sv http://127.0.0.1:8766/"
+```
+
+### Changes
+- `AI-Project-Manager/docs/ai/STATE.md` line 12: template header updated from `<YYYY-MM-DD>` to `<YYYY-MM-DD HH:MM>`.
+- `~/.openclaw/openclaw.json` (machine-local, not repo-tracked): added `skills.entries.approval-gate.enabled=true`, `skills.entries.mem0-bridge.enabled=true`, `skills.entries.mem0-bridge.env.MEM0_API_URL=http://127.0.0.1:8766`.
+- Gateway restarted (systemd).
+
+### Evidence
+
+| Check | Result | Evidence |
+|---|---|---|
+| Gateway status | PASS | `Runtime: running (pid 24301)`, `RPC probe: ok` |
+| Gateway health | PASS | `Agents: main (default)`, 1 session entry |
+| `approval-gate` in `~/openclaw-build/skills/` | FAIL | Not present — `ls \| grep approval` exit 1 |
+| `mem0-bridge` in `~/openclaw-build/skills/` | FAIL | Not present — `ls \| grep mem0` exit 1 |
+| `pnpm openclaw skills list` | PASS (command runs) | 9/50 ready; all `openclaw-bundled`; neither target skill listed |
+| Config set `approval-gate.enabled` | PASS (config written) | `Updated skills.entries.approval-gate.enabled` logged |
+| Config set `mem0-bridge.enabled` | PASS (config written) | `Updated skills.entries.mem0-bridge.enabled` logged |
+| Config set `mem0-bridge.env.MEM0_API_URL` | PASS (config written) | `Updated skills.entries.mem0-bridge.env.MEM0_API_URL` logged |
+| Config verified in `openclaw.json` | PASS | `skills.entries` block confirmed present with correct values |
+| Gateway restart | PASS | Systemd service restarted; `Runtime: running` confirmed after 4s |
+| Skill loading in restart log | FAIL | No skill loading messages for approval-gate or mem0-bridge in restart log |
+| OpenMemory proxy at `:8766` | FAIL | `Connection refused` — Windows-side proxy not running (not started by WSL; requires PowerShell `bws run` Cursor launch) |
+
+### Verdict
+BLOCKED — partial progress only.
+
+Config keys were written and gateway restarted cleanly. However, neither skill is available in the live runtime:
+1. `approval-gate` and `mem0-bridge` are **planning stubs** in `open--claw/open-claw/skills/` — they are NOT deployed to `~/openclaw-build/skills/`. The live runtime uses upstream bundled skills only.
+2. The runtime ignores the config keys for skills that don't exist in the build. Writing them causes no error but also no effect.
+3. The OpenMemory proxy (`127.0.0.1:8766`) is not running in WSL — it's a Windows-side process started by the `bws run` Cursor launcher, and is not accessible from WSL unless the proxy is explicitly bridged or restarted.
+4. Approval gate cannot be tested because: (a) no approval-gate skill in runtime, and (b) SKILL.md requires a paired channel (WhatsApp/Telegram/Slack/Discord) — no channel is configured.
+
+### Blockers
+1. **approval-gate not deployed**: Skill exists as repo stub only. Must install via ClawHub (`npx clawhub install approval-gate`) or manually copy to `~/openclaw-build/skills/approval-gate/`. ClawHub CLI install was deferred per Phase 6B.2 decisions (mandatory code review required). Unblock path: (a) install via ClawHub with code review, or (b) manually deploy stub from repo.
+2. **approval-gate requires channel**: Even after install, `APPROVAL_CHANNEL` + `APPROVAL_TARGET` must be set pointing to a paired messaging channel (not configured). No zero-credential path exists for approval routing.
+3. **mem0-bridge not deployed**: Same deployment gap as approval-gate.
+4. **OpenMemory proxy not running in WSL**: `127.0.0.1:8766` is Connection refused. Proxy requires Windows-side `bws run` launch. WSL cannot reach it unless host-accessible network bridge is used.
+
+### Fallbacks Used
+- Ran `pnpm openclaw skills list` (with `timeout 10`) when first attempt hung.
+- Used `wsl bash -c` (non-interactive) instead of `wsl bash -ic` for quoting-sensitive commands.
+- Read config via `grep -A 20` instead of piped python3 (quoting failure in PowerShell).
+
+### Cross-Repo Impact
+- **AI-Project-Manager** (governance repo): STATE.md template fixed; this STATE entry added. No rules changed.
+- **open--claw** (runtime repo): mirror STATE entry added. No skills deployed, no PLAN.md changes. Skill deployment gap now documented.
+
+### Decisions Captured
+- The `open--claw/open-claw/skills/approval-gate/` and `mem0-bridge/` directories are **planning stubs**, not deployable skill packages. They document intent and config shape but require ClawHub or manual deployment to become active.
+- Config keys written to `~/.openclaw/openclaw.json` are **inert** until the corresponding skill directories exist in `~/openclaw-build/skills/`.
+- ClawHub skill install is the correct unblock path but requires a mandatory code review session before install (per Phase 6B.2 DECISIONS.md).
+- OpenMemory proxy at `:8766` is Windows-side only; WSL cannot reach it without explicit network bridging.
+
+### Pending Actions
+- Decide whether to: (a) unblock ClawHub install + code review for approval-gate, or (b) skip approval-gate and proceed to a different Phase 6C integration (Google Cloud / healthcheck skill / github skill — both `ready` in skills list).
+- If approval-gate is desired: configure a messaging channel first (WhatsApp or Telegram) before deployment makes sense.
+- OpenMemory proxy: start `bws run` from PowerShell first if mem0-bridge test is needed.
+
+### What Remains Unverified
+**Machine-local:**
+- Whether ClawHub install of approval-gate would succeed on this build version.
+- Whether the OpenMemory proxy at `:8766` will restart cleanly on next `bws run`.
+
+**Repo-tracked:**
+- No repo-tracked items remain unverified from this phase.
+
+### What's Next
+Recommend: pivot Phase 6C.1 to a skill that is already `ready` in the live runtime:
+- `healthcheck` — already `✓ ready`; sends to no external channel; exercises tool-calling + audit
+- `github` — already `✓ ready` (`gh` CLI available); exercises real external API without approval dependency
+- `weather` — already `✓ ready`; simplest possible tool-calling smoke test
