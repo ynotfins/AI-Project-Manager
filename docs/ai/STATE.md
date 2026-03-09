@@ -2671,3 +2671,86 @@ None committed. All secrets in Bitwarden/bws.
 3. Set up Tier 3 credentials (gmail, whatsapp, imap)
 4. Test youtube-watcher with a real URL
 5. Build multi-skill agent workflows
+
+---
+
+## 2026-03-09 23:45 — Session Bootstrap (Phase 0)
+
+### Goal
+Verify runtime health, MCP tool availability, git cleanliness, and weather skill readiness across both repos before continuing Phase 6C.1.
+
+### Scope
+- AI-Project-Manager: git state, MCP tools, governance file commit
+- open--claw: git state
+- WSL: node, pnpm, gateway health, skill list
+
+### Commands / Tool Calls
+- `git status` (AI-Project-Manager) — **PASS** — main, up to date, 1 modified + 2 untracked (expected)
+- `git status` (open--claw) — **PASS** — master, clean
+- `wsl bash -ic "node -v"` — **PASS** — v22.22.0
+- `wsl bash -ic "pnpm -v"` — **PASS** — 10.23.0
+- `curl -s http://localhost:18792/` — **PASS** — `OK`
+- `pnpm openclaw gateway status` — **WARN** — `RPC probe: ok` but systemd reports `Runtime: stopped (auto-restart, last exit 1)`. Service is in restart loop but RPC responds. Recommendation: `openclaw doctor --repair`
+- `pnpm openclaw health` — **PASS** — `Agents: main (default)`, 1 session (55m ago)
+- `serena` `check_onboarding_performed` — **PASS** — 4 project memories available
+- `Context7` `resolve-library-id` ("openclaw") — **PASS** — 5 libraries found, `/openclaw/openclaw` (High reputation, 5992 snippets, v2026.3.7 latest)
+- `github` `get_file_contents` (ynotfins/AI-Project-Manager, AGENTS.md) — **PASS** — sha `9e56854`, content returned
+- `openmemory` `health-check` — **PASS** — healthy, 7 tools, v1.0.0
+- `sequential-thinking` — **PASS** — used in PLAN phase (4-step reasoning)
+- `pnpm openclaw skills list | grep weather` — **PASS** — `✓ ready`, wttr.in / Open-Meteo, openclaw-bundled
+- Secret scan (staged files) — **PASS** — no tokens, keys, or credentials found
+- `git add + commit` (3 files, 612 insertions) — **PASS** — commit `68cc685`
+- `git push origin main` — **PASS** — `b9d4a4c..68cc685 main -> main`
+- `git status` (post-push) — **PASS** — clean
+
+### Changes
+- Committed `docs/ai/architecture/CODEBASE_ORIENTATION.md` (new)
+- Committed `docs/global-rules.md` (new)
+- Committed `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` (modified)
+- Appended this STATE.md entry
+
+### Evidence
+| Check | Result | Detail |
+|---|---|---|
+| Git AI-PM | PASS | main, clean after commit |
+| Git open--claw | PASS | master, clean |
+| node -v | PASS | v22.22.0 |
+| pnpm -v | PASS | 10.23.0 |
+| Gateway API (18792) | PASS | `OK` |
+| Gateway status | WARN | RPC ok, systemd auto-restart loop |
+| Gateway health | PASS | Agents: main (default) |
+| serena | PASS | 4 memories |
+| Context7 | PASS | 5 libraries resolved |
+| github MCP | PASS | AGENTS.md sha 9e56854 |
+| openmemory | PASS | healthy, 7 tools |
+| sequential-thinking | PASS | 4-step reasoning |
+| Weather skill | PASS | ✓ ready |
+| Secret scan | PASS | No credentials |
+| Commit + push | PASS | 68cc685 |
+
+### Verdict
+READY — all checks PASS (one WARN on gateway systemd state, non-blocking since RPC and health both respond successfully).
+
+### Blockers
+None for session bootstrap. Gateway systemd restart loop is a deferred stabilization item (run `openclaw doctor --repair` when convenient).
+
+### Fallbacks Used
+None — all MCP tools responded successfully.
+
+### Cross-Repo Impact
+open--claw: verified clean on master, no changes needed. Gateway confirmed responsive for Phase 6C.1 weather skill test.
+
+### Decisions Captured
+None — this block is verification only.
+
+### Pending Actions
+- Optional: `openclaw doctor --repair` for systemd service warning
+- Optional: verify `loginctl enable-linger ynotf` for reboot persistence
+
+### What Remains Unverified
+- `loginctl enable-linger ynotf` status (deferred from Phase 6B)
+- Full cold-reboot gateway auto-start (tested via RPC probe only, not reboot cycle)
+- Context7 version gap: local vendor `2026.2.18` vs upstream `v2026.3.7`
+
+### What's Next
+Proceed to Phase 6C.1 — weather skill integration test (invoke via Control UI or gateway API, validate response + audit log).
