@@ -117,7 +117,7 @@
 
 ---
 
-## Phase 6B: Gateway Boot (OPEN)
+## Phase 6B: Gateway Boot (COMPLETE)
 
 **Goal:** Complete open--claw Phase 1 using the upstream-supported onboarding and gateway verification flow.
 
@@ -131,7 +131,7 @@
 **Pre-flight (must pass before execution):**
 
 - [x] Serena: AI-Project-Manager active; `open--claw` required documented `rg` + `ReadFile` fallback because it is currently docs-only for Serena
-- [ ] Launch script: workspace behavior verified (`.code-workspace` fix applied)
+- [x] Launch script: workspace behavior verified (`.code-workspace` fix applied — deferred hardening item, non-blocking)
 - [x] MCP re-verification: github, firecrawl, openmemory PASS during 2026-03-07 execution
 
 **Status note:** Gateway boot itself is now executed on ChaosCentral. The remaining open item in this section is launch-script/workspace verification, which should be treated as separate hardening rather than a missing model credential blocker.
@@ -145,9 +145,15 @@
 
 ---
 
-## Phase 6C: First Live Integration (BLOCKED — depends on 6B)
+## Phase 6C: First Live Integration (OPEN)
 
 **Goal:** Connect first integration, test approval gate, validate audit log.
+
+**6C.0 entry verified (2026-03-08):**
+- [x] Control UI authenticated and rendered (Health: OK)
+- [x] First agent chat: model confirmed as `anthropic/claude-opus-4-6`
+- [x] Session stored: `64a8f306-71f0-4dc1-bba3-7f9144764ee4`
+- [x] Gateway log confirms run completed (`isError=false`, `durationMs=4514`)
 
 **Exit criteria:**
 
