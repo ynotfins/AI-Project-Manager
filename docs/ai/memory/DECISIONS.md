@@ -109,3 +109,47 @@ same-day ordering ambiguous with 5+ blocks on a single date.
 **Rationale:** Minimum viable governance change. Official docs are comprehensive (2700+ pages)
 and actively maintained. Establishing canonical-source hierarchy before Phase 6C prevents
 wrapper drift during integration work. HH:MM is zero-cost prevention of ordering ambiguity.
+
+---
+
+## 2026-03-09 — Phase 6C.1 Pivot: weather skill as first integration test
+
+**Context:** Phase 6C.1 attempted approval-gate + mem0-bridge activation but was BLOCKED:
+skills are planning stubs only (not deployed to ~/openclaw-build/skills/), approval-gate
+requires a paired messaging channel, and OpenMemory proxy is Windows-only. Meanwhile, 10/50
+bundled skills are already `✓ ready` in the live runtime.
+
+**Decision:** Pivot Phase 6C.1 to use the `weather` skill as the first integration test.
+The `weather` skill exercises the full skill invocation pipeline (tool-calling, response
+handling, audit logging) with zero credential requirements (uses public APIs: wttr.in,
+Open-Meteo). Follow-up with `github` skill as second integration once weather passes.
+Defer approval-gate and mem0-bridge until a messaging channel is configured and ClawHub
+code review is completed.
+
+**Alternatives considered:**
+- healthcheck skill (considered: viable but is security-focused, less demonstrative of
+  external API integration)
+- github skill (considered: strong candidate, needs gh CLI auth verification; planned as
+  second integration after weather)
+- Unblock ClawHub install for approval-gate (rejected: requires code review per Phase 6B.2
+  decision + messaging channel configuration — too many dependencies for first test)
+- Build approval-gate from scratch (rejected: over-engineering; ready skills already exist)
+
+**Rationale:** Lowest-risk path to prove the integration pipeline works end-to-end. Zero
+credentials, non-destructive, exercises real external API. Validates tool-calling, response
+formatting, and audit logging before moving to higher-risk integrations.
+
+---
+
+## 2026-03-09 — Gateway port correction: 18789 (UI) / 18792 (API)
+
+**Context:** Previous STATE entries and patterns referenced port 3000 for gateway health
+checks. Session bootstrap verification discovered the gateway actually listens on port 18789
+(Control UI) and port 18792 (API health, returns `OK`).
+
+**Decision:** All future references to gateway health/UI should use ports 18789 and 18792.
+Port 3000 is incorrect and should not be used in commands or documentation.
+
+**Alternatives considered:** None — this is a factual correction.
+
+**Rationale:** Prevents false-negative health checks in future session bootstraps.

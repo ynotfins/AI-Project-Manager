@@ -108,3 +108,4 @@ pnpm openclaw health
 - If gateway is not running after reboot, re-onboard with `pnpm openclaw onboard --install-daemon`
 - The systemd user service survives reboots only if `loginctl enable-linger ynotf` was set; verify with `loginctl show-user ynotf -p Linger`
 - This pattern verifies local machine state only; it says nothing about repo cleanliness or governance rule drift
+- **Port correction (2026-03-09):** Gateway listens on port 18789 (Control UI) and 18792 (API health). Port 3000 is NOT used. Verify with: `curl -s http://localhost:18792/` → `OK`

@@ -2465,3 +2465,101 @@ Recommend: pivot Phase 6C.1 to a skill that is already `ready` in the live runti
 - `healthcheck` — already `✓ ready`; sends to no external channel; exercises tool-calling + audit
 - `github` — already `✓ ready` (`gh` CLI available); exercises real external API without approval dependency
 - `weather` — already `✓ ready`; simplest possible tool-calling smoke test
+
+---
+
+## 2026-03-09 21:00 — Phase 0: Session Bootstrap — State Verification and Path Decision
+
+### Goal
+Verify the entire system is in the state described by STATE.md, confirm tooling health across both repos, and make an evidence-based decision on the forward path for Phase 6C.1.
+
+### Scope
+- Repos: AI-Project-Manager (governance), open--claw (executor)
+- Files inspected: docs/ai/STATE.md (both repos), docs/ai/memory/DECISIONS.md, docs/ai/memory/PATTERNS.md, .cursor/rules/10-project-workflow.md
+- WSL environment: ~/openclaw-build/, gateway process, skills directory
+
+### Commands / Tool Calls
+```
+git -C D:/github/AI-Project-Manager status
+git -C D:/github/AI-Project-Manager log --oneline -5
+git -C D:/github/open--claw status
+git -C D:/github/open--claw log --oneline -5
+git -C D:/github/open--claw tag -l "restore-*"
+wsl -e bash -c 'source ~/.nvm/nvm.sh && node -v; pnpm -v; which pnpm'
+wsl -e bash -c 'ls ~/openclaw-build/'
+wsl -e bash -c 'ps aux | grep openclaw'
+wsl -e bash -c 'ss -tlnp | grep 24301'
+wsl -e bash -c 'curl -s http://localhost:18789/health'
+wsl -e bash -c 'curl -s http://localhost:18792/'
+wsl -e bash -c 'ls -la ~/openclaw-build/skills/'
+wsl -e bash -c 'pnpm openclaw skills list'
+context7 resolve-library-id (express)
+firestore list-collections
+github list_issues (ynotfins/AI-Project-Manager)
+serena activate_project (AI-Project-Manager)
+serena check_onboarding_performed
+openmemory search-memory (phase 6c)
+```
+
+### Changes
+- `AI-Project-Manager/docs/ai/STATE.md`: this entry appended
+- `AI-Project-Manager/docs/ai/memory/DECISIONS.md`: pivot decision recorded
+- `open--claw/docs/ai/STATE.md`: mirror entry appended
+
+### Evidence
+
+| Check | Result | Evidence |
+|---|---|---|
+| AI-PM git status | PASS | Branch `main`, up to date with origin. Known mods only: TAB_BOOTSTRAP_PROMPTS.md, CODEBASE_ORIENTATION.md, global-rules.md |
+| open--claw git status | PASS | Branch `master`, clean, up to date with origin |
+| Restore tag | PASS | `restore-20260308-2037-phase6c0` listed |
+| Node version | PASS | v22.22.0 |
+| pnpm version | PASS | 10.23.0 at /home/ynotf/.nvm/versions/node/v22.22.0/bin/pnpm |
+| ~/openclaw-build/ | PASS | Full project structure present |
+| Gateway process | PASS | PID 24301, `openclaw-gateway` running |
+| Gateway ports | PASS | Port 18789 (Control UI), port 18792 (API, returns `OK`) |
+| Gateway port 3000 | FAIL | Not used; actual ports are 18789/18792. Corrected in this entry. |
+| Context7 MCP | PASS | Resolved `express` library, 5 results |
+| Firestore MCP | FAIL | `PERMISSION_DENIED` — Firestore API not enabled for project `maxadjust-website`. Pre-existing config issue. |
+| GitHub MCP | PASS | `ynotfins/AI-Project-Manager` queried, valid empty response |
+| Serena MCP | PASS | Activated AI-Project-Manager; onboarding complete; 4 memories. Known WARN: open--claw indexing fails. |
+| OpenMemory MCP | PASS | Valid empty response (no phase 6c memories stored yet) |
+| STATE.md currency (AI-PM) | PASS | Last entry 2026-03-09 19:10, 6C.1 BLOCKED. No gaps. |
+| STATE.md currency (open--claw) | PASS | Mirror entry matches. Consistent. |
+| Skills directory | PASS | 54 skill dirs in ~/openclaw-build/skills/ |
+| Skills runtime | PASS | 10/50 ready; healthcheck, github, weather all `✓ ready` |
+
+### Verdict
+READY — session bootstrap complete. All systems verified. Path decided.
+
+### Blockers
+None for bootstrap. Pre-existing blockers (approval-gate, mem0-bridge) deferred by pivot decision.
+
+### Fallbacks Used
+- Firestore MCP: FAIL — fallback: Firebase CLI or console for direct Firestore ops
+- Serena on open--claw: known FAIL — fallback: rg + file reads
+- Gateway health port: corrected from 3000 to 18789 (UI) / 18792 (API)
+
+### Cross-Repo Impact
+- **AI-Project-Manager**: STATE.md + DECISIONS.md updated with bootstrap evidence and pivot decision
+- **open--claw**: STATE.md mirror entry appended. No code changes.
+
+### Decisions Captured
+- **PIVOT Phase 6C.1 to `weather` skill** as first integration test. Rationale: zero credentials, exercises full pipeline, lowest risk. Defers approval-gate/mem0-bridge blockers.
+- **Gateway port correction**: actual ports are 18789 (UI) and 18792 (API), not 3000. All future references should use correct ports.
+- Promoted to DECISIONS.md.
+
+### Pending Actions
+- Phase 1 PLAN cycle: design the weather skill integration test plan
+- Firestore MCP: reconfigure to correct project or enable Firestore API on `maxadjust-website`
+
+### What Remains Unverified
+**Machine-local:**
+- Whether `gh` CLI is authenticated (needed for github skill later)
+- Whether OpenMemory proxy at `:8766` restarts on next `bws run`
+
+**Repo-tracked:**
+- None
+
+### What's Next
+PLAN cycle for Phase 1 (Phase 6C.1): weather skill integration test — invoke weather skill through gateway, verify response, confirm audit log captures the action.
