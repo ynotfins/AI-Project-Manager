@@ -180,3 +180,21 @@ Port 3000 is incorrect and should not be used in commands or documentation.
 3. `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md` — 7-step bootstrap procedure with evidence requirements
 
 **Rationale:** Hardening known-stable facts into permanent docs prevents re-discovery costs in future sessions and provides onboarding material for new agents.
+
+---
+
+### 2026-03-10: Removed Maton-dependent ClawHub skills (gmail, whatsapp-business) — security risk
+
+**Context:** The `gmail` and `whatsapp-business` ClawHub skills (author: byungkyu) route ALL API traffic through `gateway.maton.ai`, a third-party service. Users must provide a `MATON_API_KEY`, after which Maton holds OAuth tokens for Gmail and WhatsApp Business and acts as a man-in-the-middle for all API calls. This is a credential-proxying pattern — Maton can read all emails and messages.
+
+**Decision:** Uninstall both skills immediately. Use OpenClaw's built-in WhatsApp channel via Baileys (direct peer-to-peer connection, no third-party proxy). For Gmail, use the bundled `gog` skill (Google Workspace CLI) or direct Google API integration instead.
+
+**Alternatives considered:**
+- Keep skills but avoid providing the Maton key (rejected: skills are non-functional without it)
+- Use Maton with a throwaway account (rejected: defeats purpose and normalizes the pattern)
+
+**Rationale:** Any skill that requires routing credentials through a third-party proxy service should be treated as a security risk. The Maton gateway pattern is indistinguishable from credential-harvesting malware. OpenClaw provides native, direct-connection alternatives for both WhatsApp and Gmail.
+
+**Action items:**
+- Delete `MATON_API_KEY` from Bitwarden Secrets Manager (user action)
+- Set up built-in WhatsApp channel: `pnpm openclaw configure --section channels` (user action, QR scan required)

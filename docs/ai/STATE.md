@@ -2754,3 +2754,74 @@ None — this block is verification only.
 
 ### What's Next
 Proceed to Phase 6C.1 — weather skill integration test (invoke via Control UI or gateway API, validate response + audit log).
+
+---
+
+## Execution Block: Security — Remove Maton-Dependent Skills
+**Timestamp:** 2026-03-10 00:23
+**Branch:** main (AI-PM), master (open--claw)
+**Agent:** AGENT
+
+### 1. What Happened
+Identified and removed 2 ClawHub skills (`gmail`, `whatsapp-business`) that route all API traffic through `gateway.maton.ai`, a third-party credential-proxying service. This pattern requires users to hand OAuth tokens to Maton, who acts as a man-in-the-middle for all Gmail and WhatsApp API calls. Reverted startup script changes that added `MATON_API_KEY` support.
+
+### 2. Commands Run
+```
+npx clawhub uninstall gmail --yes
+npx clawhub uninstall whatsapp-business --yes
+# Edited start-cursor-with-secrets.ps1: removed MATON_API_KEY from $optionalVars, removed WSL .env sync block
+pnpm openclaw gateway --force
+pnpm openclaw skills list  # 18/58 ready (down from 19/60)
+```
+
+### 3. Outcome
+**PASS — Maton dependency fully removed**
+
+### 4. Evidence
+- `gmail` uninstalled: "Uninstalled gmail"
+- `whatsapp-business` uninstalled: "Uninstalled whatsapp-business"
+- `ls ~/.openclaw/workspace/skills/` shows 10 remaining workspace skills, none referencing Maton
+- `pnpm openclaw skills list` grep for gmail/whatsapp/maton: zero ClawHub matches
+- Gateway health: OK on port 18792
+- Skills count: 18/58 ready
+- `start-cursor-with-secrets.ps1`: MATON_API_KEY removed, WSL .env sync block removed
+
+### 5. Blockers
+- WhatsApp channel setup requires interactive QR code scan by user (`pnpm openclaw configure --section channels`)
+
+### 6. Decisions Made
+- Removed gmail and whatsapp-business ClawHub skills due to credential-proxying risk via gateway.maton.ai
+- Using OpenClaw's built-in WhatsApp channel (Baileys, direct peer-to-peer connection) instead
+- User should delete MATON_API_KEY from Bitwarden Secrets Manager
+
+### 7. Config/Infra Changes
+- `start-cursor-with-secrets.ps1`: removed MATON_API_KEY entry and WSL .env sync block
+- Gateway restarted without Maton skills
+
+### 8. Files Changed
+**Modified:**
+- `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1` (removed Maton refs + .env sync)
+- `AI-Project-Manager/docs/ai/STATE.md` (this entry)
+- `AI-Project-Manager/docs/ai/memory/DECISIONS.md` (security decision)
+- `open--claw/docs/ai/operations/SKILL_MANAGEMENT.md` (security warning)
+- `open--claw/docs/ai/STATE.md` (mirror entry)
+
+### 9. Tests Ran
+- Gateway health post-restart: PASS
+- Skill list post-removal: 18/58, no Maton skills present
+- grep for "maton" in workspace skills: zero matches
+
+### 10. Risk Assessment
+Low. Removal is additive to security. WhatsApp functionality preserved via built-in Baileys channel (requires user QR setup).
+
+### 11. Cross-Repo Impact
+- open--claw: 2 skills removed, SKILL_MANAGEMENT.md updated, STATE.md mirrored
+- AI-Project-Manager: STATE.md + DECISIONS.md
+
+### 12. Secrets
+None committed. MATON_API_KEY should be deleted from Bitwarden by user.
+
+### What's Next
+1. User runs `pnpm openclaw configure --section channels` to set up built-in WhatsApp (QR code scan)
+2. User deletes MATON_API_KEY from Bitwarden project
+3. Continue with remaining skill smoke tests and multi-skill workflows
