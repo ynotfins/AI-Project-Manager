@@ -18,8 +18,9 @@ Workspace context:
 - AI-Project-Manager = orchestrator / governor / workflow manager.
 - open--claw = autonomous operator / executor.
 - When both repos are open together, treat them as one coordinated system in a shared multi-root workspace.
+- In shared multi-root work, use repo-qualified paths whenever both repos are relevant.
 
-Read first (authoritative, repo-tracked, in this order):
+Initial review set (authoritative, repo-tracked, in this order):
 - docs/ai/CURSOR_WORKFLOW.md
 - AGENTS.md
 - .cursor/rules/00-global-core.md
@@ -31,7 +32,10 @@ Read first (authoritative, repo-tracked, in this order):
 - docs/ai/memory/DECISIONS.md (if it exists)
 - docs/ai/memory/PATTERNS.md (if it exists)
 - docs/ai/context/          ← non-canonical artifacts; consult only if STATE.md + DECISIONS.md + PATTERNS.md are insufficient
-- @Past Chats               ← last resort only; use only if all repo-tracked sources above are insufficient
+
+Repository truth rule:
+- Chat history is ephemeral and not authoritative.
+- Repository evidence overrides chat assumptions.
 
 Context reconstruction requirement:
 
@@ -44,7 +48,7 @@ Derive:
 - pending actions
 - cross-repo dependencies
 
-Use the following priority order:
+Operational truth priority:
 1. docs/ai/STATE.md
 2. docs/ai/PLAN.md
 3. docs/ai/memory/DECISIONS.md
@@ -52,10 +56,10 @@ Use the following priority order:
 5. HANDOFF.md (if present)
 
 Task:
-Create a Phase 0 plan to bootstrap this project safely and verifiably, using the repo’s workflow (PLAN/AGENT/DEBUG/ASK/ARCHIVE) and evidence-first discipline. If the paired repo in the shared workspace is directly relevant, account for that cross-repo state without changing the workflow or phase structure.
+Create a Phase 0 execution plan for the next safe, verifiable block of work using the repo’s workflow (PLAN/AGENT/DEBUG/ASK/ARCHIVE) and evidence-first discipline. If the paired repo in the shared workspace is directly relevant, account for that cross-repo state without changing the workflow or phase structure.
 
 Reasoning tool gate:
-- If Phase has >5 connected steps, use the “sequential-thinking” reasoning tool before finalizing.
+- If Phase 0 has >5 connected steps, use the “sequential-thinking” reasoning tool before finalizing.
 - If that tool is unavailable, explicitly state: “sequential-thinking: FAIL (unavailable)” and proceed with a clearly structured step breakdown anyway.
 
 Output (markdown), EXACTLY these 3 top-level items:

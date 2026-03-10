@@ -3043,3 +3043,147 @@ None
 1. Verify `commands.log` appears after next qualifying command event
 2. Phase 6C: First integration connection + approval gate test
 3. Close Phase 6C when all exit criteria are met
+
+## 2026-03-10 01:30 — Phase 6C.2 continued: WhatsApp verification + skill/integration audit
+
+### Goal
+Verify WhatsApp channel is fully operational, audit all 58 skills for readiness, and document the integration setup path for Gmail (gog), MXRoute email (imap-smtp-email), and text messaging.
+
+### Scope
+- Machine-local: gateway health, channels status, skill inventory
+- AI-Project-Manager: `docs/ai/STATE.md`
+- No code changes; informational/evidence audit only
+
+### Commands / Tool Calls
+- `pnpm openclaw health` — PASS: WhatsApp linked (auth age 8m), Agents: main (default), Signal failed (expected — no signal-cli)
+- `pnpm openclaw channels status` — PASS: WhatsApp default: enabled, configured, linked, running, connected, last inbound 18m ago, dm:allowlist, allow:+15614193784
+- `pnpm openclaw skills list` — PASS: 19/58 ready, full inventory captured
+- `clawhub inspect imap-smtp-email --files` — PASS: skill available on ClawHub (v0.0.9, 5 files)
+- `clawhub inspect imap-smtp-email --file SKILL.md` — PASS: full IMAP/SMTP configuration documented
+- `cat ~/openclaw-build/skills/gog/SKILL.md` — PASS: gog OAuth setup instructions read
+- `gog auth list` (via `~/.local/bin/gog`) — PASS: `No tokens stored` (OAuth not yet configured)
+- `find /home/ynotf -name "gog" -type f` — PASS: binary at `~/.local/bin/gog`
+
+### Changes
+None — this was an informational audit. STATE.md updated with findings.
+
+### Evidence
+
+**WhatsApp channel status:**
+
+| Property | Value |
+|---|---|
+| Status | linked, running, connected |
+| Phone | +15614193784 |
+| JID | 15614193784:30@s.whatsapp.net |
+| DM policy | allowlist (user's number only) |
+| selfChatMode | true |
+| Last inbound | 18 minutes prior to check |
+| Signal | failed (expected — signal-cli not installed) |
+
+**Skill inventory (19/58 ready):**
+
+| Ready Skills | Source |
+|---|---|
+| weather | openclaw-bundled |
+| github | openclaw-bundled |
+| gh-issues | openclaw-bundled |
+| gog (Gmail/Calendar/Drive) | openclaw-bundled |
+| clawhub | openclaw-bundled |
+| coding-agent | openclaw-bundled |
+| skill-creator | openclaw-bundled |
+| healthcheck | openclaw-bundled |
+| tmux | openclaw-bundled |
+| openai-image-gen | openclaw-bundled |
+| openai-whisper | openclaw-workspace |
+| openai-whisper-api | openclaw-bundled |
+| playwright-mcp | openclaw-workspace |
+| youtube-watcher | openclaw-workspace |
+| humanize-ai-text | openclaw-workspace |
+| api-gateway | openclaw-workspace |
+| proactive-agent | openclaw-workspace |
+| self-improvement | openclaw-workspace |
+| frontend-design | openclaw-workspace |
+
+**gog (Google Workspace) status:**
+- Binary: `~/.local/bin/gog` — present
+- Auth: `No tokens stored` — OAuth not configured
+- Requires: Google Cloud Console OAuth 2.0 "Desktop app" credential (`client_secret.json`)
+- Multi-account supported: `gog auth add <email> --services gmail,calendar,drive,contacts`
+- User's Google Cloud project "OpenClaw" exists but APIs not yet enabled and no OAuth credential downloaded
+
+**imap-smtp-email (MXRoute) status:**
+- Not installed locally — available on ClawHub v0.0.9
+- Requires: `IMAP_HOST`, `IMAP_USER`, `IMAP_PASS`, `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` in skill `.env`
+- MXRoute uses standard IMAP/SMTP — fully compatible
+- Also supports Gmail via App Password (not regular password)
+
+**Text messaging (SMS/iMessage) status:**
+- No viable path on Windows/WSL
+- `imsg` skill requires macOS Messages.app
+- `bluebubbles` skill requires macOS BlueBubbles server
+- WhatsApp is the messaging channel for this environment
+
+**REST API 405 impact assessment:**
+- Gateway version 2026.2.18 serves chat over WebSocket only (Control UI)
+- `/v1/chat/completions` and `/chat.send` return 405 Method Not Allowed on port 18789
+- Port 18792 health API works (`GET /` → `OK`) but has no chat endpoints
+- Impact: no programmatic `curl`-based chat; does NOT affect WhatsApp, Control UI, or any channel
+- Workaround if needed: enable Claude Max API Proxy (`openclaw proxy start`) for REST chat on port 3456
+
+**Agent bootstrap status:**
+- Agent has not been named yet — `BOOTSTRAP.md` is still present in workspace
+- First WhatsApp message will trigger the naming/personality conversation
+- Agent writes `IDENTITY.md` and `USER.md` to `~/.openclaw/workspace/` after bootstrap
+
+### Verdict
+READY — WhatsApp fully operational. 19 skills ready. Gmail and MXRoute email require user credential setup (documented). No blockers.
+
+### Blockers
+None
+
+### Fallbacks Used
+- `gog` not on default PATH → used absolute path `~/.local/bin/gog` — PASS
+- `bash -l` doesn't load nvm → used explicit `source ~/.nvm/nvm.sh` — PASS (known pattern)
+
+### Cross-Repo Impact
+None — informational audit only, no code changes in either repo.
+
+### Decisions Captured
+- WhatsApp is the primary messaging channel; SMS/iMessage not viable on Windows/WSL
+- `imap-smtp-email` from ClawHub is the path for MXRoute email (IMAP/SMTP, no Google OAuth needed)
+- `gog` supports multiple Gmail accounts via separate `gog auth add` calls; Google Cloud project is just the OAuth app, not tied to a specific Gmail account
+- REST API chat is not available on this gateway version; all chat goes through WebSocket (Control UI) or channels (WhatsApp)
+- Agent naming happens via first WhatsApp or Control UI conversation (reads `BOOTSTRAP.md`)
+
+### Pending Actions
+**USER ACTIONS REQUIRED (interactive — cannot be automated):**
+
+1. **Name the agent**: Send `hi` on WhatsApp → do the bootstrap conversation (2 min)
+2. **Gmail OAuth setup**:
+   - Google Cloud Console → "OpenClaw" project → APIs & Services → Library
+   - Enable: Gmail API, Google Calendar API, Google Drive API, People API
+   - Credentials → Create OAuth 2.0 Client ID → Desktop app → Download `client_secret_*.json`
+   - WSL: `cp /mnt/d/Downloads/client_secret_*.json ~/.config/gog/client_secret.json`
+   - WSL: `~/.local/bin/gog auth credentials ~/.config/gog/client_secret.json`
+   - WSL: `~/.local/bin/gog auth add ynotfins@gmail.com --services gmail,calendar,drive,contacts`
+   - Complete browser OAuth flow
+   - Verify: `~/.local/bin/gog auth list`
+3. **MXRoute email**: Tell AGENT to install `imap-smtp-email` from ClawHub and provide MXRoute credentials
+4. **Additional Gmail accounts** (optional): repeat `gog auth add <email>` for each account
+
+### What Remains Unverified
+**Machine-local:**
+- `gog` OAuth flow completion (requires user interaction with Google Cloud Console + browser)
+- MXRoute IMAP/SMTP connectivity (skill not installed yet)
+- `commands.log` audit file creation (command-logger hook enabled but no command event fired yet)
+- Agent bootstrap conversation (naming/personality — requires first WhatsApp message)
+
+**Repo-tracked:**
+- Phase 6C remaining exit criteria: first integration connected, approval gate tested
+
+### What's Next
+1. User names the agent via WhatsApp
+2. User completes Gmail OAuth setup (steps above)
+3. AGENT installs `imap-smtp-email` when user provides MXRoute credentials
+4. After Gmail + email working: test approval gate and close remaining Phase 6C criteria

@@ -42,3 +42,7 @@ Thumbs.db
 # OpenMemory - IDE/Assistant specific rules
 .cursor\rules\openmemory.mdc
 AGENTS.md
+
+# Evidence screenshots (ephemeral)
+*.png
+session-dropdown-snapshot.md
