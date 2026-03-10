@@ -2825,3 +2825,126 @@ None committed. MATON_API_KEY should be deleted from Bitwarden by user.
 1. User runs `pnpm openclaw configure --section channels` to set up built-in WhatsApp (QR code scan)
 2. User deletes MATON_API_KEY from Bitwarden project
 3. Continue with remaining skill smoke tests and multi-skill workflows
+
+---
+
+## 2026-03-10 00:30 — Session Bootstrap (Phase 0) + Gmail/WhatsApp Onboarding
+
+### Goal
+1. Verify runtime health, MCP tools, git cleanliness across both repos (session bootstrap).
+2. Install `gog` CLI (Gmail/Google Workspace) and `wacli` CLI (WhatsApp) and their dependencies.
+
+### Scope
+- AI-Project-Manager: git state, MCP tools, governance file commit, STATE.md
+- open--claw: git state verification
+- WSL: node, pnpm, gateway health, Go installation, gog install, wacli install, skill status
+
+### Commands / Tool Calls
+**Session Bootstrap:**
+- `git status` (AI-PM) — **PASS** — main, up to date, 1 modified + 2 untracked
+- `git status` (open--claw) — **PASS** — master, clean
+- `node -v` — **PASS** — v22.22.0
+- `pnpm -v` — **PASS** — 10.23.0
+- `curl -s http://localhost:18792/` — **PASS** — `OK`
+- `pnpm openclaw gateway status` — **WARN** — RPC probe: ok, systemd auto-restart loop
+- `pnpm openclaw health` — **PASS** — Agents: main (default)
+- `serena` check_onboarding_performed — **PASS** — 4 memories
+- `Context7` resolve-library-id — **PASS** — 5 libraries
+- `github` get_file_contents — **PASS** — AGENTS.md sha 9e56854
+- `openmemory` health-check — **PASS** — healthy, 7 tools
+- `sequential-thinking` — **PASS** — 4-step reasoning
+- `pnpm openclaw skills list | grep weather` — **PASS** — ✓ ready
+- Secret scan (staged files) — **PASS**
+- `git commit` 68cc685 — **PASS** — 3 governance files
+- `git push origin main` — **PASS**
+
+**Gmail/WhatsApp Onboarding:**
+- GitHub API: `steipete/gogcli` releases — **PASS** — v0.12.0 linux_amd64 binary found
+- GitHub API: `steipete/wacli` releases — **FAIL** — macOS only, no Linux builds
+- Download + extract gog v0.12.0 to `~/.local/bin/gog` — **PASS** — 25MB binary
+- `gog --version` — **PASS** — v0.12.0 (c18c58c)
+- Go 1.23.7 download + extract to `~/go/` — **PASS**
+- `go version` — **PASS** — go1.23.7 linux/amd64
+- `go install github.com/steipete/wacli/cmd/wacli@latest` — **PASS** — v0.2.0, auto-upgraded to go1.25.8
+- `wacli --version` — **PASS** — wacli dev
+- `~/.bashrc` updated: added `$HOME/.local/bin`, `$HOME/go/bin`, `$HOME/gopath/bin` to PATH + GOPATH
+- `pnpm openclaw skills list | grep gog` — **PASS** — ✓ ready
+- `pnpm openclaw skills list | grep wacli` — **PASS** — ✓ ready
+- Skills count: 20/58 ready (gog + wacli newly ready)
+
+### Changes
+- Installed Go 1.23.7 to `~/go/` (user-local, no sudo)
+- Installed `gog` v0.12.0 to `~/.local/bin/gog` (pre-built binary from GitHub)
+- Installed `wacli` v0.2.0 to `~/gopath/bin/wacli` (built from source via `go install`)
+- Updated `~/.bashrc` with Go + local bin PATH entries
+- Committed governance files (68cc685): CODEBASE_ORIENTATION.md, global-rules.md, TAB_BOOTSTRAP_PROMPTS.md
+- Committed STATE.md bootstrap entry (3d06bbc) — later overwritten by concurrent Maton removal session (d181965)
+
+### Evidence
+| Check | Result |
+|---|---|
+| gog CLI | PASS — v0.12.0, `✓ ready` in skill list |
+| wacli CLI | PASS — v0.2.0, `✓ ready` in skill list |
+| Go runtime | PASS — 1.23.7 linux/amd64 |
+| PATH config | PASS — ~/.local/bin, ~/go/bin, ~/gopath/bin added to bashrc |
+| Gateway | PASS (WARN: systemd auto-restart) |
+| All MCP tools | PASS (5/5) |
+
+### Verdict
+PARTIAL — CLIs installed and skills ready. Authentication requires human action (see Pending Actions).
+
+### Blockers
+- **Gmail**: No Google Cloud OAuth `client_secret.json` exists. User must create GCP project + OAuth credentials.
+- **WhatsApp**: `wacli auth` / `openclaw channels login whatsapp` requires interactive QR code scan from phone.
+
+### Fallbacks Used
+- gog install: GitHub pre-built binary instead of Homebrew (brew not available in WSL)
+- wacli install: `go install` from source instead of Homebrew (no Linux binary, no brew)
+- Go install: direct download from golang.org instead of `apt` (sudo unavailable)
+
+### Cross-Repo Impact
+open--claw: no direct changes. Skills are runtime artifacts in `~/openclaw-build/`. Concurrent session (d181965) removed Maton skills from both repos.
+
+### Decisions Captured
+- Go installed user-locally to `~/go/` (no system-wide install, no sudo required)
+- `gog` (bundled, direct Google API) is the Gmail path, NOT the removed ClawHub `gmail` skill (Maton proxy)
+- `wacli` + built-in Baileys channel is the WhatsApp path, NOT the removed `whatsapp-business` skill (Maton proxy)
+
+### Pending Actions
+**USER ACTIONS REQUIRED (interactive — cannot be automated):**
+
+**Gmail setup (gog):**
+1. Go to https://console.cloud.google.com/
+2. Create a new project (or use existing)
+3. Enable APIs: Gmail API, Calendar API, Drive API, Contacts API
+4. Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client ID"
+5. Application type: "Desktop app"
+6. Download the `client_secret_*.json` file
+7. Copy it to WSL: `cp /mnt/d/Downloads/client_secret_*.json ~/.config/gog/client_secret.json`
+8. In WSL terminal: `gog auth credentials ~/.config/gog/client_secret.json`
+9. In WSL terminal: `gog auth add YOUR_EMAIL@gmail.com --services gmail,calendar,drive,contacts`
+10. Complete the OAuth browser flow when prompted
+11. Verify: `gog auth list`
+
+**WhatsApp setup (built-in channel):**
+1. In WSL terminal: `cd ~/openclaw-build && pnpm openclaw channels login whatsapp`
+2. Scan the QR code with WhatsApp on your phone (WhatsApp → Settings → Linked Devices → Link a Device)
+3. Verify: `pnpm openclaw channels status`
+
+**Alternative WhatsApp (wacli standalone):**
+1. In WSL terminal: `wacli auth`
+2. Scan QR code
+3. Verify: `wacli chats list --limit 5`
+
+### What Remains Unverified
+- Gmail OAuth flow (requires human credential setup)
+- WhatsApp QR pairing (requires phone interaction)
+- Gateway restart after channel configuration
+- End-to-end message send/receive through both channels
+
+### What's Next
+1. User completes Gmail OAuth setup (steps above)
+2. User completes WhatsApp QR login (steps above)
+3. After both: restart gateway (`pnpm openclaw gateway restart`) and verify channels
+4. Test send/receive through each channel
+5. Log evidence in STATE.md
