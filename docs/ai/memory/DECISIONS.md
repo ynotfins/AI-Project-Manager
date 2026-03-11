@@ -198,3 +198,18 @@ Port 3000 is incorrect and should not be used in commands or documentation.
 **Action items:**
 - Delete `MATON_API_KEY` from Bitwarden Secrets Manager (user action)
 - Set up built-in WhatsApp channel: `pnpm openclaw configure --section channels` (user action, QR scan required)
+
+---
+
+### 2026-03-10: Vendor pin: v2026.3.8 shallow clone
+
+**Context:** The `open--claw/vendor/openclaw/` shallow clone was pinned to an untagged commit (b228c06, 2026-02-18), ~3 weeks behind the latest stable release. The WSL build copy at `~/openclaw-build/` was at version 2026.2.18. The upstream repo had published v2026.3.2, v2026.3.7, and v2026.3.8 since our clone was created.
+
+**Decision:** Replace both the Windows NTFS vendor clone and the WSL runtime build copy with fresh shallow clones (`--depth=1`) at the tagged release `v2026.3.8` (SHA 3caab92). Create `open--claw/VENDOR_PIN.md` as a tracked file documenting the exact pin state, clone command, and upgrade/rollback procedures.
+
+**Alternatives considered:**
+- Full clone with history (rejected: adds ~500MB+ of history we don't need; shallow at tagged release is deterministic and lightweight)
+- Sparse checkout of only needed paths (rejected: we need the full tree for Android app, shared kit, skills, extensions, and gateway source)
+- Git fetch + checkout to update in-place (rejected: shallow clone cannot reliably fetch arbitrary tags; fresh clone is cleaner)
+
+**Rationale:** Pinning to a tagged release provides a deterministic, reproducible vendor state. The VENDOR_PIN.md file formalizes the upgrade procedure, preventing ad-hoc untracked drift. v2026.3.8 is the latest stable and includes security fixes. Skills count was preserved (19/58 → 19/59, gained 1 upstream skill).

@@ -3187,3 +3187,63 @@ None — informational audit only, no code changes in either repo.
 2. User completes Gmail OAuth setup (steps above)
 3. AGENT installs `imap-smtp-email` when user provides MXRoute credentials
 4. After Gmail + email working: test approval gate and close remaining Phase 6C criteria
+
+---
+
+## 2026-03-10 22:40 — Vendor Clone Pin: v2026.3.8 (mirror)
+
+### Goal
+Replace the untagged shallow vendor clone (commit b228c06, 2026-02-18) with a shallow clone pinned to the latest stable release v2026.3.8 on both Windows NTFS and WSL, then verify gateway stability at the new version.
+
+### Scope
+- `open--claw/vendor/openclaw/` (replaced, gitignored)
+- `~/openclaw-build/` (WSL, replaced and rebuilt)
+- `open--claw/VENDOR_PIN.md` (created, tracked)
+- Both repos' `docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/memory/DECISIONS.md`
+
+### Commands / Tool Calls
+Full command log in `open--claw/docs/ai/STATE.md`. Key commands: `git clone --depth=1 --branch v2026.3.8`, `pnpm install`, `pnpm build`, `pnpm ui:build`, `systemctl --user restart openclaw-gateway.service`.
+
+### Changes
+- Vendor clone upgraded from untagged b228c06 (2026-02-18) to tagged v2026.3.8 (SHA 3caab92) on both NTFS and WSL.
+- Gateway rebuilt and restarted at new version.
+- `open--claw/VENDOR_PIN.md` created with pin metadata and upgrade/rollback procedures.
+- This mirror entry appended to AI-PM STATE.md.
+- Vendor pin decision recorded in DECISIONS.md.
+
+### Evidence
+| Check | Result |
+|-------|--------|
+| NTFS clone at v2026.3.8 | PASS — 8060 files, version 2026.3.8 |
+| WSL clone + rebuild | PASS — pnpm install/build/ui:build all exit 0 |
+| Gateway health at new version | PASS — running, RPC probe ok, curl OK |
+| Skills post-upgrade | PASS — 19/59 ready (was 19/58, gained 1 from upstream) |
+| MCP tools (Context7, github, openmemory) | PASS — all responsive |
+
+### Verdict
+READY — vendor clone pinned, gateway stable at v2026.3.8.
+
+### Blockers
+None
+
+### Fallbacks Used
+- NTFS rename blocked by broken pnpm symlinks; used node_modules removal + Move-Item -Force.
+- Interactive onboard blocked; used direct systemctl restart.
+
+### Cross-Repo Impact
+- open--claw: VENDOR_PIN.md created, full STATE entry with all evidence.
+- AI-Project-Manager: this mirror entry + DECISIONS.md.
+
+### Decisions Captured
+Vendor pin: v2026.3.8 shallow clone. See DECISIONS.md entry below.
+
+### Pending Actions
+- Remove backup directories after 24h: `vendor/openclaw.bak` (Windows), `~/openclaw-build.bak` (WSL).
+
+### What Remains Unverified
+- 24-hour gateway stability at v2026.3.8.
+
+### What's Next
+1. Remove backup directories after 24h verification
+2. Continue Phase 2 exit criteria: agent naming, Gmail OAuth, email integration
