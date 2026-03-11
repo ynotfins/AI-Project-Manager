@@ -15,6 +15,7 @@ This repo uses a five-tab Cursor workflow: PLAN / AGENT / DEBUG / ASK / ARCHIVE.
 - `docs/ai/STATE.md` — **primary operational log**; PLAN reads this first to understand current state, blockers, fallbacks, and cross-repo effects. AGENT updates it after every execution block using the enforced template in `10-project-workflow.md`.
 - `docs/ai/PLAN.md` — active plan with phases and exit criteria
 - `docs/ai/context/` — non-canonical artifact storage: session transcripts, bulk dumps, and ephemeral context files. Informative only; never authoritative.
+- `docs/ai/archive/` — superseded docs. **Never consulted** by PLAN. Historical reference only.
 
 ## Context source priority (read in this order)
 

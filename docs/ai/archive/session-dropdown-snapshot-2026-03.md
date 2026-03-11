@@ -1,0 +1,1340 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - button "Collapse sidebar" [ref=e6] [cursor=pointer]:
+        - img [ref=e8]
+      - generic [ref=e9]:
+        - img "OpenClaw" [ref=e11]
+        - generic [ref=e12]:
+          - generic [ref=e13]: OPENCLAW
+          - generic [ref=e14]: Gateway Dashboard
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e18]: Health
+        - generic [ref=e19]: OK
+      - group "Theme" [ref=e21]:
+        - button "System theme" [pressed] [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+        - button "Light theme" [ref=e26] [cursor=pointer]:
+          - img [ref=e27]
+        - button "Dark theme" [ref=e33] [cursor=pointer]:
+          - img [ref=e34]
+  - complementary [ref=e36]:
+    - generic [ref=e37]:
+      - button "Chat −" [expanded] [ref=e38] [cursor=pointer]:
+        - generic [ref=e39]: Chat
+        - generic [ref=e40]: −
+      - link "Chat" [ref=e42] [cursor=pointer]:
+        - /url: /chat
+        - img [ref=e44]
+        - generic [ref=e46]: Chat
+    - generic [ref=e47]:
+      - button "Control −" [expanded] [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: Control
+        - generic [ref=e50]: −
+      - generic [ref=e51]:
+        - link "Overview" [ref=e52] [cursor=pointer]:
+          - /url: /overview
+          - img [ref=e54]
+          - generic [ref=e55]: Overview
+        - link "Channels" [ref=e56] [cursor=pointer]:
+          - /url: /channels
+          - img [ref=e58]
+          - generic [ref=e61]: Channels
+        - link "Instances" [ref=e62] [cursor=pointer]:
+          - /url: /instances
+          - img [ref=e64]
+          - generic [ref=e67]: Instances
+        - link "Sessions" [ref=e68] [cursor=pointer]:
+          - /url: /sessions
+          - img [ref=e70]
+          - generic [ref=e73]: Sessions
+        - link "Usage" [ref=e74] [cursor=pointer]:
+          - /url: /usage
+          - img [ref=e76]
+          - generic [ref=e77]: Usage
+        - link "Cron Jobs" [ref=e78] [cursor=pointer]:
+          - /url: /cron
+          - img [ref=e80]
+          - generic [ref=e85]: Cron Jobs
+    - generic [ref=e86]:
+      - button "Agent −" [expanded] [ref=e87] [cursor=pointer]:
+        - generic [ref=e88]: Agent
+        - generic [ref=e89]: −
+      - generic [ref=e90]:
+        - link "Agents" [ref=e91] [cursor=pointer]:
+          - /url: /agents
+          - img [ref=e93]
+          - generic [ref=e95]: Agents
+        - link "Skills" [ref=e96] [cursor=pointer]:
+          - /url: /skills
+          - img [ref=e98]
+          - generic [ref=e100]: Skills
+        - link "Nodes" [ref=e101] [cursor=pointer]:
+          - /url: /nodes
+          - img [ref=e103]
+          - generic [ref=e105]: Nodes
+    - generic [ref=e106]:
+      - button "Settings −" [expanded] [ref=e107] [cursor=pointer]:
+        - generic [ref=e108]: Settings
+        - generic [ref=e109]: −
+      - generic [ref=e110]:
+        - link "Config" [ref=e111] [cursor=pointer]:
+          - /url: /config
+          - img [ref=e113]
+          - generic [ref=e116]: Config
+        - link "Debug" [ref=e117] [cursor=pointer]:
+          - /url: /debug
+          - img [ref=e119]
+          - generic [ref=e128]: Debug
+        - link "Logs" [ref=e129] [cursor=pointer]:
+          - /url: /logs
+          - img [ref=e131]
+          - generic [ref=e134]: Logs
+    - generic [ref=e135]:
+      - generic [ref=e137]: Resources
+      - link "Docs" [ref=e139] [cursor=pointer]:
+        - /url: https://docs.openclaw.ai
+        - img [ref=e141]
+        - generic [ref=e143]: Docs
+  - main [ref=e144]:
+    - generic [ref=e145]:
+      - generic [ref=e146]:
+        - generic [ref=e147]: Chat
+        - generic [ref=e148]: Direct gateway chat session for quick interventions.
+      - generic [ref=e150]:
+        - combobox [active] [ref=e152] [cursor=pointer]:
+          - option "whatsapp:g-agent-main-main" [selected]
+        - button "Refresh chat data" [ref=e153] [cursor=pointer]:
+          - img [ref=e154]
+        - generic [ref=e157]: "|"
+        - button "Toggle assistant thinking/working output" [pressed] [ref=e158] [cursor=pointer]:
+          - img [ref=e159]
+        - button "Toggle focus mode (hide sidebar + page header)" [ref=e169] [cursor=pointer]:
+          - img [ref=e170]
+    - generic [ref=e176]:
+      - log [ref=e179]:
+        - generic [ref=e189]:
+          - generic [ref=e190]: U
+          - generic [ref=e191]:
+            - generic [ref=e193]:
+              - paragraph [ref=e194]: "Conversation info (untrusted metadata):"
+              - code [ref=e196]: "{ \"message_id\": \"5a47a2b6-86fd-4c0a-b0d0-770b0e3b8d0f\", \"sender\": \"openclaw-control-ui\" }"
+              - paragraph [ref=e197]: "[Sun 2026-03-08 20:00 EDT] Hello, confirm you are responding via the OpenClaw gateway on ChaosCentral. Report your model name."
+            - generic [ref=e198]:
+              - generic [ref=e199]: You
+              - generic [ref=e200]: 8:00 PM
+        - generic [ref=e201]:
+          - generic [ref=e202]: A
+          - generic [ref=e203]:
+            - generic [ref=e204]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - generic [ref=e205]:
+                - paragraph [ref=e206]:
+                  - text: "Hey. I'm here on ChaosCentral, responding through the OpenClaw gateway. Model:"
+                  - strong [ref=e207]: Claude Opus 4 (anthropic/claude-opus-4-6)
+                  - text: .
+                - paragraph [ref=e208]:
+                  - text: I notice I've got a
+                  - code [ref=e209]: BOOTSTRAP.md
+                  - text: — this is a fresh start. So... who are you, and what should I call you? And while we're at it — got a name in mind for me, or should I suggest something?
+            - generic [ref=e210]:
+              - generic [ref=e211]: Assistant
+              - generic [ref=e212]: 8:00 PM
+        - generic [ref=e213]:
+          - generic [ref=e214]: U
+          - generic [ref=e215]:
+            - paragraph [ref=e218]: What is the weather in New York?
+            - generic [ref=e219]:
+              - generic [ref=e220]: You
+              - generic [ref=e221]: 6:47 PM
+        - generic [ref=e222]:
+          - generic [ref=e223]: A
+          - generic [ref=e224]:
+            - button "Read from ~/openclaw-build/skills/weather/SKILL.md Completed" [ref=e226] [cursor=pointer]:
+              - generic [ref=e227]:
+                - generic [ref=e228]:
+                  - img [ref=e230]
+                  - generic [ref=e233]: Read
+                - img [ref=e235]
+              - generic [ref=e237]: from ~/openclaw-build/skills/weather/SKILL.md
+              - generic [ref=e238]: Completed
+            - generic [ref=e239]:
+              - generic [ref=e240]: Assistant
+              - generic [ref=e241]: 6:47 PM
+        - generic [ref=e242]:
+          - generic [ref=e243]: ⚙
+          - generic [ref=e244]:
+            - generic [ref=e245]:
+              - generic [ref=e246]:
+                - separator [ref=e247]
+                - 'heading "name: weather description: \"Get current weather and forecasts via wttr.in or Open-Meteo. Use when: user asks about weather, temperature, or forecasts for any location. NOT for: historical weather data, severe weather alerts, or detailed meteorological analysis. No API key needed.\" homepage: https://wttr.in/:help metadata: { \"openclaw\": { \"emoji\": \"🌤️\", \"requires\": { \"bins\": [\"curl\"] } } }" [level=2] [ref=e248]':
+                  - text: "name: weather"
+                  - text: "description: \"Get current weather and forecasts via wttr.in or Open-Meteo. Use when: user asks about weather, temperature, or forecasts for any location. NOT for: historical weather data, severe weather alerts, or detailed meteorological analysis. No API key needed.\""
+                  - text: "homepage:"
+                  - link "https://wttr.in/:help" [ref=e249] [cursor=pointer]:
+                    - /url: https://wttr.in/:help
+                  - text: "metadata: { \"openclaw\": { \"emoji\": \"🌤️\", \"requires\": { \"bins\": [\"curl\"] } } }"
+                - heading "Weather Skill" [level=1] [ref=e250]
+                - paragraph [ref=e251]: Get current weather conditions and forecasts.
+                - heading "When to Use" [level=2] [ref=e252]
+                - paragraph [ref=e253]:
+                  - text: ✅
+                  - strong [ref=e254]: "USE this skill when:"
+                - list [ref=e255]:
+                  - listitem [ref=e256]: "\"What's the weather?\""
+                  - listitem [ref=e257]: "\"Will it rain today/tomorrow?\""
+                  - listitem [ref=e258]: "\"Temperature in [city]\""
+                  - listitem [ref=e259]: "\"Weather forecast for the week\""
+                  - listitem [ref=e260]: Travel planning weather checks
+                - heading "When NOT to Use" [level=2] [ref=e261]
+                - paragraph [ref=e262]:
+                  - text: ❌
+                  - strong [ref=e263]: "DON'T use this skill when:"
+                - list [ref=e264]:
+                  - listitem [ref=e265]: Historical weather data → use weather archives/APIs
+                  - listitem [ref=e266]: Climate analysis or trends → use specialized data sources
+                  - listitem [ref=e267]: Hyper-local microclimate data → use local sensors
+                  - listitem [ref=e268]: Severe weather alerts → check official NWS sources
+                  - listitem [ref=e269]: Aviation/marine weather → use specialized services (METAR, etc.)
+                - heading "Location" [level=2] [ref=e270]
+                - paragraph [ref=e271]: Always include a city, region, or airport code in weather queries.
+                - heading "Commands" [level=2] [ref=e272]
+                - heading "Current Weather" [level=3] [ref=e273]
+                - code [ref=e275]: "# One-line summary curl \"wttr.in/London?format=3\" # Detailed current conditions curl \"wttr.in/London?0\" # Specific city curl \"wttr.in/New+York?format=3\""
+                - heading "Forecasts" [level=3] [ref=e276]
+                - code [ref=e278]: "# 3-day forecast curl \"wttr.in/London\" # Week forecast curl \"wttr.in/London?format=v2\" # Specific day (0=today, 1=tomorrow, 2=day after) curl \"wttr.in/London?1\""
+                - heading "Format Options" [level=3] [ref=e279]
+                - code [ref=e281]: "# One-liner curl \"wttr.in/London?format=%l:+%c+%t+%w\" # JSON output curl \"wttr.in/London?format=j1\" # PNG image curl \"wttr.in/London.png\""
+                - heading "Format Codes" [level=3] [ref=e282]
+                - list [ref=e283]:
+                  - listitem [ref=e284]:
+                    - code [ref=e285]: "%c"
+                    - text: — Weather condition emoji
+                  - listitem [ref=e286]:
+                    - code [ref=e287]: "%t"
+                    - text: — Temperature
+                  - listitem [ref=e288]:
+                    - code [ref=e289]: "%f"
+                    - text: — "Feels like"
+                  - listitem [ref=e290]:
+                    - code [ref=e291]: "%w"
+                    - text: — Wind
+                  - listitem [ref=e292]:
+                    - code [ref=e293]: "%h"
+                    - text: — Humidity
+                  - listitem [ref=e294]:
+                    - code [ref=e295]: "%p"
+                    - text: — Precipitation
+                  - listitem [ref=e296]:
+                    - code [ref=e297]: "%l"
+                    - text: — Location
+                - heading "Quick Responses" [level=2] [ref=e298]
+                - paragraph [ref=e299]:
+                  - strong [ref=e300]: "\"What's the weather?\""
+                - code [ref=e302]: curl -s "wttr.in/London?format=%l:+%c+%t+(feels+like+%f),+%w+wind,+%h+humidity"
+                - paragraph [ref=e303]:
+                  - strong [ref=e304]: "\"Will it rain?\""
+                - code [ref=e306]: curl -s "wttr.in/London?format=%l:+%c+%p"
+                - paragraph [ref=e307]:
+                  - strong [ref=e308]: "\"Weekend forecast\""
+                - code [ref=e310]: curl "wttr.in/London?format=v2"
+                - heading "Notes" [level=2] [ref=e311]
+                - list [ref=e312]:
+                  - listitem [ref=e313]: No API key needed (uses wttr.in)
+                  - listitem [ref=e314]: Rate limited; don't spam requests
+                  - listitem [ref=e315]: Works for most global cities
+                  - listitem [ref=e316]:
+                    - text: "Supports airport codes:"
+                    - code [ref=e317]: curl wttr.in/ORD
+              - 'button "Read View --- name: weather…" [ref=e318] [cursor=pointer]':
+                - generic [ref=e319]:
+                  - generic [ref=e320]:
+                    - img [ref=e322]
+                    - generic [ref=e325]: Read
+                  - generic [ref=e326]:
+                    - text: View
+                    - img [ref=e327]
+                - generic [ref=e329]: "--- name: weather…"
+            - generic [ref=e330]:
+              - generic [ref=e331]: tool
+              - generic [ref=e332]: 6:47 PM
+        - generic [ref=e333]:
+          - generic [ref=e334]: A
+          - generic [ref=e335]:
+            - button "Exec fetch url Completed" [ref=e337] [cursor=pointer]:
+              - generic [ref=e338]:
+                - generic [ref=e339]:
+                  - img [ref=e341]
+                  - generic [ref=e343]: Exec
+                - img [ref=e345]
+              - generic [ref=e347]: fetch url
+              - generic [ref=e348]: Completed
+            - generic [ref=e349]:
+              - generic [ref=e350]: Assistant
+              - generic [ref=e351]: 6:47 PM
+        - generic [ref=e352]:
+          - generic [ref=e353]: ⚙
+          - generic [ref=e354]:
+            - generic [ref=e355]:
+              - paragraph [ref=e357]: ☀️ +71°F (feels like +71°F), ↑8mph wind, 28% humidity
+              - button "Exec View ☀️ +71°F (feels like +71°F), ↑8mph wind, 28% humidity" [ref=e358] [cursor=pointer]:
+                - generic [ref=e359]:
+                  - generic [ref=e360]:
+                    - img [ref=e362]
+                    - generic [ref=e364]: Exec
+                  - generic [ref=e365]:
+                    - text: View
+                    - img [ref=e366]
+                - generic [ref=e368]: ☀️ +71°F (feels like +71°F), ↑8mph wind, 28% humidity
+            - generic [ref=e369]:
+              - generic [ref=e370]: tool
+              - generic [ref=e371]: 6:47 PM
+        - generic [ref=e372]:
+          - generic [ref=e373]: A
+          - generic [ref=e374]:
+            - generic [ref=e375]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - paragraph [ref=e377]:
+                - strong [ref=e378]: "New York right now:"
+                - text: ☀️ 71°F (feels like 71°F), 8 mph wind, 28% humidity. Clear and nice out.
+            - generic [ref=e379]:
+              - generic [ref=e380]: Assistant
+              - generic [ref=e381]: 6:47 PM
+        - generic [ref=e382]:
+          - generic [ref=e383]: U
+          - generic [ref=e384]:
+            - paragraph [ref=e387]: Run a healthcheck on this system
+            - generic [ref=e388]:
+              - generic [ref=e389]: You
+              - generic [ref=e390]: 6:47 PM
+        - generic [ref=e391]:
+          - generic [ref=e392]: A
+          - generic [ref=e393]:
+            - button "Read from ~/openclaw-build/skills/healthcheck/SKILL.md Completed" [ref=e395] [cursor=pointer]:
+              - generic [ref=e396]:
+                - generic [ref=e397]:
+                  - img [ref=e399]
+                  - generic [ref=e402]: Read
+                - img [ref=e404]
+              - generic [ref=e406]: from ~/openclaw-build/skills/healthcheck/SKILL.md
+              - generic [ref=e407]: Completed
+            - generic [ref=e408]:
+              - generic [ref=e409]: Assistant
+              - generic [ref=e410]: 6:47 PM
+        - generic [ref=e411]:
+          - generic [ref=e412]: ⚙
+          - generic [ref=e413]:
+            - generic [ref=e414]:
+              - generic [ref=e415]:
+                - separator [ref=e416]
+                - 'heading "name: healthcheck description: Host security hardening and risk-tolerance configuration for OpenClaw deployments. Use when a user asks for security audits, firewall/SSH/update hardening, risk posture, exposure review, OpenClaw cron scheduling for periodic checks, or version status checks on a machine running OpenClaw (laptop, workstation, Pi, VPS)." [level=2] [ref=e417]':
+                  - text: "name: healthcheck"
+                  - text: "description: Host security hardening and risk-tolerance configuration for OpenClaw deployments. Use when a user asks for security audits, firewall/SSH/update hardening, risk posture, exposure review, OpenClaw cron scheduling for periodic checks, or version status checks on a machine running OpenClaw (laptop, workstation, Pi, VPS)."
+                - heading "OpenClaw Host Hardening" [level=1] [ref=e418]
+                - heading "Overview" [level=2] [ref=e419]
+                - paragraph [ref=e420]: Assess and harden the host running OpenClaw, then align it to a user-defined risk tolerance without breaking access. Use OpenClaw security tooling as a first-class signal, but treat OS hardening as a separate, explicit set of steps.
+                - heading "Core rules" [level=2] [ref=e421]
+                - list [ref=e422]:
+                  - listitem [ref=e423]: Recommend running this skill with a state-of-the-art model (e.g., Opus 4.5, GPT 5.2+). The agent should self-check the current model and suggest switching if below that level; do not block execution.
+                  - listitem [ref=e424]: Require explicit approval before any state-changing action.
+                  - listitem [ref=e425]: Do not modify remote access settings without confirming how the user connects.
+                  - listitem [ref=e426]: Prefer reversible, staged changes with a rollback plan.
+                  - listitem [ref=e427]: Never claim OpenClaw changes the host firewall, SSH, or OS updates; it does not.
+                  - listitem [ref=e428]: If role/identity is unknown, provide recommendations only.
+                  - listitem [ref=e429]: "Formatting: every set of user choices must be numbered so the user can reply with a single digit."
+                  - listitem [ref=e430]: System-level backups are recommended; try to verify status.
+                - heading "Workflow (follow in order)" [level=2] [ref=e431]
+                - heading "0) Model self-check (non-blocking)" [level=3] [ref=e432]
+                - paragraph [ref=e433]: Before starting, check the current model. If it is below state-of-the-art (e.g., Opus 4.5, GPT 5.2+), recommend switching. Do not block execution.
+                - heading "1) Establish context (read-only)" [level=3] [ref=e434]
+                - paragraph [ref=e435]: Try to infer 1–5 from the environment before asking. Prefer simple, non-technical questions if you need confirmation.
+                - paragraph [ref=e436]: "Determine (in order):"
+                - list [ref=e437]:
+                  - listitem [ref=e438]: OS and version (Linux/macOS/Windows), container vs host.
+                  - listitem [ref=e439]: Privilege level (root/admin vs user).
+                  - listitem [ref=e440]: Access path (local console, SSH, RDP, tailnet).
+                  - listitem [ref=e441]: Network exposure (public IP, reverse proxy, tunnel).
+                  - listitem [ref=e442]: OpenClaw gateway status and bind address.
+                  - listitem [ref=e443]: Backup system and status (e.g., Time Machine, system images, snapshots).
+                  - listitem [ref=e444]: Deployment context (local mac app, headless gateway host, remote gateway, container/CI).
+                  - listitem [ref=e445]: Disk encryption status (FileVault/LUKS/BitLocker).
+                  - listitem [ref=e446]:
+                    - text: OS automatic security updates status.
+                    - text: "Note: these are not blocking items, but are highly recommended, especially if OpenClaw can access sensitive data."
+                  - listitem [ref=e447]: Usage mode for a personal assistant with full access (local workstation vs headless/remote vs other).
+                - paragraph [ref=e448]: First ask once for permission to run read-only checks. If granted, run them by default and only ask questions for items you cannot infer or verify. Do not ask for information already visible in runtime or command output. Keep the permission ask as a single sentence, and list follow-up info needed as an unordered list (not numbered) unless you are presenting selectable choices.
+                - paragraph [ref=e449]: "If you must ask, use non-technical prompts:"
+                - list [ref=e450]:
+                  - listitem [ref=e451]: “Are you using a Mac, Windows PC, or Linux?”
+                  - listitem [ref=e452]: “Are you logged in directly on the machine, or connecting from another computer?”
+                  - listitem [ref=e453]: “Is this machine reachable from the public internet, or only on your home/network?”
+                  - listitem [ref=e454]: “Do you have backups enabled (e.g., Time Machine), and are they current?”
+                  - listitem [ref=e455]: “Is disk encryption turned on (FileVault/BitLocker/LUKS)?”
+                  - listitem [ref=e456]: “Are automatic security updates enabled?”
+                  - listitem [ref=e457]:
+                    - text: “How do you use this machine?”
+                    - text: "Examples:"
+                    - list [ref=e458]:
+                      - listitem [ref=e459]: Personal machine shared with the assistant
+                      - listitem [ref=e460]: Dedicated local machine for the assistant
+                      - listitem [ref=e461]: Dedicated remote machine/server accessed remotely (always on)
+                      - listitem [ref=e462]: Something else?
+                - paragraph [ref=e463]: Only ask for the risk profile after system context is known.
+                - paragraph [ref=e464]: "If the user grants read-only permission, run the OS-appropriate checks by default. If not, offer them (numbered). Examples:"
+                - list [ref=e465]:
+                  - listitem [ref=e466]:
+                    - text: "OS:"
+                    - code [ref=e467]: uname -a
+                    - text: ","
+                    - code [ref=e468]: sw_vers
+                    - text: ","
+                    - code [ref=e469]: cat /etc/os-release
+                    - text: .
+                  - listitem [ref=e470]:
+                    - text: "Listening ports:"
+                    - list [ref=e471]:
+                      - listitem [ref=e472]:
+                        - text: "Linux:"
+                        - code [ref=e473]: ss -ltnup
+                        - text: (or
+                        - code [ref=e474]: ss -ltnp
+                        - text: if
+                        - code [ref=e475]: "-u"
+                        - text: unsupported).
+                      - listitem [ref=e476]:
+                        - text: "macOS:"
+                        - code [ref=e477]: lsof -nP -iTCP -sTCP:LISTEN
+                        - text: .
+                  - listitem [ref=e478]:
+                    - text: "Firewall status:"
+                    - list [ref=e479]:
+                      - listitem [ref=e480]:
+                        - text: "Linux:"
+                        - code [ref=e481]: ufw status
+                        - text: ","
+                        - code [ref=e482]: firewall-cmd --state
+                        - text: ","
+                        - code [ref=e483]: nft list ruleset
+                        - text: (pick what is installed).
+                      - listitem [ref=e484]:
+                        - text: "macOS:"
+                        - code [ref=e485]: /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate
+                        - text: and
+                        - code [ref=e486]: pfctl -s info
+                        - text: .
+                  - listitem [ref=e487]:
+                    - text: "Backups (macOS):"
+                    - code [ref=e488]: tmutil status
+                    - text: (if Time Machine is used).
+                - heading "2) Run OpenClaw security audits (read-only)" [level=3] [ref=e489]
+                - paragraph [ref=e490]:
+                  - text: As part of the default read-only checks, run
+                  - code [ref=e491]: openclaw security audit --deep
+                  - text: ". Only offer alternatives if the user requests them:"
+                - list [ref=e492]:
+                  - listitem [ref=e493]:
+                    - code [ref=e494]: openclaw security audit
+                    - text: (faster, non-probing)
+                  - listitem [ref=e495]:
+                    - code [ref=e496]: openclaw security audit --json
+                    - text: (structured output)
+                - paragraph [ref=e497]: "Offer to apply OpenClaw safe defaults (numbered):"
+                - list [ref=e498]:
+                  - listitem [ref=e499]:
+                    - code [ref=e500]: openclaw security audit --fix
+                - paragraph [ref=e501]:
+                  - text: Be explicit that
+                  - code [ref=e502]: "--fix"
+                  - text: only tightens OpenClaw defaults and file permissions. It does not change host firewall, SSH, or OS update policies.
+                - paragraph [ref=e503]: If browser control is enabled, recommend that 2FA be enabled on all important accounts, with hardware keys preferred and SMS not sufficient.
+                - heading "3) Check OpenClaw version/update status (read-only)" [level=3] [ref=e504]
+                - paragraph [ref=e505]:
+                  - text: As part of the default read-only checks, run
+                  - code [ref=e506]: openclaw update status
+                  - text: .
+                - paragraph [ref=e507]: Report the current channel and whether an update is available.
+                - heading "4) Determine risk tolerance (after system context)" [level=3] [ref=e508]
+                - paragraph [ref=e509]:
+                  - text: Ask the user to pick or confirm a risk posture and any required open services/ports (numbered choices below).
+                  - text: Do not pigeonhole into fixed profiles; if the user prefers, capture requirements instead of choosing a profile.
+                  - text: "Offer suggested profiles as optional defaults (numbered). Note that most users pick Home/Workstation Balanced:"
+                - list [ref=e510]:
+                  - listitem [ref=e511]: "Home/Workstation Balanced (most common): firewall on with reasonable defaults, remote access restricted to LAN or tailnet."
+                  - listitem [ref=e512]: "VPS Hardened: deny-by-default inbound firewall, minimal open ports, key-only SSH, no root login, automatic security updates."
+                  - listitem [ref=e513]: "Developer Convenience: more local services allowed, explicit exposure warnings, still audited."
+                  - listitem [ref=e514]: "Custom: user-defined constraints (services, exposure, update cadence, access methods)."
+                - heading "5) Produce a remediation plan" [level=3] [ref=e515]
+                - paragraph [ref=e516]: "Provide a plan that includes:"
+                - list [ref=e517]:
+                  - listitem [ref=e518]: Target profile
+                  - listitem [ref=e519]: Current posture summary
+                  - listitem [ref=e520]: Gaps vs target
+                  - listitem [ref=e521]: Step-by-step remediation with exact commands
+                  - listitem [ref=e522]: Access-preservation strategy and rollback
+                  - listitem [ref=e523]: Risks and potential lockout scenarios
+                  - listitem [ref=e524]: Least-privilege notes (e.g., avoid admin usage, tighten ownership/permissions where safe)
+                  - listitem [ref=e525]: Credential hygiene notes (location of OpenClaw creds, prefer disk encryption)
+                - paragraph [ref=e526]: Always show the plan before any changes.
+                - heading "6) Offer execution options" [level=3] [ref=e527]
+                - paragraph [ref=e528]: "Offer one of these choices (numbered so users can reply with a single digit):"
+                - list [ref=e529]:
+                  - listitem [ref=e530]: Do it for me (guided, step-by-step approvals)
+                  - listitem [ref=e531]: Show plan only
+                  - listitem [ref=e532]: Fix only critical issues
+                  - listitem [ref=e533]: Export commands for later
+                - heading "7) Execute with confirmations" [level=3] [ref=e534]
+                - paragraph [ref=e535]: "For each step:"
+                - list [ref=e536]:
+                  - listitem [ref=e537]: Show the exact command
+                  - listitem [ref=e538]: Explain impact and rollback
+                  - listitem [ref=e539]: Confirm access will remain available
+                  - listitem [ref=e540]: Stop on unexpected output and ask for guidance
+                - heading "8) Verify and report" [level=3] [ref=e541]
+                - paragraph [ref=e542]: "Re-check:"
+                - list [ref=e543]:
+                  - listitem [ref=e544]: Firewall status
+                  - listitem [ref=e545]: Listening ports
+                  - listitem [ref=e546]: Remote access still works
+                  - listitem [ref=e547]: OpenClaw security audit (re-run)
+                - paragraph [ref=e548]: Deliver a final posture report and note any deferred items.
+                - heading "Required confirmations (always)" [level=2] [ref=e549]
+                - paragraph [ref=e550]: "Require explicit approval for:"
+                - list [ref=e551]:
+                  - listitem [ref=e552]: Firewall rule changes
+                  - listitem [ref=e553]: Opening/closing ports
+                  - listitem [ref=e554]: SSH/RDP configuration changes
+                  - listitem [ref=e555]: Installing/removing packages
+                  - listitem [ref=e556]: Enabling/disabling services
+                  - listitem [ref=e557]: User/group modifications
+                  - listitem [ref=e558]: Scheduling tasks or startup persistence
+                  - listitem [ref=e559]: Update policy changes
+                  - listitem [ref=e560]: Access to sensitive files or credentials
+                - paragraph [ref=e561]: If unsure, ask.
+                - heading "Periodic checks" [level=2] [ref=e562]
+                - paragraph [ref=e563]: "After OpenClaw install or first hardening pass, run at least one baseline audit and version check:"
+                - list [ref=e564]:
+                  - listitem [ref=e565]:
+                    - code [ref=e566]: openclaw security audit
+                  - listitem [ref=e567]:
+                    - code [ref=e568]: openclaw security audit --deep
+                  - listitem [ref=e569]:
+                    - code [ref=e570]: openclaw update status
+                - paragraph [ref=e571]:
+                  - text: Ongoing monitoring is recommended. Use the OpenClaw cron tool/CLI to schedule periodic audits (Gateway scheduler). Do not create scheduled tasks without explicit approval. Store outputs in a user-approved location and avoid secrets in logs.
+                  - text: When scheduling headless cron runs, include a note in the output that instructs the user to call
+                  - code [ref=e572]: healthcheck
+                  - text: so issues can be fixed.
+                - heading "Required prompt to schedule (always)" [level=3] [ref=e573]
+                - paragraph [ref=e574]: "After any audit or hardening pass, explicitly offer scheduling and require a direct response. Use a short prompt like (numbered):"
+                - list [ref=e575]:
+                  - listitem [ref=e576]:
+                    - text: “Do you want me to schedule periodic audits (e.g., daily/weekly) via
+                    - code [ref=e577]: openclaw cron add
+                    - text: "?”"
+                - paragraph [ref=e578]: "If the user says yes, ask for:"
+                - list [ref=e579]:
+                  - listitem [ref=e580]: cadence (daily/weekly), preferred time window, and output location
+                  - listitem [ref=e581]:
+                    - text: whether to also schedule
+                    - code [ref=e582]: openclaw update status
+                - paragraph [ref=e583]: "Use a stable cron job name so updates are deterministic. Prefer exact names:"
+                - list [ref=e584]:
+                  - listitem [ref=e585]:
+                    - code [ref=e586]: healthcheck:security-audit
+                  - listitem [ref=e587]:
+                    - code [ref=e588]: healthcheck:update-status
+                - paragraph [ref=e589]:
+                  - text: Before creating,
+                  - code [ref=e590]: openclaw cron list
+                  - text: and match on exact
+                  - code [ref=e591]: name
+                  - text: . If found,
+                  - code [ref=e592]: openclaw cron edit <id> ...
+                  - text: .
+                  - text: If not found,
+                  - code [ref=e593]: openclaw cron add --name <name> ...
+                  - text: .
+                - paragraph [ref=e594]: "Also offer a periodic version check so the user can decide when to update (numbered):"
+                - list [ref=e595]:
+                  - listitem [ref=e596]:
+                    - code [ref=e597]: openclaw update status
+                    - text: (preferred for source checkouts and channels)
+                  - listitem [ref=e598]:
+                    - code [ref=e599]: npm view openclaw version
+                    - text: (published npm version)
+                - heading "OpenClaw command accuracy" [level=2] [ref=e600]
+                - paragraph [ref=e601]: "Use only supported commands and flags:"
+                - list [ref=e602]:
+                  - listitem [ref=e603]:
+                    - code [ref=e604]: openclaw security audit [--deep] [--fix] [--json]
+                  - listitem [ref=e605]:
+                    - code [ref=e606]: openclaw status
+                    - text: /
+                    - code [ref=e607]: openclaw status --deep
+                  - listitem [ref=e608]:
+                    - code [ref=e609]: openclaw health --json
+                  - listitem [ref=e610]:
+                    - code [ref=e611]: openclaw update status
+                  - listitem [ref=e612]:
+                    - code [ref=e613]: openclaw cron add|list|runs|run
+                - paragraph [ref=e614]: Do not invent CLI flags or imply OpenClaw enforces host firewall/SSH policies.
+                - heading "Logging and audit trail" [level=2] [ref=e615]
+                - paragraph [ref=e616]: "Record:"
+                - list [ref=e617]:
+                  - listitem [ref=e618]: Gateway identity and role
+                  - listitem [ref=e619]: Plan ID and timestamp
+                  - listitem [ref=e620]: Approved steps and exact commands
+                  - listitem [ref=e621]: Exit codes and files modified (best effort)
+                - paragraph [ref=e622]: Redact secrets. Never log tokens or full credential contents.
+                - heading "Memory writes (conditional)" [level=2] [ref=e623]
+                - paragraph [ref=e624]:
+                  - text: Only write to memory files when the user explicitly opts in and the session is a private/local workspace
+                  - text: (per
+                  - code [ref=e625]: docs/reference/templates/AGENTS.md
+                  - text: ). Otherwise provide a redacted, paste-ready summary the user can
+                  - text: decide to save elsewhere.
+                - paragraph [ref=e626]: "Follow the durable-memory prompt format used by OpenClaw compaction:"
+                - list [ref=e627]:
+                  - listitem [ref=e628]:
+                    - text: Write lasting notes to
+                    - code [ref=e629]: memory/YYYY-MM-DD.md
+                    - text: .
+                - paragraph [ref=e630]:
+                  - text: After each audit/hardening run, if opted-in, append a short, dated summary to
+                  - code [ref=e631]: memory/YYYY-MM-DD.md
+                  - text: (what was checked, key findings, actions taken, any scheduled cron jobs, key decisions,
+                  - text: "and all commands executed). Append-only: never overwrite existing entries."
+                  - text: Redact sensitive host details (usernames, hostnames, IPs, serials, service names, tokens).
+                  - text: If there are durable preferences or decisions (risk posture, allowed ports, update policy),
+                  - text: also update
+                  - code [ref=e632]: MEMORY.md
+                  - text: (long-term memory is optional and only used in private sessions).
+                - paragraph [ref=e633]:
+                  - text: If the session cannot write to the workspace, ask for permission or provide exact entries
+                  - text: the user can paste into the memory files.
+              - 'button "Read View --- name: healthcheck…" [ref=e634] [cursor=pointer]':
+                - generic [ref=e635]:
+                  - generic [ref=e636]:
+                    - img [ref=e638]
+                    - generic [ref=e641]: Read
+                  - generic [ref=e642]:
+                    - text: View
+                    - img [ref=e643]
+                - generic [ref=e645]: "--- name: healthcheck…"
+            - generic [ref=e646]:
+              - generic [ref=e647]: tool
+              - generic [ref=e648]: 6:47 PM
+        - generic [ref=e649]:
+          - generic [ref=e650]: A
+          - generic [ref=e651]:
+            - generic [ref=e652]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - generic [ref=e653]:
+                - paragraph [ref=e654]: "Before I dive in, a couple of notes:"
+                - paragraph [ref=e655]:
+                  - strong [ref=e656]: "Model check:"
+                  - text: I'm running on Claude Opus 4, which is solid but the skill recommends state-of-the-art (Opus 4.5+). It'll work fine, just flagging it.
+                - paragraph [ref=e657]:
+                  - strong [ref=e658]: "Permission:"
+                  - text: "Can I run some read-only checks on the system? Things like:"
+                - list [ref=e659]:
+                  - listitem [ref=e660]: OS version and environment info
+                  - listitem [ref=e661]: Listening ports
+                  - listitem [ref=e662]: Firewall status
+                  - listitem [ref=e663]: OpenClaw security audit and version check
+                  - listitem [ref=e664]: Disk encryption and update status
+                - paragraph [ref=e665]: Nothing will be changed — just looking. Good to go?
+            - generic [ref=e666]:
+              - generic [ref=e667]: Assistant
+              - generic [ref=e668]: 6:47 PM
+        - generic [ref=e669]:
+          - generic [ref=e670]: U
+          - generic [ref=e671]:
+            - paragraph [ref=e674]: "Humanize this text: The implementation leverages distributed microservices architecture to facilitate seamless interoperability between heterogeneous systems."
+            - generic [ref=e675]:
+              - generic [ref=e676]: You
+              - generic [ref=e677]: 6:47 PM
+        - generic [ref=e678]:
+          - generic [ref=e679]: A
+          - generic [ref=e680]:
+            - generic [ref=e681]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - paragraph [ref=e683]: It uses small, independent services that work together so different systems can talk to each other smoothly.
+            - generic [ref=e684]:
+              - generic [ref=e685]: Assistant
+              - generic [ref=e686]: 6:47 PM
+        - generic [ref=e687]:
+          - generic [ref=e688]: U
+          - generic [ref=e689]:
+            - paragraph [ref=e692]: List my GitHub repos
+            - generic [ref=e693]:
+              - generic [ref=e694]: You
+              - generic [ref=e695]: 6:47 PM
+        - generic [ref=e696]:
+          - generic [ref=e697]: A
+          - generic [ref=e698]:
+            - button "Exec run gh repo Completed" [ref=e700] [cursor=pointer]:
+              - generic [ref=e701]:
+                - generic [ref=e702]:
+                  - img [ref=e704]
+                  - generic [ref=e706]: Exec
+                - img [ref=e708]
+              - generic [ref=e710]: run gh repo
+              - generic [ref=e711]: Completed
+            - generic [ref=e712]:
+              - generic [ref=e713]: Assistant
+              - generic [ref=e714]: 6:47 PM
+        - generic [ref=e715]:
+          - generic [ref=e716]: ⚙
+          - generic [ref=e717]:
+            - generic [ref=e718]:
+              - paragraph [ref=e720]:
+                - text: ynotfins/open--claw Open Claw — modular AI assistant platform built on OpenClaw public 2026-03-09T21:44:57Z
+                - text: ynotfins/AI-Project-Manager public 2026-03-09T21:44:56Z
+                - text: ynotfins/alerts-sheets public 2026-01-05T10:23:47Z
+                - text: ynotfins/nfa-alert private 2026-01-05T03:59:09Z
+                - text: ynotfins/EMU_v0 private 2025-12-28T04:06:30Z
+                - text: ynotfins/cf-blazewatch public 2025-12-13T21:39:30Z
+                - text: ynotfins/Alert-Tracker-App-HTTP-Request private 2025-12-13T01:24:55Z
+                - text: ynotfins/deadmans_switch private 2025-12-07T08:22:26Z
+                - text: ynotfins/seatrush SeatRush - Advanced web automation and ticket management platform private 2025-12-07T04:47:59Z
+                - text: ynotfins/emu-alerts-v2 private 2025-12-06T08:21:51Z
+                - text: ynotfins/emu-alerts-android private 2025-12-01T01:23:06Z
+                - text: ynotfins/Fire-Depts Fire Department Alert Ingestion & Verification System - Firebase Functions for BNN alerts and NJ fire department encryption verification private 2025-11-30T21:54:00Z
+                - text: ynotfins/AI-Credit-Cleaner AI-powered credit repair agent with automated violation detection and dispute letter generation private 2025-11-29T03:03:15Z
+                - text: ynotfins/maxadjust public 2025-11-28T20:12:42Z
+                - text: ynotfins/emu-alerts private 2025-11-09T16:33:59Z
+                - text: ynotfins/EMU_voOLD private 2025-10-28T04:38:03Z
+                - text: ynotfins/odoo Odoo. Open Source Apps To Grow Your Business. public, fork 2025-10-24T15:55:46Z
+                - text: ynotfins/maxadjust-firebase private 2025-10-24T06:04:42Z
+                - text: ynotfins/Alpha_Page_Max_Adjust private 2025-10-22T15:19:58Z
+                - text: ynotfins/emu-incidents Mobile-first React Native application for emergency responders to manage NFA fire alerts private 2025-10-22T03:34:16Z
+              - button "Exec View ynotfins/open--claw Open Claw — modular AI assistant platform built on OpenClaw public 2026-03-09T21…" [ref=e721] [cursor=pointer]:
+                - generic [ref=e722]:
+                  - generic [ref=e723]:
+                    - img [ref=e725]
+                    - generic [ref=e727]: Exec
+                  - generic [ref=e728]:
+                    - text: View
+                    - img [ref=e729]
+                - generic [ref=e731]: ynotfins/open--claw Open Claw — modular AI assistant platform built on OpenClaw public 2026-03-09T21…
+            - generic [ref=e732]:
+              - generic [ref=e733]: tool
+              - generic [ref=e734]: 6:47 PM
+        - generic [ref=e735]:
+          - generic [ref=e736]: A
+          - generic [ref=e737]:
+            - generic [ref=e738]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - generic [ref=e739]:
+                - paragraph [ref=e740]: "Here are your repos (20 most recent):"
+                - paragraph [ref=e741]:
+                  - strong [ref=e742]: "Public:"
+                - list [ref=e743]:
+                  - listitem [ref=e744]:
+                    - strong [ref=e745]: open--claw
+                    - text: — Open Claw, modular AI assistant platform
+                  - listitem [ref=e746]:
+                    - strong [ref=e747]: AI-Project-Manager
+                  - listitem [ref=e748]:
+                    - strong [ref=e749]: alerts-sheets
+                  - listitem [ref=e750]:
+                    - strong [ref=e751]: cf-blazewatch
+                  - listitem [ref=e752]:
+                    - strong [ref=e753]: maxadjust
+                  - listitem [ref=e754]:
+                    - strong [ref=e755]: odoo
+                    - text: (fork)
+                - paragraph [ref=e756]:
+                  - strong [ref=e757]: "Private:"
+                - list [ref=e758]:
+                  - listitem [ref=e759]:
+                    - strong [ref=e760]: nfa-alert
+                  - listitem [ref=e761]:
+                    - strong [ref=e762]: EMU_v0
+                  - listitem [ref=e763]:
+                    - strong [ref=e764]: Alert-Tracker-App-HTTP-Request
+                  - listitem [ref=e765]:
+                    - strong [ref=e766]: deadmans_switch
+                  - listitem [ref=e767]:
+                    - strong [ref=e768]: seatrush
+                    - text: — Web automation & ticket management
+                  - listitem [ref=e769]:
+                    - strong [ref=e770]: emu-alerts-v2
+                  - listitem [ref=e771]:
+                    - strong [ref=e772]: emu-alerts-android
+                  - listitem [ref=e773]:
+                    - strong [ref=e774]: Fire-Depts
+                    - text: — Fire dept alert ingestion & verification
+                  - listitem [ref=e775]:
+                    - strong [ref=e776]: AI-Credit-Cleaner
+                    - text: — AI credit repair agent
+                  - listitem [ref=e777]:
+                    - strong [ref=e778]: emu-alerts
+                  - listitem [ref=e779]:
+                    - strong [ref=e780]: EMU_voOLD
+                  - listitem [ref=e781]:
+                    - strong [ref=e782]: maxadjust-firebase
+                  - listitem [ref=e783]:
+                    - strong [ref=e784]: Alpha_Page_Max_Adjust
+                  - listitem [ref=e785]:
+                    - strong [ref=e786]: emu-incidents
+                    - text: — Mobile app for emergency responders
+                - paragraph [ref=e787]: Lots of emergency/alert stuff in there. Want me to dig into any of these?
+            - generic [ref=e788]:
+              - generic [ref=e789]: Assistant
+              - generic [ref=e790]: 6:47 PM
+        - generic [ref=e791]:
+          - generic [ref=e792]: U
+          - generic [ref=e793]:
+            - paragraph [ref=e796]: What have you learned from past interactions? Show your self-improvement log.
+            - generic [ref=e797]:
+              - generic [ref=e798]: You
+              - generic [ref=e799]: 6:47 PM
+        - generic [ref=e800]:
+          - generic [ref=e801]: A
+          - generic [ref=e802]:
+            - button "Memory Search self-improvement lessons learned interactions Completed" [ref=e804] [cursor=pointer]:
+              - generic [ref=e805]:
+                - generic [ref=e806]:
+                  - img [ref=e808]
+                  - generic [ref=e810]: Memory Search
+                - img [ref=e812]
+              - generic [ref=e814]: self-improvement lessons learned interactions
+              - generic [ref=e815]: Completed
+            - generic [ref=e816]:
+              - generic [ref=e817]: Assistant
+              - generic [ref=e818]: 6:47 PM
+        - generic [ref=e819]:
+          - generic [ref=e820]: ⚙
+          - generic [ref=e821]:
+            - generic [ref=e822]:
+              - paragraph [ref=e824]:
+                - text: "{"
+                - text: "\"results\": [],"
+                - text: "\"provider\": \"openai\","
+                - text: "\"model\": \"text-embedding-3-small\","
+                - text: "\"citations\": \"auto\","
+                - text: "\"mode\": \"hybrid\""
+                - text: "}"
+              - 'button "Memory Search View { \"results\": [],…" [ref=e825] [cursor=pointer]':
+                - generic [ref=e826]:
+                  - generic [ref=e827]:
+                    - img [ref=e829]
+                    - generic [ref=e831]: Memory Search
+                  - generic [ref=e832]:
+                    - text: View
+                    - img [ref=e833]
+                - generic [ref=e835]: "{ \"results\": [],…"
+            - generic [ref=e836]:
+              - generic [ref=e837]: tool
+              - generic [ref=e838]: 6:47 PM
+        - generic [ref=e839]:
+          - generic [ref=e840]: A
+          - generic [ref=e841]:
+            - generic [ref=e842]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - generic [ref=e843]:
+                - paragraph [ref=e844]: "Honest answer: nothing yet. This is a brand new workspace — no memory files exist, no past interactions logged."
+                - paragraph [ref=e845]: We actually haven't even finished the bootstrap process from our first exchange. I still don't know your name, and I haven't set up my identity or started writing memory files.
+                - paragraph [ref=e846]: "If you want me to start building that continuity:"
+                - list [ref=e847]:
+                  - listitem [ref=e848]: Let's finish the intro (who are you, what should I call you, what do you want to call me)
+                  - listitem [ref=e849]:
+                    - text: I'll start logging interactions in
+                    - code [ref=e850]: memory/
+                    - text: daily files
+                  - listitem [ref=e851]:
+                    - text: Over time I'll distill lessons into
+                    - code [ref=e852]: MEMORY.md
+                - paragraph [ref=e853]: Want to do that now, or just keep rolling and I'll start capturing things as we go?
+            - generic [ref=e854]:
+              - generic [ref=e855]: Assistant
+              - generic [ref=e856]: 6:47 PM
+        - generic [ref=e857]:
+          - generic [ref=e858]: U
+          - generic [ref=e859]:
+            - paragraph [ref=e862]: "Search the web for: latest OpenAI model releases March 2026"
+            - generic [ref=e863]:
+              - generic [ref=e864]: You
+              - generic [ref=e865]: 6:48 PM
+        - generic [ref=e866]:
+          - generic [ref=e867]: A
+          - generic [ref=e868]:
+            - button "Web Search for \"latest OpenAI model releases March 2026\" Completed" [ref=e870] [cursor=pointer]:
+              - generic [ref=e871]:
+                - generic [ref=e872]:
+                  - img [ref=e874]
+                  - generic [ref=e876]: Web Search
+                - img [ref=e878]
+              - generic [ref=e880]: for "latest OpenAI model releases March 2026"
+              - generic [ref=e881]: Completed
+            - generic [ref=e882]:
+              - generic [ref=e883]: Assistant
+              - generic [ref=e884]: 6:48 PM
+        - generic [ref=e885]:
+          - generic [ref=e886]: ⚙
+          - generic [ref=e887]:
+            - generic [ref=e888]:
+              - paragraph [ref=e890]:
+                - text: "{"
+                - text: "\"error\": \"missing_brave_api_key\","
+                - text: "\"message\": \"web_search needs a Brave Search API key. Run"
+                - code [ref=e891]: openclaw configure --section web
+                - text: to store it, or set BRAVE_API_KEY in the Gateway environment.",
+                - text: "\"docs\": \""
+                - link "https://docs.openclaw.ai/tools/web" [ref=e892] [cursor=pointer]:
+                  - /url: https://docs.openclaw.ai/tools/web
+                - text: "\""
+                - text: "}"
+              - 'button "Web Search View { \"error\": \"missing_brave_api_key\",…" [ref=e893] [cursor=pointer]':
+                - generic [ref=e894]:
+                  - generic [ref=e895]:
+                    - img [ref=e897]
+                    - generic [ref=e899]: Web Search
+                  - generic [ref=e900]:
+                    - text: View
+                    - img [ref=e901]
+                - generic [ref=e903]: "{ \"error\": \"missing_brave_api_key\",…"
+            - generic [ref=e904]:
+              - generic [ref=e905]: tool
+              - generic [ref=e906]: 6:48 PM
+        - generic [ref=e907]:
+          - generic [ref=e908]: A
+          - generic [ref=e909]:
+            - generic [ref=e910]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - generic [ref=e911]:
+                - paragraph [ref=e912]: No luck — web search isn't configured yet. You'll need a Brave Search API key.
+                - paragraph [ref=e913]:
+                  - strong [ref=e914]: "To set it up:"
+                - list [ref=e915]:
+                  - listitem [ref=e916]:
+                    - text: Get a free key at
+                    - link "brave.com/search/api" [ref=e917] [cursor=pointer]:
+                      - /url: https://brave.com/search/api/
+                  - listitem [ref=e918]:
+                    - text: "Run:"
+                    - code [ref=e919]: openclaw configure --section web
+                  - listitem [ref=e920]: Paste in the API key
+                - paragraph [ref=e921]: Want me to walk you through it, or would you rather I try fetching a specific URL instead?
+            - generic [ref=e922]:
+              - generic [ref=e923]: Assistant
+              - generic [ref=e924]: 6:48 PM
+        - generic [ref=e925]:
+          - generic [ref=e926]: U
+          - generic [ref=e927]:
+            - paragraph [ref=e930]:
+              - text: Use playwright to navigate to
+              - link "https://example.com" [ref=e931] [cursor=pointer]:
+                - /url: https://example.com
+              - text: and tell me the page title
+            - generic [ref=e932]:
+              - generic [ref=e933]: You
+              - generic [ref=e934]: 6:50 PM
+        - generic [ref=e935]:
+          - generic [ref=e936]: A
+          - generic [ref=e937]:
+            - button "Browser https://example.com Completed" [ref=e939] [cursor=pointer]:
+              - generic [ref=e940]:
+                - generic [ref=e941]:
+                  - img [ref=e943]
+                  - generic [ref=e946]: Browser
+                - img [ref=e948]
+              - generic [ref=e950]: https://example.com
+              - generic [ref=e951]: Completed
+            - generic [ref=e952]:
+              - generic [ref=e953]: Assistant
+              - generic [ref=e954]: 6:50 PM
+        - generic [ref=e955]:
+          - generic [ref=e956]: ⚙
+          - generic [ref=e957]:
+            - generic [ref=e958]:
+              - paragraph [ref=e960]:
+                - text: "{"
+                - text: "\"status\": \"error\","
+                - text: "\"tool\": \"browser\","
+                - text: "\"error\": \"Can't reach the OpenClaw browser control service. Restart the OpenClaw gateway (OpenClaw.app menubar, or"
+                - code [ref=e961]: openclaw gateway
+                - text: "). Do NOT retry the browser tool — it will keep failing. Use an alternative approach or inform the user that the browser is currently unavailable. (Error: Error: No supported browser found (Chrome/Brave/Edge/Chromium on macOS, Linux, or Windows).)\""
+                - text: "}"
+              - 'button "Browser View { \"status\": \"error\",…" [ref=e962] [cursor=pointer]':
+                - generic [ref=e963]:
+                  - generic [ref=e964]:
+                    - img [ref=e966]
+                    - generic [ref=e969]: Browser
+                  - generic [ref=e970]:
+                    - text: View
+                    - img [ref=e971]
+                - generic [ref=e973]: "{ \"status\": \"error\",…"
+            - generic [ref=e974]:
+              - generic [ref=e975]: tool
+              - generic [ref=e976]: 6:50 PM
+        - generic [ref=e977]:
+          - generic [ref=e978]: A
+          - generic [ref=e979]:
+            - generic [ref=e980]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - generic [ref=e981]:
+                - paragraph [ref=e982]: Browser automation isn't available — no supported browser (Chrome/Brave/Edge) is installed in this environment.
+                - paragraph [ref=e983]: "But I can still grab the page for you:"
+              - button "Web Fetch from https://example.com (max 500 chars) Completed" [ref=e984] [cursor=pointer]:
+                - generic [ref=e985]:
+                  - generic [ref=e986]:
+                    - img [ref=e988]
+                    - generic [ref=e990]: Web Fetch
+                  - img [ref=e992]
+                - generic [ref=e994]: from https://example.com (max 500 chars)
+                - generic [ref=e995]: Completed
+            - generic [ref=e996]:
+              - generic [ref=e997]: Assistant
+              - generic [ref=e998]: 6:50 PM
+        - generic [ref=e999]:
+          - generic [ref=e1000]: ⚙
+          - generic [ref=e1001]:
+            - generic [ref=e1002]:
+              - paragraph [ref=e1004]:
+                - text: "{"
+                - text: "\"status\": \"error\","
+                - text: "\"tool\": \"web_fetch\","
+                - text: "\"error\": \"fetch failed\""
+                - text: "}"
+              - 'button "Web Fetch View { \"status\": \"error\", \"tool\": \"web_fetch\", \"error\": \"fetch failed\" }" [ref=e1005] [cursor=pointer]':
+                - generic [ref=e1006]:
+                  - generic [ref=e1007]:
+                    - img [ref=e1009]
+                    - generic [ref=e1011]: Web Fetch
+                  - generic [ref=e1012]:
+                    - text: View
+                    - img [ref=e1013]
+                - generic [ref=e1015]: "{ \"status\": \"error\", \"tool\": \"web_fetch\", \"error\": \"fetch failed\" }"
+            - generic [ref=e1016]:
+              - generic [ref=e1017]: tool
+              - generic [ref=e1018]: 6:50 PM
+        - generic [ref=e1019]:
+          - generic [ref=e1020]: A
+          - generic [ref=e1021]:
+            - button "Exec fetch https://example.com -> search \"<title>\" Completed" [ref=e1023] [cursor=pointer]:
+              - generic [ref=e1024]:
+                - generic [ref=e1025]:
+                  - img [ref=e1027]
+                  - generic [ref=e1029]: Exec
+                - img [ref=e1031]
+              - generic [ref=e1033]: fetch https://example.com -> search "<title>"
+              - generic [ref=e1034]: Completed
+            - generic [ref=e1035]:
+              - generic [ref=e1036]: Assistant
+              - generic [ref=e1037]: 6:50 PM
+        - generic [ref=e1038]:
+          - generic [ref=e1039]: ⚙
+          - generic [ref=e1040]:
+            - generic [ref=e1041]:
+              - generic [ref=e1042]: "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href=\"https://iana.org/domains/example\">Learn more</a></p></div></body></html>"
+              - button "Exec View <!doctype html><html lang=\"en\"><head><title>Example Domain</title><meta name=\"viewport\" content=\"wid…" [ref=e1043] [cursor=pointer]:
+                - generic [ref=e1044]:
+                  - generic [ref=e1045]:
+                    - img [ref=e1047]
+                    - generic [ref=e1049]: Exec
+                  - generic [ref=e1050]:
+                    - text: View
+                    - img [ref=e1051]
+                - generic [ref=e1053]: <!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="wid…
+            - generic [ref=e1054]:
+              - generic [ref=e1055]: tool
+              - generic [ref=e1056]: 6:50 PM
+        - generic [ref=e1057]:
+          - generic [ref=e1058]: A
+          - generic [ref=e1059]:
+            - generic [ref=e1060]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - generic [ref=e1061]:
+                - paragraph [ref=e1062]:
+                  - text: The page title is
+                  - strong [ref=e1063]: Example Domain
+                  - text: .
+                - paragraph [ref=e1064]:
+                  - text: Browser automation (Playwright) isn't available since there's no browser installed on this WSL instance — but curl got the job done. If you need full browser automation, you'd need to install Chrome/Chromium (
+                  - code [ref=e1065]: sudo apt install chromium-browser
+                  - text: ).
+            - generic [ref=e1066]:
+              - generic [ref=e1067]: Assistant
+              - generic [ref=e1068]: 6:50 PM
+        - generic [ref=e1097]:
+          - generic [ref=e1098]: U
+          - generic [ref=e1099]:
+            - generic [ref=e1101]:
+              - paragraph [ref=e1102]: "System: [2026-03-09 20:36:05 EDT] WhatsApp gateway connected."
+              - paragraph [ref=e1103]: "Conversation info (untrusted metadata):"
+              - code [ref=e1105]: "{ \"message_id\": \"5efc12bd-d3ef-4888-81b7-3f5271282ca0\", \"sender\": \"openclaw-control-ui\" }"
+              - paragraph [ref=e1106]: "[Mon 2026-03-09 21:04 EDT] What is the weather in New York right now?"
+            - generic [ref=e1107]:
+              - generic [ref=e1108]: You
+              - generic [ref=e1109]: 9:04 PM
+        - generic [ref=e1110]:
+          - generic [ref=e1111]: A
+          - generic [ref=e1112]:
+            - button "Exec fetch url Completed" [ref=e1114] [cursor=pointer]:
+              - generic [ref=e1115]:
+                - generic [ref=e1116]:
+                  - img [ref=e1118]
+                  - generic [ref=e1120]: Exec
+                - img [ref=e1122]
+              - generic [ref=e1124]: fetch url
+              - generic [ref=e1125]: Completed
+            - generic [ref=e1126]:
+              - generic [ref=e1127]: Assistant
+              - generic [ref=e1128]: 9:04 PM
+        - generic [ref=e1129]:
+          - generic [ref=e1130]: ⚙
+          - generic [ref=e1131]:
+            - generic [ref=e1132]:
+              - paragraph [ref=e1134]: Command still running (session kind-shell, pid 80651). Use process (list/poll/log/write/kill/clear/remove) for follow-up.
+              - button "Exec View Command still running (session kind-shell, pid 80651). Use process (list/poll/log/write/kill/clear/r…" [ref=e1135] [cursor=pointer]:
+                - generic [ref=e1136]:
+                  - generic [ref=e1137]:
+                    - img [ref=e1139]
+                    - generic [ref=e1141]: Exec
+                  - generic [ref=e1142]:
+                    - text: View
+                    - img [ref=e1143]
+                - generic [ref=e1145]: Command still running (session kind-shell, pid 80651). Use process (list/poll/log/write/kill/clear/r…
+            - generic [ref=e1146]:
+              - generic [ref=e1147]: tool
+              - generic [ref=e1148]: 9:04 PM
+        - generic [ref=e1149]:
+          - generic [ref=e1150]: A
+          - generic [ref=e1151]:
+            - button "Process kind-shell Completed" [ref=e1153] [cursor=pointer]:
+              - generic [ref=e1154]:
+                - generic [ref=e1155]:
+                  - img [ref=e1157]
+                  - generic [ref=e1159]: Process
+                - img [ref=e1161]
+              - generic [ref=e1163]: kind-shell
+              - generic [ref=e1164]: Completed
+            - generic [ref=e1165]:
+              - generic [ref=e1166]: Assistant
+              - generic [ref=e1167]: 9:04 PM
+        - generic [ref=e1168]:
+          - generic [ref=e1169]: ⚙
+          - generic [ref=e1170]:
+            - generic [ref=e1171]:
+              - generic [ref=e1172]:
+                - paragraph [ref=e1173]: (no new output)
+                - paragraph [ref=e1174]: Process still running.
+              - button "Process View (no new output) Process still running." [ref=e1175] [cursor=pointer]:
+                - generic [ref=e1176]:
+                  - generic [ref=e1177]:
+                    - img [ref=e1179]
+                    - generic [ref=e1181]: Process
+                  - generic [ref=e1182]:
+                    - text: View
+                    - img [ref=e1183]
+                - generic [ref=e1185]: (no new output) Process still running.
+            - generic [ref=e1186]:
+              - generic [ref=e1187]: tool
+              - generic [ref=e1188]: 9:04 PM
+        - generic [ref=e1189]:
+          - generic [ref=e1190]: A
+          - generic [ref=e1191]:
+            - button "Process kind-shell Completed" [ref=e1193] [cursor=pointer]:
+              - generic [ref=e1194]:
+                - generic [ref=e1195]:
+                  - img [ref=e1197]
+                  - generic [ref=e1199]: Process
+                - img [ref=e1201]
+              - generic [ref=e1203]: kind-shell
+              - generic [ref=e1204]: Completed
+            - generic [ref=e1205]:
+              - generic [ref=e1206]: Assistant
+              - generic [ref=e1207]: 9:04 PM
+        - generic [ref=e1208]:
+          - generic [ref=e1209]: ⚙
+          - generic [ref=e1210]:
+            - generic [ref=e1211]:
+              - generic [ref=e1212]:
+                - paragraph [ref=e1213]: (no new output)
+                - paragraph [ref=e1214]: Process still running.
+              - button "Process View (no new output) Process still running." [ref=e1215] [cursor=pointer]:
+                - generic [ref=e1216]:
+                  - generic [ref=e1217]:
+                    - img [ref=e1219]
+                    - generic [ref=e1221]: Process
+                  - generic [ref=e1222]:
+                    - text: View
+                    - img [ref=e1223]
+                - generic [ref=e1225]: (no new output) Process still running.
+            - generic [ref=e1226]:
+              - generic [ref=e1227]: tool
+              - generic [ref=e1228]: 9:05 PM
+        - generic [ref=e1229]:
+          - generic [ref=e1230]: A
+          - generic [ref=e1231]:
+            - button "Process kind-shell Completed" [ref=e1233] [cursor=pointer]:
+              - generic [ref=e1234]:
+                - generic [ref=e1235]:
+                  - img [ref=e1237]
+                  - generic [ref=e1239]: Process
+                - img [ref=e1241]
+              - generic [ref=e1243]: kind-shell
+              - generic [ref=e1244]: Completed
+            - generic [ref=e1245]:
+              - generic [ref=e1246]: Assistant
+              - generic [ref=e1247]: 9:05 PM
+        - generic [ref=e1248]:
+          - generic [ref=e1249]: ⚙
+          - generic [ref=e1250]:
+            - generic [ref=e1251]:
+              - paragraph [ref=e1253]: Termination requested for session kind-shell.
+              - button "Process View Termination requested for session kind-shell." [ref=e1254] [cursor=pointer]:
+                - generic [ref=e1255]:
+                  - generic [ref=e1256]:
+                    - img [ref=e1258]
+                    - generic [ref=e1260]: Process
+                  - generic [ref=e1261]:
+                    - text: View
+                    - img [ref=e1262]
+                - generic [ref=e1264]: Termination requested for session kind-shell.
+            - generic [ref=e1265]:
+              - generic [ref=e1266]: tool
+              - generic [ref=e1267]: 9:05 PM
+        - generic [ref=e1268]:
+          - generic [ref=e1269]: A
+          - generic [ref=e1270]:
+            - button "Exec fetch url Completed" [ref=e1272] [cursor=pointer]:
+              - generic [ref=e1273]:
+                - generic [ref=e1274]:
+                  - img [ref=e1276]
+                  - generic [ref=e1278]: Exec
+                - img [ref=e1280]
+              - generic [ref=e1282]: fetch url
+              - generic [ref=e1283]: Completed
+            - generic [ref=e1284]:
+              - generic [ref=e1285]: Assistant
+              - generic [ref=e1286]: 9:05 PM
+        - generic [ref=e1287]:
+          - generic [ref=e1288]: ⚙
+          - generic [ref=e1289]:
+            - generic [ref=e1290]:
+              - paragraph [ref=e1292]: (Command exited with code 28)
+              - button "Exec View (Command exited with code 28)" [ref=e1293] [cursor=pointer]:
+                - generic [ref=e1294]:
+                  - generic [ref=e1295]:
+                    - img [ref=e1297]
+                    - generic [ref=e1299]: Exec
+                  - generic [ref=e1300]:
+                    - text: View
+                    - img [ref=e1301]
+                - generic [ref=e1303]: (Command exited with code 28)
+            - generic [ref=e1304]:
+              - generic [ref=e1305]: tool
+              - generic [ref=e1306]: 9:05 PM
+        - generic [ref=e1307]:
+          - generic [ref=e1308]: A
+          - generic [ref=e1309]:
+            - generic [ref=e1310]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - paragraph [ref=e1312]: "wttr.in is timing out right now. Let me try Open-Meteo instead:"
+              - button "Exec fetch https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.0060&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph Completed" [ref=e1313] [cursor=pointer]:
+                - generic [ref=e1314]:
+                  - generic [ref=e1315]:
+                    - img [ref=e1317]
+                    - generic [ref=e1319]: Exec
+                  - img [ref=e1321]
+                - generic [ref=e1323]: fetch https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.0060&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph
+                - generic [ref=e1324]: Completed
+            - generic [ref=e1325]:
+              - generic [ref=e1326]: Assistant
+              - generic [ref=e1327]: 9:05 PM
+        - generic [ref=e1328]:
+          - generic [ref=e1329]: ⚙
+          - generic [ref=e1330]:
+            - generic [ref=e1331]:
+              - paragraph [ref=e1333]: "{\"latitude\":40.710335,\"longitude\":-73.99308,\"generationtime_ms\":0.14603137969970703,\"utc_offset_seconds\":0,\"timezone\":\"GMT\",\"timezone_abbreviation\":\"GMT\",\"elevation\":32.0,\"current_units\":{\"time\":\"iso8601\",\"interval\":\"seconds\",\"temperature_2m\":\"°F\",\"relative_humidity_2m\":\"%\",\"apparent_temperature\":\"°F\",\"wind_speed_10m\":\"mp/h\",\"weather_code\":\"wmo code\"},\"current\":{\"time\":\"2026-03-10T01:00\",\"interval\":900,\"temperature_2m\":58.6,\"relative_humidity_2m\":38,\"apparent_temperature\":51.4,\"wind_speed_10m\":8.3,\"weather_code\":0}}"
+              - 'button "Exec View {\"latitude\":40.710335,\"longitude\":-73.99308,\"generationtime_ms\":0.14603137969970703,\"utc_offset_seco…" [ref=e1334] [cursor=pointer]':
+                - generic [ref=e1335]:
+                  - generic [ref=e1336]:
+                    - img [ref=e1338]
+                    - generic [ref=e1340]: Exec
+                  - generic [ref=e1341]:
+                    - text: View
+                    - img [ref=e1342]
+                - generic [ref=e1344]: "{\"latitude\":40.710335,\"longitude\":-73.99308,\"generationtime_ms\":0.14603137969970703,\"utc_offset_seco…"
+            - generic [ref=e1345]:
+              - generic [ref=e1346]: tool
+              - generic [ref=e1347]: 9:05 PM
+        - generic [ref=e1348]:
+          - generic [ref=e1349]: A
+          - generic [ref=e1350]:
+            - generic [ref=e1351]:
+              - button "Copy as markdown":
+                - generic:
+                  - generic:
+                    - img
+                  - generic:
+                    - img
+              - paragraph [ref=e1353]:
+                - strong [ref=e1354]: "New York right now:"
+                - text: 🌙 Clear skies, 59°F (feels like 51°F), 8 mph wind, 38% humidity. Cooling off from earlier — grab a jacket if you're heading out.
+            - generic [ref=e1355]:
+              - generic [ref=e1356]: Assistant
+              - generic [ref=e1357]: 9:05 PM
+      - generic [ref=e182]:
+        - textbox [ref=e184]:
+          - /placeholder: Message (↩ to send, Shift+↩ for line breaks, paste images)
+        - generic [ref=e185]:
+          - button "New session" [ref=e1361] [cursor=pointer]
+          - button "Send ↵" [ref=e1362] [cursor=pointer]:
+            - text: Send
+            - generic [ref=e188]: ↵

@@ -3329,3 +3329,82 @@ Full entry in `open--claw/docs/ai/STATE.md`.
 2. Remove stale old Node.js "Windows Desktop" node
 3. Test canvas, screen capture capabilities
 4. Continue Phase 2 exit criteria
+
+## 2026-03-11 05:00 — Docs Accuracy and Archive (Phase 0)
+
+### Goal
+Establish `docs/ai/archive/` as a superseded-docs directory, move ephemeral files there, refresh HANDOFF.md to current state, fix PLAN.md duplicates, and update all governance docs to reference the archive exclusion rule.
+
+### Scope
+- AI-Project-Manager: `.cursor/rules/10-project-workflow.md`, `AGENTS.md`, `docs/ai/CURSOR_WORKFLOW.md`, `docs/ai/HANDOFF.md`, `docs/ai/PLAN.md`, `docs/ai/archive/` (new)
+- open--claw: `.cursor/rules/10-project-workflow.md`, `AGENTS.md`, `docs/ai/CURSOR_WORKFLOW.md`, `docs/ai/HANDOFF.md`, `docs/ai/PLAN.md`, `docs/ai/archive/` (new)
+
+### Commands / Tool Calls
+- `New-Item -ItemType Directory` for `docs/ai/archive/` in both repos
+- `Write` for `docs/ai/archive/README.md` in both repos
+- `StrReplace` on `10-project-workflow.md` (both repos) — added archive exclusion section
+- `Move-Item` for `session-dropdown-snapshot.md` → `docs/ai/archive/session-dropdown-snapshot-2026-03.md`
+- `Move-Item` for `SPARKY_TEST.md` → `docs/ai/archive/SPARKY_TEST-2026-03-11.md`
+- `Copy-Item` for `HANDOFF.md` → `docs/ai/archive/handoff-2026-03-08.md` (both repos)
+- `Write` for refreshed `HANDOFF.md` (both repos)
+- `StrReplace` on open--claw `PLAN.md` — consolidated duplicate Phase 1 blocks into single completed block
+- `StrReplace` on `AGENTS.md` and `CURSOR_WORKFLOW.md` (both repos) — added archive mention
+
+### Changes
+**Created:**
+- `AI-Project-Manager/docs/ai/archive/README.md`
+- `AI-Project-Manager/docs/ai/archive/handoff-2026-03-08.md`
+- `AI-Project-Manager/docs/ai/archive/session-dropdown-snapshot-2026-03.md`
+- `AI-Project-Manager/docs/ai/archive/SPARKY_TEST-2026-03-11.md`
+- `open--claw/docs/ai/archive/README.md`
+- `open--claw/docs/ai/archive/handoff-2026-03-08.md`
+
+**Edited:**
+- Both `.cursor/rules/10-project-workflow.md` — added "docs/ai/archive/ — never consulted" section
+- Both `AGENTS.md` — added archive exclusion note
+- Both `docs/ai/CURSOR_WORKFLOW.md` — added archive exclusion note
+- Both `docs/ai/HANDOFF.md` — refreshed to 2026-03-11 state (vendor v2026.3.8, Windows node, WhatsApp, Phase 6C open)
+- `open--claw/docs/ai/PLAN.md` — merged duplicate Phase 1 blocks into single completed block
+
+**Moved (AI-Project-Manager only):**
+- `session-dropdown-snapshot.md` → `docs/ai/archive/`
+- `SPARKY_TEST.md` → `docs/ai/archive/`
+
+### Evidence
+- Archive directories created: PASS (both repos)
+- README.md written: PASS (both repos)
+- 10-project-workflow.md updated: PASS (both repos)
+- Ephemeral files moved: PASS (session-dropdown-snapshot.md, SPARKY_TEST.md)
+- HANDOFF.md archived + refreshed: PASS (both repos)
+- PLAN.md duplicate fix: PASS (open--claw — two Phase 1 blocks merged to one)
+- PLAN.md consistency with STATE.md: PASS (AI-PM Phase 6C checkboxes match)
+- AGENTS.md updated: PASS (both repos)
+- CURSOR_WORKFLOW.md updated: PASS (both repos)
+
+### Verdict
+READY — all governance docs updated, archive infrastructure in place.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+Both repos updated symmetrically. Archive exclusion rule added to both repos' workflow rules, AGENTS.md, and CURSOR_WORKFLOW.md.
+
+### Decisions Captured
+- `docs/ai/archive/` is the canonical location for superseded docs
+- PLAN must never consult `docs/ai/archive/`
+- HANDOFF.md is refreshed at each significant milestone (not just session end)
+
+### Pending Actions
+None for this phase.
+
+### What Remains Unverified
+None — all changes are file-level edits verified by tool success.
+
+### What's Next
+1. Continue Phase 6C exit criteria: first integration, approval gate
+2. Agent naming via WhatsApp
+3. Gmail OAuth + MXRoute email setup

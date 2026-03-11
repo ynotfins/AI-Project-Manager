@@ -35,6 +35,7 @@ Developer-local (optional):
 - `docs/ai/PLAN.md` — active plan with phases and exit criteria
 - `docs/ai/ARCHIVE.md` — compressed decisions and knowledge from past sessions
 - `docs/ai/context/` — non-canonical artifact storage: transcript-derived files, bulk session dumps, ephemeral context. Informative only; never authoritative.
+- `docs/ai/archive/` — superseded docs. **Never consulted** by PLAN. Historical reference only.
 
 ## Context source priority
 

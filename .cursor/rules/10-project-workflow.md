@@ -95,6 +95,10 @@ If repository-tracked sources and chat context disagree, repository-tracked sour
 
 `docs/ai/context/` stores transcript-derived artifacts, bulk session dumps, and ephemeral context files. It is **informative only** — never authoritative. PLAN should consult it only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md` are insufficient. Do not promote content from `docs/ai/context/` into rules or architecture docs without explicit review.
 
+## docs/ai/archive/ — never consulted
+
+`docs/ai/archive/` stores superseded documents that have been replaced by newer versions. PLAN must **never** consult this directory when reconstructing system state. It exists solely for historical reference and audit trails. Files moved here are considered retired from the active governance surface.
+
 ## Context attachment discipline
 
 - Attach files with intent, not habit.
