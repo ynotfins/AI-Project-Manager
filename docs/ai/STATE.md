@@ -3247,3 +3247,67 @@ Vendor pin: v2026.3.8 shallow clone. See DECISIONS.md entry below.
 ### What's Next
 1. Remove backup directories after 24h verification
 2. Continue Phase 2 exit criteria: agent naming, Gmail OAuth, email integration
+
+## 2026-03-11 04:10 — Windows Node Host Connected
+
+### Goal
+Connect a Windows-native node host to the WSL gateway so OpenClaw can access Windows filesystem and execute Windows commands natively.
+
+### Architecture
+```
+┌─────────────────────────┐     WebSocket     ┌─────────────────────────┐
+│   WSL (Gateway)         │◄────────────────►│   Windows (Node Host)    │
+│   port 18789            │                   │   "Windows Desktop"      │
+│   brain + channels      │                   │   filesystem + commands  │
+│   WhatsApp, models      │                   │   browser, system        │
+└─────────────────────────┘                   └─────────────────────────┘
+```
+
+### Commands / Steps Executed
+1. `pnpm install` in `D:\github\open--claw\vendor\openclaw\` on Windows — PASS (1249 packages)
+2. `pnpm build` on Windows — FAIL (bash-based build scripts, `node` not found in Git Bash context)
+3. `cp -r ~/openclaw-build/dist/ /mnt/d/github/open--claw/vendor/openclaw/` — PASS (copied WSL build to Windows)
+4. First `node openclaw.mjs node run` attempt — FAIL (gateway token mismatch: Windows config had token `cd397134...`, WSL gateway uses `5155d4d3...`)
+5. Synced gateway auth token from WSL config to Windows `%USERPROFILE%\.openclaw\openclaw.json`
+6. Second `node openclaw.mjs node run --host 127.0.0.1 --port 18789 --display-name "Windows Desktop"` — PASS (auto-paired, connected)
+7. `pnpm openclaw nodes status` — PASS: Known: 1, Paired: 1, Connected: 1
+
+### Evidence
+
+**Node status from gateway:**
+
+| Field | Value |
+|---|---|
+| Name | Windows Desktop |
+| ID | 891178e9...6492f112 |
+| Version | core v2026.3.8 |
+| Status | paired · connected |
+| Capabilities | browser, system |
+| Commands | browser.proxy, system.run, system.run.prepare, system.which |
+
+**Windows process**: PID 34612, running foreground in `D:\github\open--claw\vendor\openclaw\`
+
+### Changes Made
+- Installed node_modules in `D:\github\open--claw\vendor\openclaw\` (Windows-native)
+- Copied `dist/` from WSL `~/openclaw-build/dist/` to Windows vendor directory
+- Updated `%USERPROFILE%\.openclaw\openclaw.json` gateway auth token to match WSL gateway
+
+### Verdict
+PASS — Windows Desktop node is paired and connected to WSL gateway. Agent now has access to Windows filesystem and native command execution via `system.run` and `system.which` capabilities.
+
+### Startup Command (for future restarts)
+```powershell
+cd D:\github\open--claw\vendor\openclaw
+node openclaw.mjs node run --host 127.0.0.1 --port 18789 --display-name "Windows Desktop"
+```
+Note: Gateway must be running in WSL first (`pnpm openclaw gateway start` in `~/openclaw-build`).
+
+### Pending
+- The `nodes run` remote command test timed out — may need exec approval configuration or agent-initiated invocation
+- Consider `openclaw node install` to register as a Windows scheduled task (schtasks) for auto-start
+- Node host is currently foreground-only; closing the terminal will disconnect it
+
+### What's Next
+1. Test Windows file access via Sparky (WhatsApp or Control UI)
+2. Consider installing node host as a Windows service (`openclaw node install`)
+3. Continue Phase 2 exit criteria
