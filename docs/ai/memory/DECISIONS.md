@@ -213,3 +213,18 @@ Port 3000 is incorrect and should not be used in commands or documentation.
 - Git fetch + checkout to update in-place (rejected: shallow clone cannot reliably fetch arbitrary tags; fresh clone is cleaner)
 
 **Rationale:** Pinning to a tagged release provides a deterministic, reproducible vendor state. The VENDOR_PIN.md file formalizes the upgrade procedure, preventing ad-hoc untracked drift. v2026.3.8 is the latest stable and includes security fixes. Skills count was preserved (19/58 → 19/59, gained 1 upstream skill).
+
+---
+
+### 2026-03-11: Replace Node.js node host with Molty (OpenClaw Windows Hub) v0.4.5
+
+**Context:** The Windows node host was running as a foreground Node.js process (`node openclaw.mjs node run`) from the vendor clone. This required a terminal to stay open, had limited capabilities (browser, system.run, system.which), and disconnected when the terminal closed. The upstream ecosystem includes `shanselman/openclaw-windows-hub` (Molty), a .NET WinUI system tray companion with richer capabilities and persistent operation.
+
+**Decision:** Install Molty v0.4.5 from pre-built GitHub release (`OpenClawTray-Setup-x64.exe`). Stop the Node.js node host. Configure Molty with gateway token and Node Mode. Add `gateway.nodes.allowCommands` (13 commands) to WSL gateway config.
+
+**Alternatives considered:**
+- Continue with Node.js node host (rejected: foreground-only, limited capabilities, terminal-bound)
+- Build Molty from source (rejected: requires .NET 10 Preview SDK; pre-built release avoids SDK dependency)
+- Use portable ZIP instead of installer (rejected: installer provides auto-start registration and Start Menu shortcut)
+
+**Rationale:** Molty provides persistent system tray operation (survives terminal close), richer capabilities (canvas/WebView2, screen capture, camera, toast notifications), auto-start with Windows, embedded web chat, and PowerToys integration. The pre-built release from a reputable author (Scott Hanselman) avoids SDK dependencies entirely.

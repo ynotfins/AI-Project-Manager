@@ -3311,3 +3311,21 @@ Note: Gateway must be running in WSL first (`pnpm openclaw gateway start` in `~/
 1. Test Windows file access via Sparky (WhatsApp or Control UI)
 2. Consider installing node host as a Windows service (`openclaw node install`)
 3. Continue Phase 2 exit criteria
+
+## 2026-03-11 04:10 — Molty (OpenClaw Windows Hub) v0.4.5 Installed
+
+Full entry in `open--claw/docs/ai/STATE.md`.
+
+**Summary**: Replaced foreground Node.js node host with Molty v0.4.5 (.NET WinUI system tray app from `shanselman/openclaw-windows-hub`). Pre-built release downloaded (no .NET SDK needed). Configured token, Node Mode, and gateway allowCommands (13 commands). Device approved and connected. Capabilities: system, canvas, screen, camera. Tests: `system.run` (echo hello → exitCode 0) and `system.notify` (toast sent) both passed.
+
+**Install path**: `%LOCALAPPDATA%\OpenClawTray\OpenClaw.Tray.WinUI.exe`
+
+**Node ID**: `8af2d7db6f343923b8a18bc4b6f085a4158e963259b7cf025f24c9d47a9247ee`
+
+**Verdict**: PASS — persistent tray node replaces terminal-bound Node.js node.
+
+### What's Next
+1. Enable Molty auto-start with Windows
+2. Remove stale old Node.js "Windows Desktop" node
+3. Test canvas, screen capture capabilities
+4. Continue Phase 2 exit criteria
