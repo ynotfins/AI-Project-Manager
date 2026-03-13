@@ -3408,3 +3408,243 @@ None — all changes are file-level edits verified by tool success.
 1. Continue Phase 6C exit criteria: first integration, approval gate
 2. Agent naming via WhatsApp
 3. Gmail OAuth + MXRoute email setup
+
+## 2026-03-11 06:00 — Phase 6C BLOCK 0: Pre-flight
+
+### Goal
+Verify gateway, nodes, and health before beginning Phase 6C remaining exit criteria.
+
+### Scope
+Machine-local WSL. AI-Project-Manager STATE.md updated.
+
+### Commands / Tool Calls
+- `pnpm openclaw gateway status`
+- `pnpm openclaw nodes status`
+- `pnpm openclaw health`
+
+### Changes
+None — read-only preflight.
+
+### Evidence
+| Check | Result |
+|---|---|
+| `gateway status` | PASS — running, pid 1353, RPC probe ok, 127.0.0.1:18789 |
+| `nodes status` | Known: 1, Paired: 1, Connected: 0 — stale node "Windows Node (CHAOSCENTRAL)" ID `8af2d7db...47ee` — disconnected |
+| `health` | PASS — WhatsApp linked (auth age 0m), Agents: main (default) |
+| Signal | FAIL (expected — no signal-cli installed) |
+
+### Verdict
+READY — gateway healthy. Stale node present, will be cleaned in BLOCK 1.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+None
+
+### Decisions Captured
+Stale node from previous session is "Windows Node (CHAOSCENTRAL)" not "Windows Desktop" — ID: `8af2d7db6f343923b8a18bc4b6f085a4158e963259b7cf025f24c9d47a9247ee`
+
+### Pending Actions
+BLOCK 1 cleanup.
+
+### What Remains Unverified
+Molty / exec-policy capability (BLOCK 2).
+
+### What's Next
+BLOCK 1 — Cleanup.
+
+## 2026-03-11 06:10 — Phase 6C BLOCK 1: Cleanup
+
+### Goal
+Remove stale disconnected node registration and both backup directories.
+
+### Scope
+Machine-local WSL + Windows. AI-Project-Manager STATE.md updated.
+
+### Commands / Tool Calls
+- `pnpm openclaw devices --help` — confirmed `remove` subcommand exists
+- `pnpm openclaw devices remove 8af2d7db6f343923b8a18bc4b6f085a4158e963259b7cf025f24c9d47a9247ee`
+- `pnpm openclaw nodes status` — verify removal
+- `Remove-Item -Recurse -Force "D:\github\open--claw\vendor\openclaw.bak"`
+- `wsl bash -c "[ -d ~/openclaw-build.bak ] && rm -rf ~/openclaw-build.bak && echo REMOVED || echo ABSENT"`
+
+### Changes
+- Stale node "Windows Node (CHAOSCENTRAL)" removed from gateway device table
+- `D:\github\open--claw\vendor\openclaw.bak` deleted
+- `~/openclaw-build.bak` deleted from WSL
+
+### Evidence
+| Check | Result |
+|---|---|
+| `devices remove` | PASS — "Removed 8af2d7db...47ee" |
+| `nodes status` post-removal | PASS — Known: 0, Paired: 0, Connected: 0 |
+| Windows backup dir removal | PASS — REMOVED |
+| WSL backup dir removal | PASS — REMOVED (took ~35s) |
+
+Note: The plan referenced `pnpm openclaw devices remove` — confirmed correct (not `nodes remove`; nodes has no remove subcommand). `devices remove` is the right command.
+
+### Verdict
+READY — all stale state cleaned.
+
+### Blockers
+None
+
+### Fallbacks Used
+Checked `devices --help` before running remove (plan used `devices remove` which is correct).
+
+### Cross-Repo Impact
+None
+
+### Decisions Captured
+`openclaw devices remove <id>` is the correct command for removing a paired node (not `nodes remove`).
+
+### Pending Actions
+BLOCK 2 — exec-policy.json.
+
+### What Remains Unverified
+None.
+
+### What's Next
+BLOCK 2 — exec-policy.json configuration.
+
+## 2026-03-11 06:20 — Phase 6C BLOCK 2: exec-policy.json
+
+### Goal
+Verify exec-policy.json exists and add require-approval rules for destructive command patterns.
+
+### Scope
+`%LOCALAPPDATA%\OpenClawTray\exec-policy.json` (Windows local). Not committed to repo.
+
+### Commands / Tool Calls
+- `Test-Path "$env:LOCALAPPDATA\OpenClawTray\exec-policy.json"` — True
+- `Read` on exec-policy.json — schema confirmed: defaultAction, rules[] with pattern/action/description/enabled
+- `StrReplace` to add 4 require-approval rules at top of rules array
+- `ConvertFrom-Json` validation — VALID_JSON
+- `Get-Process` — OpenClaw.Tray.WinUI PID 15260 running
+
+### Changes
+Added to exec-policy.json (prepended to rules array):
+- `"rm -rf *"` → require-approval
+- `"rm -r *"` → require-approval
+- `"shutdown*"` → require-approval (was deny, now require-approval for gate test)
+- `"format *"` → require-approval
+
+Total rules: 25. defaultAction: deny (unchanged).
+
+### Evidence
+| Check | Result |
+|---|---|
+| File exists | PASS — 3004 bytes → updated |
+| JSON valid | PASS — ConvertFrom-Json succeeded |
+| require-approval rules | PASS — 4 rules confirmed via PowerShell |
+| Molty running | PASS — OpenClaw.Tray.WinUI PID 15260 |
+| Molty hot-reload | File is file-watched; reload assumed (no explicit reload command found) |
+
+### Verdict
+READY — exec-policy.json written with require-approval patterns. BLOCK 5 can test `rm -rf` pattern.
+
+### Blockers
+None
+
+### Fallbacks Used
+github MCP not needed — file already existed with readable schema. Used Read tool directly.
+
+### Cross-Repo Impact
+None — exec-policy.json is local-only, never committed.
+
+### Decisions Captured
+exec-policy.json schema: `{ defaultAction, rules: [{ pattern, action, description, shells?, enabled }] }`. Valid actions: allow, deny, require-approval.
+
+### Pending Actions
+BLOCK 2.5 — USER ACTION pause for GCP setup.
+
+### What Remains Unverified
+Whether Molty actually hot-reloaded the new policy (will be confirmed in BLOCK 5).
+
+### What's Next
+BLOCK 2.5 — print USER ACTION message and pause.
+
+---
+## STATE Entry — 2026-03-11 — Phase 6C BLOCK 3+4: gog Auth + Gmail Integration
+
+### Goal
+Authenticate `gog` CLI with `ynotfins@gmail.com` OAuth and verify Gmail read access.
+
+### Scope
+AI-Project-Manager: docs/ai/STATE.md
+open--claw: .gitignore, docs/ai/STATE.md
+WSL: ~/.openclaw/openclaw.json, ~/.bashrc
+Bitwarden: GOG_KEYRING_PASSWORD (pending store via bws run context)
+
+### Commands / Tool Calls
+- `ls -la /mnt/d/github/open--claw/client_secret_*.json` — FOUND (399 bytes)
+- `cp` to `~/.openclaw/gmail-client-secret.json` — Done
+- Removed secret from open--claw root; added `client_secret_*.json` to `.gitignore`
+- `gog auth credentials set ~/.openclaw/gmail-client-secret.json` — client=default stored
+- `gog auth add ynotfins@gmail.com --services gmail,calendar,drive,contacts --manual` (with GOG_KEYRING_PASSWORD=openclaw) — OAuth completed via manual callback URL
+- `gog auth list` — ynotfins@gmail.com confirmed, services: calendar,contacts,drive,gmail
+- `gog gmail search 'in:inbox' --account ynotfins@gmail.com` — 10 emails returned
+- Added `gog` skill entry with GOG_KEYRING_PASSWORD env to openclaw.json
+- Added `export GOG_KEYRING_PASSWORD=openclaw` to ~/.bashrc
+
+### Changes
+- open--claw/.gitignore: added `client_secret_*.json` and `*client_secret*.json` patterns
+- Deleted client_secret_*.json from open--claw repo root (was untracked, now gitignored)
+- WSL ~/.openclaw/openclaw.json: added skills.entries.gog with env.GOG_KEYRING_PASSWORD
+- WSL ~/.bashrc: added GOG_KEYRING_PASSWORD export
+
+### Evidence
+| Check | Result |
+|---|---|
+| Client secret file in WSL | PASS — ~/.openclaw/gmail-client-secret.json 399 bytes |
+| gog credentials registered | PASS — path: ~/.config/gogcli/credentials.json, client: default |
+| OAuth flow completed | PASS — manual callback URL exchanged successfully |
+| gog auth list | PASS — ynotfins@gmail.com, oauth, all 4 services |
+| Gmail inbox read | PASS — 10 emails listed (senders, subjects, dates all real) |
+| Secret not in repo | PASS — gitignored, deleted from root |
+
+### Verdict
+BLOCK 3 PASS. BLOCK 4 PASS. Gmail integration live.
+
+### Blockers
+GOG_KEYRING_PASSWORD stored as plaintext in openclaw.json and .bashrc. Should migrate to Bitwarden secret and inject via bws run. Not blocking.
+
+### Fallbacks Used
+--manual OAuth flow used instead of browser callback (WSL/Windows localhost isolation).
+GOG_KEYRING_PASSWORD env var used to bypass interactive keyring prompt in non-TTY shells.
+
+### Cross-Repo Impact
+open--claw/.gitignore updated. open--claw/docs/ai/STATE.md to be mirrored below.
+
+### Decisions Captured
+- GOG_KEYRING_PASSWORD password is "openclaw" — stored in WSL .bashrc and openclaw.json skill env.
+- gog manual flow is the correct approach for WSL+Windows setups (localhost not shared).
+- gog skill env in openclaw.json ensures gateway-invoked gog commands work without TTY.
+
+### Pending Actions
+BLOCK 5 — Approval gate test via Control UI or WhatsApp.
+
+### What Remains Unverified
+GOG_KEYRING_PASSWORD not yet in Bitwarden (needs bws run context to create).
+
+### What's Next
+BLOCK 5 — Send a command matching exec-policy require-approval pattern; verify Molty prompts.
+
+---
+## 2026-03-11 — Mirror: Fix: Telegram security + Signal disable + Molty removal
+
+Full entry in open--claw/docs/ai/STATE.md.
+
+### Summary
+- Telegram locked to owner ID 6873660400 (dmPolicy: allowlist)
+- Signal disabled (channel + plugin)
+- gateway.nodes.allowCommands removed
+- Windows Desktop node registration removed (x2)
+- Molty stopped; node host auto-launch disabled in start-cursor-with-secrets.ps1
+
+### Verdict
+PASS — WhatsApp linked, Telegram ok, Signal absent, nodes Known:0.
