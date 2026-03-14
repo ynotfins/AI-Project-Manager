@@ -560,3 +560,71 @@ Proceed to BLOCK 6 (Session Bootstrap) then BLOCK 7-9 (Phase 6C completion).
 
 ### What's Next
 BLOCK 6 — Session Bootstrap, then weather skill + approval gate tests.
+
+---
+
+## 2026-03-14 06:00 — Phase 6C BLOCK 6-9: Bootstrap + Weather Skill + Approval Gate Evaluation
+
+### Goal
+Complete Phase 6C exit criteria: session bootstrap, weather skill integration test, approval gate test, and phase close evaluation.
+
+### Scope
+- `~/.openclaw/exec-approvals.json` (WSL, read-only — no rules configured)
+- `/tmp/openclaw/openclaw-2026-03-14.log` (gateway audit trail)
+- `AI-Project-Manager/docs/ai/PLAN.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/.cursor/rules/10-project-workflow.md`
+
+### Commands / Tool Calls
+- `wsl bash -lc "node -v; pnpm -v"` → v22.22.0 / 10.23.0
+- `wsl bash -lc "curl -s http://localhost:18792/"` → OK
+- `wsl bash -lc "pnpm openclaw health"` → WhatsApp: linked, Telegram: ok, Signal: failed, Agents: main
+- `wsl bash -lc "pnpm openclaw skills list | grep -i weather"` → ✓ ready
+- `wsl bash -lc "pnpm openclaw agent --agent main --message 'What is the weather in New York right now?' --json"`
+- `wsl bash -lc "cat ~/.openclaw/exec-approvals.json"` → no rules
+- `wsl bash -lc "pnpm openclaw agent --agent main --message 'Please run: rm -rf /tmp/test-approval-gate/' --json"` → ran without prompt
+- `wsl bash -lc "tail -10 /tmp/openclaw/openclaw-2026-03-14.log"` → weather response logged at 05:28:13
+
+### Changes
+- `AI-Project-Manager/docs/ai/PLAN.md`: Marked Phase 6C "First integration connected and tested" as `[x]`; added BLOCKER note for approval gate
+
+### Evidence
+| Check | Result | Detail |
+|---|---|---|
+| node/pnpm versions | PASS | v22.22.0 / 10.23.0 |
+| Gateway health API | PASS | curl localhost:18792 → OK |
+| Full gateway health | PASS | WhatsApp: linked, Telegram: ok (@Sparky4bot) |
+| Weather skill ready | PASS | ✓ ready in skills list |
+| Weather invocation | PASS | 42°F, partly cloudy, NE wind 14mph; runId: 2a3f0990; model: claude-sonnet-4-20250514 |
+| Gateway log audit | PASS | Response logged in /tmp/openclaw/openclaw-2026-03-14.log at 05:28:13 |
+| exec-approvals.json | FAIL | No require-approval rules; agent ran rm -rf without any prompt |
+| Approval gate test | FAIL | rm -rf /tmp/test-approval-gate/ executed immediately — no block or approval request |
+
+### Verdict
+PARTIAL — First integration (weather skill) PASS. Approval gate FAIL: exec-approvals.json has no rules configured.
+
+### Blockers
+- **Approval gate not functional**: `~/.openclaw/exec-approvals.json` has empty `defaults` and `agents` — no `require-approval` rules. Must write rules via `pnpm openclaw approvals set --file <policy.json>` with a schema that includes `require-approval` entries for destructive patterns (rm -rf *, format *, shutdown *). Then re-test.
+
+### Fallbacks Used
+- REST API (localhost:18792/api/v1/chat) returned "not found" → used `pnpm openclaw agent --agent main` CLI instead
+
+### Cross-Repo Impact
+Mirror entry to be appended to open--claw/docs/ai/STATE.md.
+
+### Decisions Captured
+- Weather skill is the confirmed "first integration" for Phase 6C — invoked via CLI, not REST API
+- Gateway audit trail is `/tmp/openclaw/openclaw-YYYY-MM-DD.log` (file log) — not `config-audit.jsonl` (which requires exec-approvals to be active)
+- exec-approvals.json schema uses `defaults` and `agents` keys — allowlist adds patterns but `require-approval` rules are a separate config mechanism not yet documented
+
+### Pending Actions
+1. Configure `require-approval` rules in `~/.openclaw/exec-approvals.json` for destructive patterns
+2. Re-test approval gate: trigger `rm -rf /tmp/...` → expect approval prompt
+3. Close Phase 6C once approval gate PASS
+
+### What Remains Unverified
+- The exact JSON schema for `require-approval` rules in exec-approvals.json (not found in CLI help)
+- Whether the approval gate UI surfaces via WhatsApp, Control UI, or both
+
+### What's Next
+PLAN: Research exec-approvals `require-approval` schema (Context7 or docs), write rules, re-test approval gate, then close Phase 6C.
