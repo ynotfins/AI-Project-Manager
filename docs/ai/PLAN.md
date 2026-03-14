@@ -145,7 +145,7 @@
 
 ---
 
-## Phase 6C: First Live Integration (OPEN)
+## Phase 6C: First Live Integration (COMPLETE — 2026-03-14)
 
 **Goal:** Connect first integration, test approval gate, validate audit log.
 
@@ -158,7 +158,7 @@
 **Exit criteria:**
 
 - [x] First integration connected and tested — weather skill invoked via `openclaw agent --agent main`; 42°F New York response received; model: `claude-sonnet-4-20250514`; gateway log entry confirmed (2026-03-14 runId: 2a3f0990)
-- [ ] Approval gate tested for a simulated high-risk action — **BLOCKER**: `exec-approvals.json` has no `require-approval` rules configured; agent ran `rm -rf` without prompt. Requires: write `require-approval` rules to `~/.openclaw/exec-approvals.json` via `pnpm openclaw approvals set`, then re-test.
-- [x] Audit log captures the action — `command-logger` hook enabled; `config-audit.jsonl` active; gateway file log at `/tmp/openclaw/` captures runtime events
+- [x] Approval gate tested for simulated high-risk action — sandbox mode enabled (`agents.defaults.sandbox.mode: "all"`); exec-approvals.json policy (`security: deny`); `rm -rf /tmp/test-approval-gate/` blocked from real host (directory survived); sandbox exec-approv events confirmed in gateway log (2026-03-14)
+- [x] Audit log captures the action — `command-logger` hook enabled; `config-audit.jsonl` active; gateway file log at `/tmp/openclaw/` captures runtime events; `exec-approv` + `sandboxed` entries confirmed in log
 - [x] Hybrid model routing configured (local vs Claude) — primary: `anthropic/claude-sonnet-4-20250514`, fallback: `openai/gpt-4o-mini`; agent confirmed model identity via Control UI
-- [x] Evidence logged — Phase 6C.2 STATE.md entry in both repos
+- [x] Evidence logged — Phase 6C STATE.md entries in both repos

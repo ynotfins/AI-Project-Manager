@@ -228,3 +228,22 @@ Port 3000 is incorrect and should not be used in commands or documentation.
 - Use portable ZIP instead of installer (rejected: installer provides auto-start registration and Start Menu shortcut)
 
 **Rationale:** Molty provides persistent system tray operation (survives terminal close), richer capabilities (canvas/WebView2, screen capture, camera, toast notifications), auto-start with Windows, embedded web chat, and PowerToys integration. The pre-built release from a reputable author (Scott Hanselman) avoids SDK dependencies entirely.
+
+---
+
+### 2026-03-14: Approval gate mechanism is exec-approvals.json + sandbox mode (not exec-policy.json)
+
+**Context:** Phase 6C approval gate test revealed that `exec-policy.json` (Windows/Molty) is irrelevant after Molty removal. Two additional requirements were discovered: (1) `~/.openclaw/exec-approvals.json` must have a `defaults.security` policy set (not empty `{}`), and (2) the agent's `sandbox.mode` must be enabled in `openclaw.json` — without sandbox, exec-approvals.json is never consulted.
+
+**Decision:** The canonical approval gate for the Linux/WSL gateway is:
+- `~/.openclaw/exec-approvals.json` with `defaults.security: "deny"` and `agents.main.ask: "always"`
+- `agents.defaults.sandbox.mode: "all"` in `~/.openclaw/openclaw.json`
+
+exec-policy.json (Windows/Molty) is dead config and no longer applies.
+
+**Alternatives considered:**
+- Using exec-policy.json deny rules (rejected: Molty removed, no Windows node host)
+- Using exec-approvals.json without sandbox (rejected: approvals not evaluated without sandbox active)
+- Using `security: "allowlist"` without `ask: "always"` (rejected: would silently deny on-miss without surfacing approvals)
+
+**Rationale:** The OpenClaw docs explicitly state exec-approvals are a "companion app / node host guardrail" for sandboxed agents. The sandbox intercepts exec calls and routes them through the approvals policy. Without sandbox, the `exec` tool runs in the gateway process context directly, bypassing approvals entirely. Enabling `sandbox.mode: "all"` activates isolation and approval evaluation for all agents.
