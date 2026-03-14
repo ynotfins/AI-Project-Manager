@@ -77,6 +77,19 @@ Anything that was assumed but not confirmed by evidence.
 The immediate next action for AGENT or PLAN.
 ```
 
+## STATE.md Rolling Archive Policy
+
+STATE.md must not exceed ~500 lines. When it approaches this limit or when a phase is marked COMPLETE, AGENT must:
+
+1. Move completed-phase entries verbatim to `docs/ai/archive/state-log-<descriptor>.md`
+2. Update the "Current State Summary" section at the top of STATE.md
+3. Keep only entries from the current open phase that are operationally relevant
+4. Remove duplicate session bootstraps (keep only the most recent)
+5. Verify no decisions or patterns are lost (cross-check DECISIONS.md, PATTERNS.md)
+6. Record the archival action as a STATE.md entry
+
+Archive files in `docs/ai/archive/` are never consulted by PLAN for operational decisions. They exist for audit trail and historical reference only. All operationally relevant information must be captured in the Current State Summary before entries are archived.
+
 ## PLAN source-of-truth priority
 
 PLAN must reconstruct current system state from repository-tracked sources before consulting artifacts or chat history.
