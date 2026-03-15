@@ -31,9 +31,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-03-14
-> Last updated: 2026-03-14
-> Last verified runtime: 2026-03-14
+> Last updated: 2026-03-15
+> Last verified runtime: 2026-03-15
 
 ### Phase Status
 | Phase | Status | Closed |
@@ -48,31 +47,55 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 | 6B — Gateway Boot | COMPLETE | 2026-03-08 |
 | **6C — First Live Integration** | **COMPLETE** | **2026-03-14** |
 
-### Phase 6C Exit Criteria — ALL PASSED
-- [x] Audit log captures actions — gateway file log `/tmp/openclaw/`, `exec-approv` + `sandboxed` events confirmed
+### Phase 6C Exit Criteria — ALL PASSED (2026-03-14)
+- [x] Audit log captures actions — gateway file log `/tmp/openclaw/`, confirmed
 - [x] Hybrid model routing configured — primary: claude-sonnet-4-20250514, fallback: gpt-4o-mini
 - [x] WhatsApp channel operational (Baileys, selfChatMode, allowlist)
 - [x] Telegram secured (owner ID 6873660400, dmPolicy: allowlist)
 - [x] Signal disabled
-- [x] Approval gate configured and tested — `exec-approvals.json` security: deny + sandbox mode: all; `rm -rf` blocked from real host (2026-03-14)
+- [x] Approval gate tested — sandbox mode + exec-approvals; `rm -rf` blocked from real host (2026-03-14)
 - [x] gog OAuth complete (Gmail read access verified)
-- [x] First integration connected and tested — weather skill, 42°F NY, runId 2a3f0990 (2026-03-14)
+- [x] First integration tested — weather skill, 42°F NY, runId 2a3f0990 (2026-03-14)
 
-### Runtime Snapshot (as of 2026-03-14)
+### Runtime Snapshot (as of 2026-03-15)
 - Gateway: 127.0.0.1:18789 (UI), :18792 (API health), systemd managed
 - Node: v22.22.0 (nvm), pnpm 10.23.0
 - Skills: 19/59 ready
 - Channels: WhatsApp (linked), Telegram (secured), Signal (disabled)
 - Windows nodes: 0 connected (Molty removed; no node host)
 - Model routing: anthropic/claude-sonnet-4-20250514, fallback openai/gpt-4o-mini
-- Sandbox: mode=all (exec-approvals active); exec-approvals.json security=deny
+- **Sandbox: mode=off** (reverted 2026-03-15 — Docker not installed in WSL; sandbox=all caused gateway crash loop)
+- exec-approvals.json: security=deny in defaults — policy file exists but NOT enforced without sandbox
 
 ### Active Blockers
-None. Phase 6C COMPLETE.
+
+#### BLOCKER 1 — Sandbox requires Docker (not installed)
+- **Symptom:** Setting `agents.defaults.sandbox.mode: "all"` in `openclaw.json` causes the gateway to crash-loop on every agent request with: `Failed to inspect sandbox image: failed to connect to docker API at unix:///var/run/docker.sock`
+- **Impact:** exec-approvals policy is NOT enforced (sandbox=off means the approval gate is bypassed)
+- **Current state:** Reverted to `sandbox.mode: "off"` as emergency fix. Gateway healthy but exec-approvals not active.
+- **Fix options:** (A) Install Docker Desktop for Windows + enable WSL2 integration, OR (B) research whether OpenClaw supports a non-Docker sandbox mode (e.g. firejail, bubblewrap, or process-level isolation)
+- **Ref:** DECISIONS.md 2026-03-14 — exec-approvals + sandbox mechanism
+
+#### BLOCKER 2 — Agent session context overflow (recurring risk)
+- **Symptom:** Agent session `e3853d85` accumulated 171 messages (171,384 tokens), hit Claude's 200k limit. Every inbound WhatsApp/Telegram message silently failed — no response delivered to user, no error visible on chat side.
+- **Root cause:** `contextPruning.mode: "cache-ttl"` with `ttl: "1h"` is not aggressively pruning. Session grew unbounded over multiple days.
+- **Evidence:** Log: `context overflow: prompt too large. messages=171. input length and max_tokens exceed context limit: 171384 + 34048 > 200000`
+- **Fix applied (2026-03-15):** Deleted overflowed session file; gateway restarted; fresh session at ~22k tokens.
+- **Fix needed (permanent):** Configure `compaction.mode` more aggressively OR set session TTL/message-count limit in `openclaw.json`. Current config: `compaction.mode: "safeguard"` + `contextPruning.ttl: "1h"` — clearly insufficient for multi-day usage.
+- **Risk:** Will recur without config change. Every PC restart or long idle period could mask a silent overflow.
 
 ### Pending User Actions
-1. Name agent via WhatsApp (bootstrap conversation) — cosmetic, non-blocking
-2. MXRoute email: install imap-smtp-email skill + provide credentials — Phase 7 work
+1. Decide on Docker installation (enables sandbox + approval gate enforcement)
+2. Name agent via WhatsApp (bootstrap conversation) — cosmetic, non-blocking
+3. MXRoute email: install imap-smtp-email skill + provide credentials — Phase 7 work
+
+### Known Recurring Issues
+| Issue | Trigger | Fix | Permanent Fix Needed |
+|---|---|---|---|
+| Gateway WebSocket `1006 abnormal closure` | CLI connects before gateway finishes warm-up after restart | Wait 10–12s after restart before running CLI commands | None needed — cosmetic timing issue |
+| Agent context overflow → silent no-response | Session accumulates >170 messages over days | Delete session file, restart gateway | Tune `compaction` settings in openclaw.json |
+| Gateway crash loop (Docker missing) | `sandbox.mode: "all"` set without Docker | Revert to `sandbox.mode: "off"` | Install Docker or find non-Docker sandbox |
+| Signal restart loop | signal-cli Java version mismatch (needs Java 21, has older) | N/A — channel is disabled | Leave disabled; no action needed |
 
 ### Cross-Repo State (open--claw)
 - Branch: master, clean
@@ -719,3 +742,71 @@ None.
 
 ### What's Next
 Phase 6C is COMPLETE. Surface to PLAN for Phase 7 planning.
+
+---
+
+## 2026-03-15 12:30 — Post-6C Operational Issues: Sandbox Crash + Context Overflow
+
+### Goal
+Document and resolve two operational failures discovered after Phase 6C close: gateway crash loop from sandbox mode requiring Docker, and agent context overflow causing silent no-response on all channels.
+
+### Scope
+- `~/.openclaw/openclaw.json` (WSL, not in git) — sandbox mode reverted
+- `/home/ynotf/.openclaw/agents/main/sessions/e3853d85-eb46-4a93-979f-fd75fb7bad4f.jsonl` (WSL) — deleted
+- `AI-Project-Manager/docs/ai/STATE.md` — Current State Summary updated with blockers
+
+### Commands / Tool Calls
+- `systemctl --user is-active openclaw-gateway.service` → `active` (but port 18789 not listening)
+- `ss -tlnp | grep 18789` → empty (port down)
+- `journalctl --user -u openclaw-gateway.service -n 30` → revealed Docker socket errors on every agent call
+- `pnpm openclaw agent --agent main --message ping --json` → revealed context overflow: 171 messages, 171384 tokens
+- Python3 JSON edit: `agents.defaults.sandbox.mode: "all"` → `"off"`
+- `systemctl --user restart openclaw-gateway.service && sleep 12 && curl http://127.0.0.1:18792/` → `OK`
+- `rm /home/ynotf/.openclaw/agents/main/sessions/e3853d85-eb46-4a93-979f-fd75fb7bad4f.jsonl`
+- `pnpm openclaw agent --agent main --message ping --json` → `"Pong! ⚡ I'm here"` (fresh session, 22k tokens)
+
+### Changes
+- `~/.openclaw/openclaw.json`: `agents.defaults.sandbox.mode: "all"` → `"off"` (emergency revert)
+- Session file `e3853d85` deleted (171 messages, context-overflowed)
+- Gateway restarted clean
+
+### Evidence
+| Check | Result | Detail |
+|---|---|---|
+| Gateway port after sandbox=all | FAIL | Port 18789 not listening despite systemd `active` |
+| Journal crash reason | FOUND | `Failed to inspect sandbox image: dial unix /var/run/docker.sock: no such file or directory` — repeated on every lane |
+| Context overflow error | FOUND | `input length and max_tokens exceed context limit: 171384 + 34048 > 200000` — 171 messages in session |
+| Sandbox revert + gateway restart | PASS | Port 18789 listening; curl 18792 → `OK` |
+| Fresh session ping | PASS | Agent responded in 3.3s, 22k tokens, model: claude-sonnet-4-20250514 |
+| WhatsApp/Telegram channels | PASS (post-fix) | Health: WhatsApp linked, Telegram ok |
+
+### Verdict
+OPERATIONAL — both issues resolved for now. Permanent fixes required (see Blockers in Current State Summary).
+
+### Blockers
+1. **Docker not installed** — sandbox mode permanently broken until Docker Desktop installed with WSL2 integration. exec-approvals.json policy exists but unenforced without sandbox.
+2. **Context overflow is recurring** — current `compaction.mode: "safeguard"` + `contextPruning.ttl: "1h"` insufficient for multi-day sessions. Will overflow again.
+
+### Fallbacks Used
+- Gateway WebSocket CLI fallback: used direct systemd restart + curl health check instead of `pnpm openclaw health` (which hangs when gateway is mid-crash)
+
+### Cross-Repo Impact
+- `open--claw/docs/ai/STATE.md`: needs mirror entry (deferred to next commit)
+
+### Decisions Captured
+- Sandbox mode requires Docker. Without Docker in WSL, `sandbox.mode` must stay `"off"`.
+- Context overflow produces silent no-response — not a visible error on WhatsApp/Telegram. Only detectable via gateway CLI or log file.
+- Emergency session recovery: delete `.jsonl` session file + restart gateway. Clean session starts at ~18-22k tokens.
+
+### Pending Actions
+1. **PLAN: Evaluate Docker Desktop installation** — Docker Desktop for Windows with WSL2 backend would enable sandbox mode and exec-approvals enforcement
+2. **PLAN: Tune context compaction** — change `compaction.mode` to `"auto"` or set explicit `maxMessages` limit in `openclaw.json` to prevent overflow
+3. **PLAN: Add monitoring** — consider a cron-based healthcheck that alerts via WhatsApp if session token count approaches limit
+
+### What Remains Unverified
+- Whether `compaction.mode: "auto"` exists in openclaw.json schema (needs Context7 lookup)
+- Whether OpenClaw supports non-Docker sandboxing (firejail/bubblewrap) — needs research
+- Whether the gateway's session compaction actually triggers at `ttl: "1h"` or only on explicit `/reset`
+
+### What's Next
+PLAN: Phase 7 scoping. Priority items: (1) fix context overflow permanently, (2) decide on Docker for sandbox, (3) MXRoute email integration.
