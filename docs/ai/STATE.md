@@ -63,7 +63,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - Node: v22.22.0 (nvm), pnpm 10.23.0
 - Skills: 19/59 ready
 - Channels: WhatsApp (linked), Telegram (secured), Signal (disabled)
-- Windows nodes: 0 connected (Molty removed; no node host)
+- Windows nodes: 0 connected (Molty removed 2026-03-16 — XamlParseException crash, never functional post-restart)
 - Model routing: anthropic/claude-sonnet-4-20250514, fallback openai/gpt-4o-mini
 - **Sandbox: mode=off** (reverted 2026-03-15 — Docker not installed in WSL; sandbox=all caused gateway crash loop)
 - **Context engine: lossless-claw v0.3.0** (LCM active, db=`~/.openclaw/lcm.db`, native API — legacy fallback warning resolved by 2026.3.13 upgrade)
@@ -72,12 +72,11 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ### Active Blockers
 
-#### BLOCKER 3 — Molty XamlParseException (WinUI3 crash, blocking Phase 7.1)
-- **Symptom:** `XamlParseException: XAML parsing failed` at `TrayMenuWindow.InitializeComponent()` on every Molty startup since 2026-03-13
-- **Impact:** Molty tray/UI dead. Cannot pair with WSL gateway. Windows node: 0 connected.
-- **Fix:** Try MSIX reinstall first: download `OpenClawTray-0.4.5-win-x64.msix` from https://github.com/openclaw/openclaw-windows-node/releases/tag/v0.4.5
-- **If MSIX fails:** full uninstall via `%LOCALAPPDATA%\OpenClawTray\Uninstall.exe` then reinstall via `OpenClawTray-Setup-x64.exe`
-- **Pre-configured and ready:** exec-policy.json already set to `defaultAction: allow` (Phase 7.1 BLOCK 2 complete)
+#### BLOCKER 3 — Windows node host: none installed (Molty removed 2026-03-16)
+- **Status:** Molty v0.4.5 uninstalled (was crash-looping with XamlParseException since 2026-03-13, never functional after last restart)
+- **Impact:** No Windows node host. Sparky cannot run PowerShell commands on Windows or access DroidRun MCP bridge.
+- **Fix options:** (A) Reinstall Molty via MSIX (`OpenClawTray-0.4.5-win-x64.msix`) to get proper WinUI3 registration, OR (B) Use headless openclaw node host (`openclaw node run --host 127.0.0.1 --port 18789`) — lighter, no UI, but provides system.run
+- **Pre-configured and waiting:** `exec-policy.json` already set to `defaultAction: allow` at `%LOCALAPPDATA%\OpenClawTray\` — will need to be recreated if path changes on reinstall
 
 #### BLOCKER 1 — Sandbox requires Docker (not installed)
 - **Symptom:** Setting `agents.defaults.sandbox.mode: "all"` in `openclaw.json` causes the gateway to crash-loop on every agent request with: `Failed to inspect sandbox image: failed to connect to docker API at unix:///var/run/docker.sock`
