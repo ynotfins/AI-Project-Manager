@@ -810,3 +810,52 @@ OPERATIONAL — both issues resolved for now. Permanent fixes required (see Bloc
 
 ### What's Next
 PLAN: Phase 7 scoping. Priority items: (1) fix context overflow permanently, (2) decide on Docker for sandbox, (3) MXRoute email integration.
+
+---
+
+## 2026-03-15 13:00 — Pre-Restart Checkpoint
+
+### Goal
+Safe state before PC restart.
+
+### Scope
+- Both repos
+- WSL gateway
+
+### Commands / Tool Calls
+- `git status` both repos → clean
+- `pnpm openclaw health` → healthy
+
+### Changes
+None.
+
+### Evidence
+- AI-Project-Manager: clean (untracked: `build_apk.bat`, `build_apk_fixed.bat` — pre-existing, not ours)
+- open--claw: clean
+- Gateway health: WhatsApp linked (auth age 9m), Telegram ok (@Sparky4bot), Signal failed (expected)
+- Active sessions: `agent:main:main` (264m ago), `agent:main:telegram:slash:6873660400` (364m ago)
+- Config warning: `plugins.entries.lossless-claw: plugin not found` — stale config entry in `openclaw.json`, non-blocking
+
+### Verdict
+READY for restart.
+
+### Blockers
+None blocking restart. Post-restart: follow PATTERNS.md Host Restart Verification.
+
+### Fallbacks Used
+None.
+
+### Cross-Repo Impact
+None.
+
+### Decisions Captured
+None.
+
+### Pending Actions
+Post-restart: run `bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -File "$HOME\.openclaw\start-cursor-with-secrets.ps1"` to restore secrets + start Cursor. Gateway is systemd-managed and will auto-start in WSL.
+
+### What Remains Unverified
+- Whether `lossless-claw` stale plugin entry causes any functional issue (appears cosmetic only — gateway still healthy)
+
+### What's Next
+Post-restart: verify gateway health, confirm WhatsApp + Telegram responsive. Then PLAN: Phase 7 — fix context overflow + Docker decision.
