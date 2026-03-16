@@ -72,6 +72,13 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ### Active Blockers
 
+#### BLOCKER 3 — Molty XamlParseException (WinUI3 crash, blocking Phase 7.1)
+- **Symptom:** `XamlParseException: XAML parsing failed` at `TrayMenuWindow.InitializeComponent()` on every Molty startup since 2026-03-13
+- **Impact:** Molty tray/UI dead. Cannot pair with WSL gateway. Windows node: 0 connected.
+- **Fix:** Try MSIX reinstall first: download `OpenClawTray-0.4.5-win-x64.msix` from https://github.com/openclaw/openclaw-windows-node/releases/tag/v0.4.5
+- **If MSIX fails:** full uninstall via `%LOCALAPPDATA%\OpenClawTray\Uninstall.exe` then reinstall via `OpenClawTray-Setup-x64.exe`
+- **Pre-configured and ready:** exec-policy.json already set to `defaultAction: allow` (Phase 7.1 BLOCK 2 complete)
+
 #### BLOCKER 1 — Sandbox requires Docker (not installed)
 - **Symptom:** Setting `agents.defaults.sandbox.mode: "all"` in `openclaw.json` causes the gateway to crash-loop on every agent request with: `Failed to inspect sandbox image: failed to connect to docker API at unix:///var/run/docker.sock`
 - **Impact:** exec-approvals policy is NOT enforced (sandbox=off means the approval gate is bypassed)
@@ -989,3 +996,105 @@ Mirror entry to be appended to open--claw/docs/ai/STATE.md.
 1. PC restart → post-restart health check
 2. Give agent orientation prompt (lossless-claw + DroidRun)
 3. PLAN: Phase 7 — Docker/sandbox decision, MXRoute email, agent naming
+
+---
+
+## 2026-03-16 — Phase 7.1: Windows Node Setup — BLOCKED (Molty XamlParseException crash)
+
+### Goal
+Re-pair Molty (OpenClaw Windows Hub v0.4.5) with WSL gateway for full Windows system access and DroidRun MCP bridging.
+
+### Scope
+- `%LOCALAPPDATA%\OpenClawTray\exec-policy.json` (modified — see Changes)
+- `%LOCALAPPDATA%\OpenClawTray\openclaw-tray.log` (read for diagnostics)
+- `%USERPROFILE%\.openclaw\openclaw.json` (read — not modified)
+- WSL `~/.openclaw/openclaw.json` (not modified — `gateway.nodes: {}` confirmed correct for full access)
+
+### Commands / Tool Calls
+```
+# BLOCK 1 — Research
+Context7 query: OpenClaw node pairing, devices add, exec-policy nodes allowCommands
+# → pairing flow: node.pair.request → openclaw devices approve <requestId>
+# → gateway.nodes: {} with no allowCommands = unrestricted (confirmed)
+
+# BLOCK 2 — exec-policy.json
+Get-Content "$env:LOCALAPPDATA\OpenClawTray\exec-policy.json"
+Copy-Item ... exec-policy.json.bak
+# Rewrote with defaultAction: "allow", minimal deny rules (Format-*, shutdown, reg delete)
+Get-Content ... | ConvertFrom-Json | Out-Null  # JSON VALID
+
+# BLOCK 3+ — STOPPED
+# Molty crash detected before proceeding to gateway config changes
+Get-Content "$env:LOCALAPPDATA\OpenClawTray\openclaw-tray.log" -Tail 60
+Stop-Process -Name "OpenClaw.Tray.WinUI" -Force; Start-Process ...  # restart test
+# → crash persists on fresh start
+```
+
+### Changes
+- `exec-policy.json`: `defaultAction` changed from `"deny"` → `"allow"`. Old allow rules replaced with minimal deny-only safety floor (Format-*, Stop-Computer, Restart-Computer, shutdown, reg delete). Backup: `exec-policy.json.bak`.
+- No WSL changes made (gateway.nodes: {} is correct for full access per docs).
+
+### Evidence
+**Molty crash (recurring since 2026-03-13, confirmed 2026-03-16):**
+```
+[2026-03-16 01:19:03.140] [ERROR] CRASH UnhandledException:
+Microsoft.UI.Xaml.Markup.XamlParseException: XAML parsing failed.
+  at OpenClawTray.Windows.TrayMenuWindow.InitializeComponent()
+  at OpenClawTray.App.InitializeTrayIcon()
+  at OpenClawTray.App.OnLaunched()
+```
+- Crash happens on every startup — before gateway connection is attempted
+- Process PID stays alive (18628) but tray menu and UI are dead
+- Last successful Molty operation: 2026-03-11 (device removal confirmed)
+- Crash began: 2026-03-13 16:05 (after PC restart post-Phase 6C)
+- Molty version: v0.4.5 (latest)
+- Windows App Runtime: 1.1 through 1.8 all present — version mismatch unlikely
+- Cause: Corrupted WinUI3 XAML resource or missing MSIX package registration
+
+**WSL nodes status (pre-change):** `Known: 0 · Paired: 0 · Connected: 0` — confirmed unpaired.
+
+**Windows openclaw.json (read):**
+- Gateway token present (`5155d4d3...`) — matches WSL gateway token
+- DroidRun MCP configured: `mcpServers.droidrun` pointing to `start_mcp_server.ps1`
+- Config is set as a gateway config, not a node host config — may need review when Molty is repaired
+
+### Verdict
+**BLOCKED — STOP CONDITION MET.** Molty cannot connect to gateway because its WinUI3 UI layer crashes on launch before any connection attempt. exec-policy.json was successfully updated but cannot be tested until Molty is repaired.
+
+### Blockers
+#### BLOCKER 3 — Molty XamlParseException (WinUI3 crash on every launch)
+- **Symptom:** `XamlParseException: XAML parsing failed` at `TrayMenuWindow.InitializeComponent()` on every startup since 2026-03-13
+- **Impact:** Molty process runs but tray, UI, and gateway connection are all dead. Cannot pair.
+- **Fix options (in order of preference):**
+  1. **Reinstall via MSIX** (not EXE): `OpenClawTray-0.4.5-win-x64.msix` from GitHub releases — MSIX installs register the app properly in the Windows package store and fix XAML resource loading issues
+  2. **Repair Windows App Runtime**: `winget install Microsoft.WindowsAppRuntime.1.6` (Molty targets 1.6 based on DLL version `6000.519.329.0`)
+  3. **Full uninstall + reinstall**: `%LOCALAPPDATA%\OpenClawTray\Uninstall.exe` → reinstall from `OpenClawTray-Setup-x64.exe`
+  4. **Isolate XAML resource issue**: Check if `CommandPalette/` dir (found in install dir) has corrupt XAML files
+- **Recommended action for PLAN:** Try Fix 1 (MSIX reinstall) first — it's non-destructive and fixes registration. If fails, try Fix 3 (full reinstall).
+
+### Fallbacks Used
+- Context7 (primary for docs research) — PASS
+- Exa/Firecrawl not needed — Context7 returned sufficient detail
+
+### Cross-Repo Impact
+Mirror entry to open--claw/docs/ai/STATE.md.
+
+### Decisions Captured
+- `exec-policy.json defaultAction: "allow"` is now the target policy for Phase 7.1 (pre-configured, ready for when Molty is repaired)
+- `gateway.nodes: {}` (no allowCommands) in WSL openclaw.json is correct for full access — no changes needed there
+- Molty's Windows-side `openclaw.json` is configured as a gateway (not node host) — needs investigation when Molty pairing resumes
+
+### Pending Actions
+1. **USER ACTION REQUIRED:** Repair Molty — try in order:
+   a. Download `OpenClawTray-0.4.5-win-x64.msix` from https://github.com/openclaw/openclaw-windows-node/releases/tag/v0.4.5 and install (double-click MSIX)
+   b. If a) fails: uninstall via `%LOCALAPPDATA%\OpenClawTray\Uninstall.exe` then reinstall via `OpenClawTray-Setup-x64.exe`
+2. After Molty repair: restart Molty, verify tray icon appears, then re-run Phase 7.1 BLOCK 3+
+3. Investigate Windows-side `openclaw.json` — currently structured as gateway config, may need to be a node-host config pointing at WSL gateway URL
+
+### What Remains Unverified
+- Whether Molty's Windows-side `openclaw.json` (gateway mode) is correct for node host operation or needs restructuring
+- Whether DroidRun MCP in Windows `openclaw.json` is surfaced to the WSL agent via the node bridge or needs separate WSL-side mcpServers config
+- Whether `device-key-ed25519.json` (from 2026-03-11 pairing) is still valid or needs regeneration after reinstall
+
+### What's Next
+PLAN decision: repair Molty (MSIX reinstall recommended) then resume Phase 7.1 BLOCK 3+.

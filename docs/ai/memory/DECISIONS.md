@@ -247,3 +247,21 @@ exec-policy.json (Windows/Molty) is dead config and no longer applies.
 - Using `security: "allowlist"` without `ask: "always"` (rejected: would silently deny on-miss without surfacing approvals)
 
 **Rationale:** The OpenClaw docs explicitly state exec-approvals are a "companion app / node host guardrail" for sandboxed agents. The sandbox intercepts exec calls and routes them through the approvals policy. Without sandbox, the `exec` tool runs in the gateway process context directly, bypassing approvals entirely. Enabling `sandbox.mode: "all"` activates isolation and approval evaluation for all agents.
+
+---
+
+### 2026-03-16: Phase 7.1 — exec-policy.json target policy set; Molty pairing blocked by WinUI3 crash
+
+**Context:** Phase 7.1 attempted to re-pair Molty with full system access. BLOCK 2 completed successfully (exec-policy.json updated), but BLOCK 3+ blocked by a fatal Molty crash (`XamlParseException` on every launch since 2026-03-13).
+
+**Decision:**
+- `exec-policy.json defaultAction: "allow"` is the correct target policy for Phase 7.1. Pre-configured and saved. Minimal deny safety floor kept: Format-*, Stop-Computer, Restart-Computer, shutdown, reg delete.
+- `gateway.nodes: {}` (no `allowCommands`) in WSL `openclaw.json` is the correct configuration for full Windows node access — no changes needed.
+- Molty repair (MSIX reinstall) is the prerequisite before pairing can proceed.
+- Security boundary for Windows node: exec-policy.json on Windows side handles command-level allow/deny. WSL-side exec-approvals.json (sandbox=off, currently unenforced) handles agent-level approval prompts separately.
+
+**Alternatives considered:**
+- Using headless openclaw node host instead of Molty (deferred: Molty provides richer capabilities — canvas, screen, camera, DroidRun MCP bridge)
+- Skipping node host entirely (rejected: Windows file access and DroidRun MCP bridging require a node host)
+
+**Rationale:** exec-policy.json as `allow` with targeted denies gives Sparky full PowerShell access while keeping the most destructive operations blocked at the policy level. The WSL exec-approvals layer (once sandbox is enabled via Docker) adds a second approval gate on top.
