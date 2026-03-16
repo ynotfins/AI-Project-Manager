@@ -11,6 +11,7 @@ auth-profiles.json
 *service-account*.json
 gmail-client-secret*.json
 *client_secret*.json
+.gateway-env
 
 # MCP config (lives outside repo)
 mcp.json
