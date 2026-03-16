@@ -1,11 +1,70 @@
 # MCP Canonical Configuration
 
-**Last verified:** 2026-03-16 — context budget optimized; tool count reduced from ~200 to ~52.
+**Last verified:** 2026-03-16 — tri-workspace expansion (droidrun added); context budget optimized; tool count ~52.
 
 This is the authoritative reference for the global Cursor MCP setup.
 Apply this to every machine and every project. Secrets are injected at runtime
 via Bitwarden Secrets Manager (`bws run`) — never stored in this file, in git,
 or in `mcp.json`.
+
+---
+
+## Tri-workspace architecture
+
+The Cursor workspace (`openclaw.code-workspace`) contains three projects forming a full-stack AI + mobile control system:
+
+| Project | Role | Path |
+|---|---|---|
+| **AI-Project-Manager** | Orchestration layer — governance, rules, state tracking, agent planning | `D:\github\AI-Project-Manager` |
+| **open--claw** | Agent brain — AI processing, OpenClaw gateway, WhatsApp/Telegram channels | `D:\github\open--claw` |
+| **droidrun** | Runtime layer — phone control via ADB + DroidRun Portal, MCP server (`phone_do`/`phone_ping`/`phone_apps`) | `D:\github\droidrun` |
+
+### Integration points
+- **open--claw → droidrun**: OpenClaw agent (Sparky) calls DroidRun MCP tools to control the Samsung Galaxy S25 Ultra
+- **AI-Project-Manager → all**: Governance rules (`.cursor/rules/`) are canonical in AI-PM and synced to droidrun; open--claw has its own mirror
+- **Shared MCP config**: All three projects share the same `%USERPROFILE%\.cursor\mcp.json` (global Cursor config)
+- **Phone target**: Samsung Galaxy S25 Ultra, Tailscale IP `100.71.228.18`, ADB port `5555`, DroidRun Portal `tcp:8080`
+
+### Bitwarden accounts (two separate machine accounts)
+
+| Account | Token env var | Used by | Secrets |
+|---|---|---|---|
+| OpenClaw machine account | `BWS_ACCESS_TOKEN` (injected via `bws run`) | OpenClaw gateway, MCP servers | ANTHROPIC, OPENAI, OPENROUTER, FIRECRAWL, GITHUB, OPENMEMORY API keys |
+| droidrun-windows machine account | `BWS_DROIDRUN_TOKEN` (fetched from `bw get item`) | DroidRun MCP server | `DROIDRUN_DEEPSEEK_KEY`, `DROIDRUN_OPENROUTER_KEY` |
+
+DroidRun secret IDs (in Bitwarden Secrets Manager, droidrun project):
+
+| Secret | ID |
+|---|---|
+| `DROIDRUN_DEEPSEEK_KEY` | `14d69c11-99ba-428f-a656-b40e014e72ae` |
+| `DROIDRUN_OPENROUTER_KEY` | `f9ed80a7-fc35-4add-96d6-b40e0163b041` |
+
+### Merged startup flow (`start-cursor-with-secrets.ps1`)
+
+```
+bws run (OpenClaw machine account)
+  → Env vars: ANTHROPIC, OPENAI, OPENROUTER, FIRECRAWL, GITHUB, OPENMEMORY keys
+  → patch-mcp.ps1 (enforce clean mcp.json)
+  → start-openmemory-proxy.ps1 (OpenMemory local proxy on :8766)
+  → DroidRun block (try/catch — non-blocking):
+      → bw get item BWS_DROIDRUN_TOKEN (separate vault account)
+      → bws secret get (droidrun machine account) → DROIDRUN_DEEPSEEK_KEY, DROIDRUN_OPENROUTER_KEY
+      → adb smart reconnect: check → connect → adb_find_port.ps1 (post-reboot)
+  → Start-Process Cursor (openclaw.code-workspace — 3 folders)
+  → WSL gateway: write transient .gateway-env → systemd restart → delete .gateway-env
+  → Windows node host: update node.cmd WSL IP → kill stale → launch hidden
+```
+
+### Cursor rules synchronization
+
+Rules files are canonical in AI-Project-Manager and must be synced to droidrun whenever they change:
+
+| File | AI-PM (canonical) | droidrun (copy) | open--claw |
+|---|---|---|---|
+| `00-global-core.md` | ✓ canonical | ✓ synced | separate |
+| `05-global-mcp-usage.md` | ✓ canonical | ✓ synced | separate |
+| `10-project-workflow.md` | ✓ canonical | ✓ synced | separate |
+| `20-project-quality.md` | ✓ canonical | ✓ synced | separate |
 
 ---
 

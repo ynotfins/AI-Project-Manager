@@ -638,3 +638,89 @@ None from this block.
 
 ### What's Next
 Continue with gateway Bitwarden/WSLENV secret injection verification (Sparky responsiveness).
+
+## 2026-03-16 15:00 — Tri-Workspace Expansion: Add DroidRun
+
+### Goal
+Expand from dual-workspace (AI-Project-Manager + open--claw) to tri-workspace by adding droidrun as the runtime/mobile control layer. Merge DroidRun startup logic into the main launch script, register droidrun in Serena, synchronize cursor rules, and document the tri-workspace architecture.
+
+### Scope
+- C:\Users\ynotf\.openclaw\openclaw.code-workspace (workspace file)
+- C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1 (startup script)
+- C:\Users\ynotf\.serena\serena_config.yml (Serena project registry)
+- D:\github\droidrun\.cursor\rules\ (00, 05, 10, 20 synced from AI-PM)
+- AI-Project-Manager\docs\tooling\MCP_CANONICAL_CONFIG.md (tri-workspace section added)
+- AI-Project-Manager\docs\ai\STATE.md (this entry)
+Repos affected: AI-Project-Manager (governance), droidrun (rules sync). open--claw: no changes.
+
+### Commands / Tool Calls
+- Read: startup_droidrun.ps1, start-cursor-with-secrets.ps1, openclaw.code-workspace, serena_config.yml, all 4 droidrun rule files, all 4 AI-PM rule files
+- Write: openclaw.code-workspace (add droidrun folder)
+- StrReplace x2: start-cursor-with-secrets.ps1 (optionalVars + DroidRun block)
+- StrReplace: serena_config.yml (add open--claw + droidrun to projects list)
+- Shell: Copy-Item x4 (rules sync AI-PM → droidrun)
+- Shell: Get-FileHash x4 (verify identical content)
+- StrReplace: MCP_CANONICAL_CONFIG.md (tri-workspace section prepended)
+
+### Changes
+- **openclaw.code-workspace**: Added droidrun as third folder (D:\github\droidrun)
+- **start-cursor-with-secrets.ps1**:
+  - Added DROIDRUN_DEEPSEEK_KEY and DROIDRUN_OPENROUTER_KEY to $optionalVars
+  - Inserted DroidRun block (try/catch, non-blocking) between proxy start and Cursor launch:
+    - Block A: Bootstrap BWS_DROIDRUN_TOKEN from regular Bitwarden vault → fetch DeepSeek + OpenRouter keys via droidrun machine account → store as User env vars + process env
+    - Block B: Smart ADB reconnect (check → connect → db_find_port.ps1 → WARNING if all fail)
+- **serena_config.yml**: Added D:\github\open--claw and D:\github\droidrun to projects list
+- **droidrun/.cursor/rules/**: Synced  0-global-core.md,  5-global-mcp-usage.md, 10-project-workflow.md, 20-project-quality.md from AI-PM (all previously outdated — referenced playwright, old sequential-thinking as primary)
+- **MCP_CANONICAL_CONFIG.md**: Added "Tri-workspace architecture" section documenting project roles, integration points, both Bitwarden accounts, merged startup flow, and rules sync table. Updated "Last verified" date.
+
+### Evidence
+| Check | Result |
+|---|---|
+| openclaw.code-workspace has exactly 3 folders | PASS |
+| startup_droidrun.ps1 exists at expected path | PASS |
+| start-cursor-with-secrets.ps1 exists | PASS |
+| serena_config.yml exists | PASS |
+| DroidRun optionalVars added | PASS |
+| DroidRun block inserted before Cursor launch | PASS |
+| DroidRun block wrapped in try/catch | PASS |
+| BWS_DROIDRUN_TOKEN uses separate bw account | PASS — w get item BWS_DROIDRUN_TOKEN pattern; OpenClaw BWS_ACCESS_TOKEN restored after |
+| serena_config.yml: droidrun added | PASS |
+| 00-global-core.md synced (was outdated) | PASS — MD5 identical |
+| 05-global-mcp-usage.md synced | PASS — MD5 identical |
+| 10-project-workflow.md synced | PASS — MD5 identical |
+| 20-project-quality.md synced | PASS — MD5 identical |
+| MCP_CANONICAL_CONFIG.md tri-workspace section | PASS |
+| No secrets in committed files | PASS — BWS_DROIDRUN_TOKEN, API keys not committed; IDs are non-secret references |
+| Existing OpenClaw flow intact | PASS — proxy, gateway, node host sections unmodified |
+
+### Verdict
+READY — tri-workspace expansion complete. droidrun integrated into workspace, startup, Serena, and governance docs.
+
+### Blockers
+None
+
+### Fallbacks Used
+None — all edits performed with Read/Write/StrReplace/Shell tools directly.
+
+### Cross-Repo Impact
+- **droidrun**: .cursor/rules/ synced (4 files updated). droidrun is now governed by the same rules as AI-Project-Manager.
+- **open--claw**: No changes made.
+- **AI-Project-Manager**: MCP_CANONICAL_CONFIG.md updated, this STATE.md entry appended.
+
+### Decisions Captured
+- DroidRun uses a separate Bitwarden machine account (droidrun-windows) with its own BWS_DROIDRUN_TOKEN, independent from OpenClaw's BWS_ACCESS_TOKEN
+- DroidRun block in startup script is fully non-blocking (try/catch); failure prints warning and continues
+- Cursor rules are canonical in AI-Project-Manager; droidrun gets copies (not symlinks); sync must be re-run when rules change
+- open--claw was NOT previously registered in serena_config.yml; added alongside droidrun
+
+### Pending Actions
+- Restart Serena (toggle in MCP panel or restart Cursor) to pick up the new project registrations
+- Test DroidRun key injection on next ws run launch (verify DROIDRUN_DEEPSEEK_KEY appears in ENV_CHECK output)
+- Verify phone reconnect logic on next startup
+
+### What Remains Unverified
+- Whether BWS_DROIDRUN_TOKEN is actually present in the regular Bitwarden vault (value not verified — runtime test needed)
+- Whether db_find_port.ps1 correctly re-locks to port 5555 in a post-reboot scenario
+
+### What's Next
+Next startup via ws run ... start-cursor-with-secrets.ps1 will exercise the new DroidRun block. Monitor output for DROIDRUN: status lines.
