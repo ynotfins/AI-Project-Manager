@@ -31,8 +31,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-03-15
-> Last verified runtime: 2026-03-15
+> Last updated: 2026-03-16
+> Last verified runtime: 2026-03-16
 
 ### Phase Status
 | Phase | Status | Closed |
@@ -57,16 +57,18 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - [x] gog OAuth complete (Gmail read access verified)
 - [x] First integration tested — weather skill, 42°F NY, runId 2a3f0990 (2026-03-14)
 
-### Runtime Snapshot (as of 2026-03-15)
-- Gateway: 127.0.0.1:18789 (UI), :18792 (API health), systemd managed
+### Runtime Snapshot (as of 2026-03-16)
+- Gateway: 127.0.0.1:18789 (UI), :18792 (API health), systemd managed — **openclaw v2026.3.13** (updated from 2026.3.8)
+- Install type: npm global, stable channel (was: git tag detached HEAD — `openclaw update` now works)
 - Node: v22.22.0 (nvm), pnpm 10.23.0
 - Skills: 19/59 ready
 - Channels: WhatsApp (linked), Telegram (secured), Signal (disabled)
 - Windows nodes: 0 connected (Molty removed; no node host)
 - Model routing: anthropic/claude-sonnet-4-20250514, fallback openai/gpt-4o-mini
 - **Sandbox: mode=off** (reverted 2026-03-15 — Docker not installed in WSL; sandbox=all caused gateway crash loop)
-- **Context engine: lossless-claw v0.3.0** (LCM active 2026-03-16, db=`~/.openclaw/lcm.db`)
+- **Context engine: lossless-claw v0.3.0** (LCM active, db=`~/.openclaw/lcm.db`, native API — legacy fallback warning resolved by 2026.3.13 upgrade)
 - exec-approvals.json: security=deny in defaults — policy file exists but NOT enforced without sandbox
+- **DroidRun MCP**: added to other Cursor project window (2026-03-16) — phone automation tool for Samsung Galaxy S25 Ultra
 
 ### Active Blockers
 
@@ -926,3 +928,64 @@ None for this task.
 BLOCKER 2 closed. Remaining PLAN work:
 1. BLOCKER 1: Docker decision (sandbox mode for exec-approvals enforcement)
 2. Phase 7 scoping: MXRoute email integration, agent naming, monitoring
+
+---
+
+## 2026-03-16 — OpenClaw Update 2026.3.8 → 2026.3.13 + DroidRun
+
+### Goal
+Update OpenClaw to latest stable (2026.3.13) to get native lossless-claw API support and eliminate legacy fallback warning. Document DroidRun MCP addition.
+
+### Scope
+- WSL: openclaw global npm install (was git tag detached HEAD)
+- WSL: `~/.openclaw/openclaw.json` (updated by installer during update)
+- AI-Project-Manager/docs/ai/STATE.md
+- open--claw/docs/ai/STATE.md (mirror)
+
+### Commands / Tool Calls
+```
+pnpm openclaw update --channel stable --yes   # updated 2026.3.8 → 2026.3.13, restarted gateway
+openclaw health                                # verified post-update
+```
+
+### Changes
+- OpenClaw: 2026.3.8 → **2026.3.13** (stable channel, npm global)
+- Install type changed: git tag (detached HEAD, no branch) → **npm global** (`~/.nvm/.../node_modules/openclaw`)
+- lossless-claw: re-pinned at v0.3.0, now uses native `runtime.modelAuth` API (no legacy fallback)
+- `openclaw update` now works correctly going forward (stable channel tracked)
+- DroidRun MCP tool added to Cursor (separate project window, 2026-03-16) — enables phone automation for Samsung Galaxy S25 Ultra via natural language commands
+
+### Evidence
+- Update output: `Update Result: OK — After: 2026.3.13`
+- Health: `[lcm] Plugin loaded (enabled=true, db=~/.openclaw/lcm.db, threshold=0.75)` — no fallback warning
+- WhatsApp: linked (auth age 0m), Telegram: ok, gateway auto-restarted by update
+
+### Verdict
+PASS.
+
+### Blockers
+BLOCKER 1 (Docker/sandbox) still open — unrelated to this update.
+
+### Fallbacks Used
+`--channel stable` flag used because install was a git tag with no branch, causing `openclaw update` git flow to fail (`pathspec 'main' did not match`). Switching channel to stable triggered npm global update path instead.
+
+### Cross-Repo Impact
+Mirror entry to be appended to open--claw/docs/ai/STATE.md.
+
+### Decisions Captured
+- OpenClaw will be maintained on stable npm channel going forward — git tag checkout abandoned
+- Future updates: `openclaw update` (no flags needed, stable channel persisted)
+
+### Pending Actions
+- PC restart pending (user-initiated, other project window needs restart)
+- After restart: verify gateway health per PATTERNS.md Host Restart Verification
+- Inform openclaw agent of lossless-claw capabilities and DroidRun addition via WhatsApp
+
+### What Remains Unverified
+- lcm.db DAG persistence across gateway restarts (first real test after restart)
+- DroidRun MCP integration details (added in other window, not yet tested here)
+
+### What's Next
+1. PC restart → post-restart health check
+2. Give agent orientation prompt (lossless-claw + DroidRun)
+3. PLAN: Phase 7 — Docker/sandbox decision, MXRoute email, agent naming
