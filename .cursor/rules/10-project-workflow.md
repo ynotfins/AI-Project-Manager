@@ -9,7 +9,7 @@ PLAN must produce:
 - Phases with explicit exit criteria
 - Risks and unknowns
 - A single AGENT prompt for the next phase
-- If the phase has >5 connected steps, use a reasoning MCP tool before finalizing
+- If the phase has >5 connected steps, use Clear Thought 1.5 (`mental_model` or `sequential_thinking` operation) before finalizing
 
 ## AGENT execution contract
 
@@ -28,6 +28,7 @@ DEBUG must produce:
 - Ranked likely causes (most to least probable)
 - Minimal fix plan (smallest diff)
 - Reproduction steps with evidence
+- DEBUG must use Clear Thought 1.5 `debugging_approach` operation before producing ranked causes
 - One AGENT prompt to implement and verify the fix
 
 ## STATE.md entry template (enforced — all sections required)

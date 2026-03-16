@@ -4,27 +4,40 @@ AGENT must use installed MCP tools by name. Manual approaches are fallbacks, nev
 
 ## Preferred MCP tools (by name)
 
-| Category              | Preferred tool         | Fallback                                      |
-|-----------------------|------------------------|-----------------------------------------------|
-| Reasoning / planning  | sequential-thinking    | Break into sub-steps manually; record in PLAN |
-| Code intelligence     | serena                 | Grep/glob + targeted file reads               |
-| Documentation         | Context7               | Web search or manual doc fetch                 |
-| Browser automation    | playwright             | Manual screenshot + describe                   |
-| UI generation         | Magic MCP              | Hand-write component scaffold                  |
-| Web extraction        | firecrawl-mcp          | Manual fetch + parse                           |
-| Repo operations       | github                 | CLI git + manual hosting UI                    |
-| Web search            | Exa Search             | Manual search                                  |
-| Memory                | openmemory             | File-based memory in `docs/ai/memory/`         |
+| Category             | Preferred tool    | Fallback                                |
+|----------------------|-------------------|-----------------------------------------|
+| Reasoning / analysis | Clear Thought 1.5 | sequential-thinking, then manual        |
+| Code intelligence    | serena            | Grep/glob + targeted file reads         |
+| Documentation        | Context7          | Built-in WebSearch / WebFetch           |
+| Web extraction       | firecrawl-mcp     | Built-in WebFetch                       |
+| Repo operations      | github            | gh CLI via built-in Shell               |
+| Memory               | openmemory        | File-based in `docs/ai/memory/`         |
+| Phone automation     | droidrun          | Manual device interaction               |
 
 AGENT must use the preferred tool by name. If it is unavailable, use the fallback and record a FAIL entry in `docs/ai/STATE.md`.
 
 ## Mandatory tool triggers
 
-### sequential-thinking — REQUIRED when:
-- The task has >5 connected steps
-- The change spans multiple files
-- The task involves migrations or refactors
-- A bug is ambiguous with multiple hypotheses
+### Clear Thought 1.5 — REQUIRED operations by situation
+
+Clear Thought 1.5 (`clear_thought`) is the **primary reasoning tool**. sequential-thinking is a fallback only.
+
+| Situation | Operation (required) |
+|---|---|
+| Bug investigation, build failures, test failures, unexpected behavior | `debugging_approach` |
+| Starting a new project, major feature, or large architectural change | `mental_model` |
+| Cross-repo changes or changes affecting 3+ modules | `systems_thinking` |
+| Choosing between multiple implementation approaches or trade-offs | `decision_framework` |
+| Root cause analysis when a failure has multiple possible causes | `causal_analysis` |
+| Complex multi-path problems with no obvious single solution | `tree_of_thought` |
+| Optimizing performance, costs, or resource usage | `optimization` |
+| Hypothesis-driven investigation (e.g., "is the crash caused by X or Y?") | `scientific_method` |
+| Basic step-by-step reasoning with >5 steps | `sequential_thinking` (via Clear Thought) |
+| Exploring new technologies or unfamiliar domains | `research` |
+
+### sequential-thinking — FALLBACK only (use Clear Thought 1.5 first):
+- When Clear Thought 1.5 is unavailable or returns an error
+- Record the fallback as FAIL in `docs/ai/STATE.md`
 
 ### serena — REQUIRED when:
 - Locating symbols, references, or call paths
@@ -37,40 +50,49 @@ AGENT must use the preferred tool by name. If it is unavailable, use the fallbac
 - Adopting a new dependency or upgrading an existing one
 - Verifying correct usage of any framework or library function
 
-### playwright — REQUIRED when:
-- Verifying UI or web behavior after frontend changes
-- Testing web-based workflows end-to-end
-- Capturing screenshots or accessibility snapshots for evidence
-
-### Magic MCP — REQUIRED when:
-- Creating new UI components from natural-language descriptions
-- Translating UI screenshots or specs into component scaffolds
-- Generating design-system-consistent UI blocks
-- Converting wireframes into code skeletons
-
 ### firecrawl-mcp — REQUIRED when:
 - Scraping or extracting structured data from web pages
-- Crawling a site to discover URLs before scraping specific pages
+- Mapping a site to discover URLs before scraping specific pages
+- Searching the web for current technical content
+
+**Active tools:** `firecrawl_scrape`, `firecrawl_map`, `firecrawl_search` only.
+If a task requires `crawl`, `extract`, or `firecrawl_agent`, stop and ask the user to enable those tools in Cursor MCP settings before proceeding.
 
 ### github — REQUIRED when:
 - Creating, listing, or reviewing branches, pull requests, or issues
 - Managing releases or file operations via the hosting platform
 - Searching code or users across repositories
 
-### Exa Search — REQUIRED when:
-- Context7 cannot answer a library or framework question
-- Searching for current information, news, or technical content across the web
-- Finding code examples or documentation not covered by Context7
-
 ### openmemory — REQUIRED:
 - Before planning: call `search-memory` to retrieve prior decisions and patterns related to the current task
 - After completing a phase: call `add-memory` to store new decisions, patterns, or stable facts
 - See `docs/ai/memory/MEMORY_CONTRACT.md` for what must and must not be stored
 
+### droidrun — REQUIRED when:
+- Interacting with the user's phone (Samsung Galaxy S25 Ultra)
+- Testing mobile apps or checking device state
+- Automating phone actions (tap, type, navigate, read screen)
+
+Use `phone_ping` to verify device is connected before any `phone_do` or `phone_apps` call.
+
+## Disabled tool activation policy
+
+The following tools are currently **disabled** to reduce context window consumption:
+Exa Search, playwright, Magic MCP, filesystem_scoped, shell-mcp, firestore-mcp, googlesheets, Stripe, extension-GitKraken, cloudflare-bindings, cloudflare-builds, cloudflare-docs, cloudflare-observability.
+
+If a task requires a disabled tool, AGENT must:
+1. **Stop** — do not attempt to work around the missing tool silently
+2. Explain which tool is needed and exactly why the task requires it
+3. Ask the user to enable it in Cursor MCP settings
+4. Wait for confirmation before proceeding
+5. Record the blocker in `docs/ai/STATE.md`
+
+Never silently skip or substitute a disabled tool that the task specifically requires.
+
 ## PASS/FAIL evidence for tool usage
 
 AGENT must explicitly state for each MCP tool invocation:
-- The **exact tool name** that was invoked (e.g., "serena", "Context7", "sequential-thinking", "firecrawl-mcp", "github", "Exa Search")
+- The **exact tool name** that was invoked (e.g., `clear_thought`, `serena`, `Context7`, `firecrawl_scrape`, `github`, `openmemory`)
 - What it returned (brief summary)
 - PASS if successful; FAIL if it errored
 
