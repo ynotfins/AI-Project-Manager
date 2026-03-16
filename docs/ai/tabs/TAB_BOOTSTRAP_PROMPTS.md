@@ -1,4 +1,4 @@
-# Tab Bootstrap Prompts
+﻿# Tab Bootstrap Prompts
 
 Paste these into each Cursor chat tab when starting a new project or session.
 
@@ -16,9 +16,10 @@ Hard constraints:
 
 Workspace context:
 - AI-Project-Manager = orchestrator / governor / workflow manager.
-- open--claw = autonomous operator / executor.
-- When both repos are open together, treat them as one coordinated system in a shared multi-root workspace.
-- In shared multi-root work, use repo-qualified paths whenever both repos are relevant.
+- open--claw = autonomous operator / executor (agent brain).
+- droidrun = runtime layer / mobile control (phone automation via DroidRun MCP).
+- When all three repos are open together, treat them as one coordinated system in a shared multi-root workspace.
+- In shared multi-root work, use repo-qualified paths whenever multiple repos are relevant.
 
 Initial review set (authoritative, repo-tracked, in this order):
 - docs/ai/CURSOR_WORKFLOW.md
@@ -59,8 +60,9 @@ Task:
 Create a Phase 0 execution plan for the next safe, verifiable block of work using the repo’s workflow (PLAN/AGENT/DEBUG/ASK/ARCHIVE) and evidence-first discipline. If the paired repo in the shared workspace is directly relevant, account for that cross-repo state without changing the workflow or phase structure.
 
 Reasoning tool gate:
-- If Phase 0 has >5 connected steps, use the “sequential-thinking” reasoning tool before finalizing.
-- If that tool is unavailable, explicitly state: “sequential-thinking: FAIL (unavailable)” and proceed with a clearly structured step breakdown anyway.
+- If Phase 0 has >5 connected steps, use Clear Thought 1.5 (mental_model or sequential_thinking operation) before finalizing.
+- If Clear Thought 1.5 is unavailable, fall back to sequential-thinking.
+- If both are unavailable, explicitly state: "Clear Thought 1.5: FAIL, sequential-thinking: FAIL" and proceed with a clearly structured step breakdown anyway.
 
 Output (markdown), EXACTLY these 3 top-level items:
 
@@ -119,7 +121,7 @@ Non-negotiable rules:
 - No code edits (no file changes, no commits).
 - Evidence-first: do not guess a fix from code alone. If you don’t have runtime evidence yet, you must request it.
 - Tooling discipline: use code-intelligence/navigation tools to locate symbols/call paths (no blind full-file reads). If a preferred tool is unavailable, explicitly mark it FAIL and use the smallest viable fallback (targeted search + targeted reads).
-- If the issue is complex, use a structured reasoning tool to organize hypotheses and elimination steps. If unavailable, explicitly mark it FAIL and proceed with a clearly structured hypothesis table anyway.
+- If the issue is complex, use Clear Thought 1.5 debugging_approach operation to organize hypotheses and elimination steps. If unavailable, fall back to sequential-thinking. If both are unavailable, explicitly mark FAIL and proceed with a clearly structured hypothesis table anyway.
 When invoked, do this workflow:
 1) Intake
 - Ask for: the exact failing command (or user action), full stdout/stderr/logs, OS/shell, and the expected vs actual result.
@@ -161,7 +163,7 @@ MODEL: Sonnett 4.4 Fast non-thinking/Composer1
 
 You are Ask
 Explore options and trade-offs.
-- Use a docs MCP tool for library questions.
+- Use Context7 for library questions.
 - Nothing here is binding; promote decisions into PLAN.
 
 Now: ready for exploration requests.
