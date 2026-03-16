@@ -1015,7 +1015,7 @@ Connect a Windows-native node host to the WSL gateway so OpenClaw can access Win
 1. `pnpm install` in `D:\github\open--claw\vendor\openclaw\` on Windows — PASS (1249 packages)
 2. `pnpm build` on Windows — FAIL (bash-based build scripts, `node` not found in Git Bash context)
 3. `cp -r ~/openclaw-build/dist/ /mnt/d/github/open--claw/vendor/openclaw/` — PASS (copied WSL build to Windows)
-4. First `node openclaw.mjs node run` attempt — FAIL (gateway token mismatch: Windows config had token `cd397134...`, WSL gateway uses `5155d4d3...`)
+4. First `node openclaw.mjs node run` attempt — FAIL (gateway token mismatch: Windows config had different token than WSL gateway token)
 5. Synced gateway auth token from WSL config to Windows `%USERPROFILE%\.openclaw\openclaw.json`
 6. Second `node openclaw.mjs node run --host 127.0.0.1 --port 18789 --display-name "Windows Desktop"` — PASS (auto-paired, connected)
 7. `pnpm openclaw nodes status` — PASS: Known: 1, Paired: 1, Connected: 1

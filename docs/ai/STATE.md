@@ -157,7 +157,7 @@ Verify gateway runtime health after the last restart, authenticate to the Contro
 - `health` → `Agents: main (default)`, exit 0: **PASS**
 
 **Control UI:**
-- Tokenized URL: `http://127.0.0.1:18789/#token=5155d4d3725d5c90d696651660f388f13680ac56886713a3`
+- Tokenized URL: `http://127.0.0.1:18789/#token=<gateway-token>` (token stored in `~/.openclaw/openclaw.json`, not committed)
 - Page loaded and redirected to `/chat?session=main`: **PASS**
 - Screenshot `control-ui-disconnected.png`: Health: OK (green dot), chat input active: **PASS**
 - Accessibility snapshot confirmed Health: OK, textbox enabled, Send button enabled: **PASS**
@@ -1052,7 +1052,7 @@ Microsoft.UI.Xaml.Markup.XamlParseException: XAML parsing failed.
 **WSL nodes status (pre-change):** `Known: 0 · Paired: 0 · Connected: 0` — confirmed unpaired.
 
 **Windows openclaw.json (read):**
-- Gateway token present (`5155d4d3...`) — matches WSL gateway token
+- Gateway token present (matches WSL gateway token — stored in `~/.openclaw/openclaw.json`, not committed)
 - DroidRun MCP configured: `mcpServers.droidrun` pointing to `start_mcp_server.ps1`
 - Config is set as a gateway config, not a node host config — may need review when Molty is repaired
 

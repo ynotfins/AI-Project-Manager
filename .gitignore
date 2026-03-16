@@ -1,4 +1,4 @@
-# Secrets and local config
+# Secrets and local config — NEVER commit secrets (see .cursor/rules/no-secrets-in-files.mdc)
 .env
 .env.*
 .env.local
@@ -6,6 +6,11 @@
 *.pem
 *.p12
 *.key
+auth-profiles.json
+*-key-ed25519.json
+*service-account*.json
+gmail-client-secret*.json
+*client_secret*.json
 
 # MCP config (lives outside repo)
 mcp.json
