@@ -309,3 +309,69 @@ o-secrets-in-files.mdc — see that rule's "Allowed Exceptions" section.
 - .gateway-env present with chmod 600 after restart
 - pnpm openclaw health → Telegram: ok (@Sparky4bot)
 - NRestarts: 0
+
+---
+
+## Decision: Plugin allowlist established (plugins.allow)
+
+**Date:** 2026-03-16  
+**Status:** IMPLEMENTED
+
+### Context
+OpenClaw was starting with a warning: "plugins.allow is empty; discovered non-bundled plugins may auto-load". Without an explicit allowlist, any plugin in the extensions directory could load automatically.
+
+### Decision
+Set plugins.allow = ["whatsapp", "telegram", "lossless-claw"] in openclaw.json.
+
+### Policy
+- Update allowlist when adding new plugins (add entry before or during install)
+- Review allowlist on OpenClaw version upgrades
+- Source: OpenClaw security docs recommend explicit plugins.allow allowlists
+
+### Consequences
+- Warning eliminated from startup logs
+- No unintended plugins can auto-load
+- Future plugin additions require explicit allowlist update
+
+---
+
+## Decision: Personal use classification
+
+**Date:** 2026-03-16  
+**Status:** DOCUMENTED
+
+### Context
+PLAN and AGENT were generating release docs with enterprise/commercial framing. This system is personal.
+
+### Classification
+- **Users:** Tony, Kristina, Mia (family) + friends (free access)
+- **"Employee" = friends using for free** — no employment relationship
+- **NEVER commercial, NEVER for sale**
+- **Regular WhatsApp (not WhatsApp Business)** — correct for personal family use; Baileys is appropriate
+- **No Google Play / App Store distribution** planned
+- **Rate limiting** = over-engineering for LAN-only personal system at this user scale
+- **Privacy Policy / Terms of Service** in release checklist = internal family guidelines, not legal compliance
+
+### Consequences
+- Release docs should reflect internal/personal framing, not enterprise
+- No legal counsel needed for current scope
+- WhatsApp Business API not needed — regular Baileys connection is correct
+
+---
+
+## Decision: Dynamic WSL IP in allowedOrigins — pending enhancement
+
+**Date:** 2026-03-16  
+**Status:** PARTIAL — current IP added manually; auto-update pending
+
+### Context
+WSL IP (172.23.156.209) changes on WSL restart, making a statically configured gateway.controlUi.allowedOrigins fragile. Each WSL restart can change the IP, breaking any allowedOrigins-dependent logic.
+
+### Current Fix
+Manually added current IP to allowedOrigins array. Will need updating after WSL restart.
+
+### Future Enhancement
+Extend start-cursor-with-secrets.ps1 to auto-update openclaw.json's llowedOrigins with the new WSL IP on each startup run. The script already reads hostname -I for the node host — similar logic can patch the JSON.
+
+### Note on Control UI Windows Access
+The Control UI still rejects Windows browser connections with code=1008 "control ui requires device identity (use HTTPS or localhost secure context)". This is a separate Control UI security feature — it requires HTTPS for non-localhost WebSocket origins regardless of allowedOrigins. A solution requires either: (a) SSH tunnel from Windows to localhost, or (b) HTTPS reverse proxy. Not a blocker for Telegram/WhatsApp operation.
