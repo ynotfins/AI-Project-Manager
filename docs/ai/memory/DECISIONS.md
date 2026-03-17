@@ -265,3 +265,47 @@ exec-policy.json (Windows/Molty) is dead config and no longer applies.
 - Skipping node host entirely (rejected: Windows file access and DroidRun MCP bridging require a node host)
 
 **Rationale:** exec-policy.json as `allow` with targeted denies gives Sparky full PowerShell access while keeping the most destructive operations blocked at the policy level. The WSL exec-approvals layer (once sandbox is enabled via Docker) adds a second approval gate on top.
+
+---
+
+## Decision: Persist .gateway-env on disk (do not delete after startup)
+
+**Date:** 2026-03-16  
+**Status:** IMPLEMENTED
+
+### Context
+systemd Restart=always + transient .gateway-env = crash loop on every WSL restart.  
+The startup script wrote ~/.openclaw/.gateway-env, started the service, waited 8 seconds, then deleted it.  
+When WSL later restarted (all terminals closed, PC sleep/wake, etc.), systemd auto-started the gateway but .gateway-env was gone. ANTHROPIC_API_KEY missing → exit code 1 → crash-loop (76+ restarts observed 2026-03-16).
+
+### Decision
+Remove the m -f ~/.openclaw/.gateway-env line from start-cursor-with-secrets.ps1.  
+Keep .gateway-env on disk at ~/.openclaw/.gateway-env (chmod 600, not in git).  
+File is overwritten on every Cursor startup script run, so keys stay current.
+
+### Alternatives Rejected
+| Option | Why Rejected |
+|--------|-------------|
+| Option B — systemd Environment= in drop-in | Same security profile, more complex (conf file must be regenerated on rotation), no advantage over A |
+| Option C — WSL boot hook fetches from Bitwarden | Correct long-term architecture but 30+ min to implement; introduces ws access token in WSL as a persistent secret |
+| Option D — Remove Restart=always | Availability risk: Sparky unreachable after any crash without manual restart |
+| Option E — OpenClaw native Bitwarden provider | Unknown support in v2026.3.8; needs research before committing |
+
+### Security Rationale
+.gateway-env is chmod 600 (owner-read-only).  
+This is the same risk profile as ~/.openclaw/.env, which already persists TELEGRAM_BOT_TOKEN on disk.  
+File is in .gitignore. Not committed to any repo. No external exposure.  
+Approved exception to 
+o-secrets-in-files.mdc — see that rule's "Allowed Exceptions" section.
+
+### Consequences
+- Gateway survives WSL restarts without manual intervention
+- Sparky remains reachable on Telegram after any WSL exit/restart
+- Keys are refreshed automatically every time the startup script runs (overwrite, not append)
+- Future: Option C (WSL boot hook) remains valid as Phase 7 hardening if needed
+
+### Test Evidence
+- wsl --shutdown + 15s wait → gateway ctive (running) immediately
+- .gateway-env present with chmod 600 after restart
+- pnpm openclaw health → Telegram: ok (@Sparky4bot)
+- NRestarts: 0

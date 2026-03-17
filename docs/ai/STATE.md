@@ -122,6 +122,7 @@ These files preserve original content verbatim. PLAN does not consult them.
 | docs/ai/archive/state-log-phase-6c-active.md | Phase 6C active execution entries (2026-03-08 to 2026-03-14) | 7 |
 | docs/ai/archive/state-log-post-6c-ops.md | Post-6C operational fixes (sandbox, lossless-claw, OpenClaw update, headless node) | 4 |
 | docs/ai/archive/state-log-mcp-triworkspace-2026-03-16.md | MCP context optimization + tri-workspace expansion (2026-03-16) | 2 |
+| docs/ai/archive/state-log-tab-bootstrap-2026-03-16.md | TAB_BOOTSTRAP_PROMPTS update — Clear Thought 1.5 + tri-workspace (2026-03-16) | 1 |
 
 ---
 
@@ -132,73 +133,6 @@ These files preserve original content verbatim. PLAN does not consult them.
 
 
 
-## 2026-03-16 16:00 — Update TAB_BOOTSTRAP_PROMPTS.md (Clear Thought 1.5 + tri-workspace)
-
-### Goal
-Update TAB_BOOTSTRAP_PROMPTS.md to reflect Clear Thought 1.5 as primary reasoning tool (replacing sequential-thinking as primary) and add droidrun to the tri-workspace context block.
-
-### Scope
-- AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md (4 targeted edits)
-- AI-Project-Manager/docs/ai/STATE.md (rolling archive + this entry)
-- AI-Project-Manager/docs/ai/archive/state-log-post-6c-ops.md (new archive file)
-
-### Commands / Tool Calls
-- Read: TAB_BOOTSTRAP_PROMPTS.md (209 lines confirmed)
-- StrReplace x3 (workspace context, DEBUG tool ref, ASK tool ref) — 2 succeeded via StrReplace, 1 (DEBUG) succeeded
-- Shell: PowerShell Unicode-aware Replace for reasoning tool gate (file had curly quotes + CRLF requiring direct byte replacement)
-- Shell: Select-String grep verification (sequential-thinking fallback-only, Clear Thought 1.5 in PLAN+DEBUG, Context7 in ASK, droidrun in workspace)
-- Shell: STATE.md line count check (726 — archive triggered)
-- Shell: Archive entries L130-L477 to state-log-post-6c-ops.md (356 lines)
-- Shell: Rebuild STATE.md (726 → 291 lines, keeping 4 most recent entries)
-
-### Changes
-- **TAB_BOOTSTRAP_PROMPTS.md**:
-  - Workspace context block: added droidrun line; updated "both repos" → "all three repos"; updated "both repos are relevant" → "multiple repos are relevant"
-  - Reasoning tool gate (PLAN): replaced sequential-thinking as primary with Clear Thought 1.5 (mental_model or sequential_thinking operation); added proper 3-line fallback chain
-  - DEBUG non-negotiable: replaced "structured reasoning tool" with "Clear Thought 1.5 debugging_approach operation"; added fallback to sequential-thinking
-  - ASK tool reference: "docs MCP tool" → "Context7"
-- **docs/ai/archive/state-log-post-6c-ops.md**: 4 post-6C entries archived verbatim (sandbox crash, pre-restart checkpoint, lossless-claw install, OpenClaw update + Molty/headless node entries)
-- **docs/ai/STATE.md**: Rolling archive applied (726 → 293 lines); archive table updated
-
-### Evidence
-| Check | Result |
-|---|---|
-| TAB_BOOTSTRAP_PROMPTS.md exists | PASS |
-| Workspace context has droidrun (L20) | PASS |
-| Reasoning tool gate: Clear Thought 1.5 primary (L63) | PASS |
-| Reasoning tool gate: sequential-thinking fallback only (L64-65) | PASS |
-| DEBUG: Clear Thought 1.5 debugging_approach (L124) | PASS |
-| ASK: Context7 (L166) | PASS |
-| grep sequential-thinking — no primary usage | PASS — only appears as fallback |
-| grep Clear Thought 1.5 — present in PLAN + DEBUG | PASS — L63, L64, L65, L124 |
-| AGENT tab unchanged | PASS — lines 99-111 untouched |
-| ARCHIVE tab unchanged | PASS — lines 174-209 untouched |
-| STATE.md rolling archive applied | PASS — 726 → 293 lines |
-| No secrets committed | PASS |
-
-### Verdict
-READY — all 4 edits applied and grep-verified. STATE.md archived.
-
-### Blockers
-None
-
-### Fallbacks Used
-- StrReplace failed for reasoning tool gate due to curly quotes (U+201C/U+201D) + CRLF in file — used PowerShell [System.IO.File]::ReadAllText + Unicode literal replacement as fallback. PASS.
-
-### Cross-Repo Impact
-None — TAB_BOOTSTRAP_PROMPTS.md is AI-Project-Manager only.
-
-### Decisions Captured
-- TAB_BOOTSTRAP_PROMPTS.md uses curly quotes (U+201C/U+201D) — StrReplace tool cannot match these; use PowerShell Unicode replacement for future edits to this file.
-
-### Pending Actions
-None from this block.
-
-### What Remains Unverified
-None.
-
-### What's Next
-Continue with next planned work item.
 
 ## 2026-03-16 20:00 — Release Documentation Phase 0: Foundation Docs
 
@@ -475,3 +409,81 @@ STATE.md update in AI-Project-Manager should document the chosen approach.
 ### What's Next
 PLAN: evaluate options A-E above, choose approach, write AGENT execution block.
 AGENT: implement chosen fix, verify gateway survives a WSL restart (test: wsl --shutdown then reopen).
+
+## 2026-03-16 21:30 — Fix: Gateway Crash Loop (Persist .gateway-env)
+
+### Goal
+Permanently fix the gateway crash loop that occurs on every WSL restart by removing the 
+m -f ~/.openclaw/.gateway-env line from the startup script.
+
+### Scope
+- C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1 (local-only, not in any repo)
+- AI-Project-Manager/docs/ai/memory/DECISIONS.md
+- AI-Project-Manager/docs/ai/STATE.md
+
+### Commands / Tool Calls
+- Read: start-cursor-with-secrets.ps1 (confirmed 
+m -f at line 209)
+- StrReplace x4: removed 
+m -f line, updated comments to say "persistent" not "transient"
+- Read: verified edit at lines 183-214 — no other lines changed
+- Shell: write .gateway-env fresh from current env vars (chmod 600, 400 bytes, 3 lines)
+- Shell: wsl --shutdown + 15s wait
+- Shell: systemctl --user status openclaw-gateway.service after restart
+- Shell: ls -la ~/.openclaw/.gateway-env after restart
+- Shell: pnpm openclaw health — Telegram check
+
+### Changes
+| File | Change |
+|------|--------|
+| start-cursor-with-secrets.ps1 | Removed 
+m -f ~/.openclaw/.gateway-env line (1 line deleted) |
+| start-cursor-with-secrets.ps1 | Updated 3 comments: "transient" → "persistent", "deleted after service loaded" → "persisted for WSL restart survival" |
+| docs/ai/memory/DECISIONS.md | Appended decision record with context, alternatives rejected, security rationale, test evidence |
+
+### Evidence
+| Check | Result |
+|-------|--------|
+| 
+m -f line found in script before edit | PASS — line 209 |
+| Edit applied (only 
+m -f line removed) | PASS |
+| .gateway-env written (chmod 600, 400 bytes, 3 lines) | PASS |
+| wsl --shutdown executed | PASS |
+| Gateway ctive (running) after WSL restart | PASS — PID 469, started 9s after WSL boot |
+| .gateway-env persists after WSL restart | PASS — -rw------- 1 ynotf ynotf 400 |
+| NRestarts after WSL restart | PASS — 0 |
+| Telegram: ok (@Sparky4bot) | PASS |
+| Agents: main (default) | PASS |
+| WhatsApp | NOT LINKED (separate issue — needs QR scan, not in scope) |
+| No other script lines changed | PASS |
+| start-cursor-with-secrets.ps1 NOT committed | PASS (local-only file) |
+| No secrets in committed files | PASS |
+
+### Verdict
+PASS — fix applied and verified. Gateway now survives WSL restarts without crash loop.
+
+### Blockers
+None
+
+### Fallbacks Used
+None
+
+### Cross-Repo Impact
+DECISIONS.md updated in AI-Project-Manager. No changes to open--claw or droidrun.
+
+### Decisions Captured
+See docs/ai/memory/DECISIONS.md → "Persist .gateway-env on disk (do not delete after startup)".
+Key: Option A chosen over B/C/D/E. Security accepted: chmod 600, same as ~/.openclaw/.env.
+
+### Pending Actions
+- WhatsApp: still 
+ot linked — user needs to scan QR at http://localhost:18789/openclaw to relink
+- Option C (WSL boot hook from Bitwarden): valid future hardening if needed — documented in DECISIONS.md
+
+### What Remains Unverified
+- WhatsApp QR relink (user action required)
+- Long-term: gateway behavior after PC power-off/on (vs WSL shutdown — likely same behavior, not tested)
+
+### What's Next
+Continue Phase 1 release docs or next user task.
