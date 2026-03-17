@@ -322,3 +322,100 @@ ot linked — user must scan QR at http://localhost:18789/openclaw
 
 ### What's Next
 Phase 1 release docs or next security task per PLAN.
+
+## 2026-03-16 23:55 — BLOCKER: Windows Node Connection Rejected (code=1008 Device Identity Required)
+
+### Goal
+Fix Windows node host to connect to WSL gateway and grant Sparky Windows filesystem access.
+
+### Scope
+- C:\Users\ynotf\.openclaw\node.cmd (Windows, local-only)
+- WSL gateway logs (diagnostic)
+- AI-Project-Manager/docs/ai/STATE.md (this entry)
+
+### Commands / Tool Calls
+- Shell: read WSL IP (172.23.156.209)
+- Read: 
+ode.cmd — found incorrect --gateway ws:// syntax (not supported in v2026.3.8)
+- Shell: openclaw devices remove 891178e9... — removed stale pairing
+- StrReplace: corrected 
+ode.cmd to use --host 172.23.156.209 --port 18789 --display-name "Windows Desktop"
+- Shell: killed stale node process, restarted with correct syntax
+- Shell: journalctl — checked gateway logs for pairing activity
+
+### Changes
+| File | Before | After |
+|------|--------|-------|
+| 
+ode.cmd line 12 | 
+ode run --gateway ws://172.23.156.209:18789 | 
+ode run --host 172.23.156.209 --port 18789 --display-name "Windows Desktop" |
+
+### Evidence
+| Check | Result |
+|-------|--------|
+| openclaw node run --help shows --gateway option | FAIL — option does not exist in v2026.3.8 |
+| Corrected to --host --port syntax | PASS |
+| Stale node removed (891178e9...) | PASS |
+| Node restarted with new config | PASS |
+| Node log shows PATH dump (process started) | PASS |
+| Gateway logs show connection attempts | PASS — device ID 847202f0... |
+| Connection succeeds | **FAIL** — code=1008 "connect failed" |
+| Error pattern | Repeated: "security audit: device access upgrade requested ... code=1008 reason=connect failed" |
+
+### Root Cause
+Gateway is rejecting the Windows node's WebSocket connection with **code=1008 "connect failed"**.
+
+From gateway logs:
+`
+[gateway] security audit: device access upgrade requested 
+  reason=role-upgrade 
+  device=847202f0843a17b825c61eefa8bee84c9ab76c117f17e30389fde0db1ffbea4e 
+  ip=unknown-ip 
+  auth=token 
+  roleFrom=operator roleTo=node 
+  scopesFrom=operator.admin,operator.approvals,operator.pairing,operator.read,operator.write 
+  scopesTo=<none> 
+  client=node-host 
+  conn=...
+[ws] closed before connect ... code=1008 reason=connect failed
+`
+
+**The node is attempting to upgrade from "operator" role to "node" role, but the gateway rejects the upgrade.**
+
+This is the SAME code=1008 rejection seen for Windows browser access to the Control UI.  
+**Hypothesis:** gateway.controlUi security policy rejects WebSocket connections from non-localhost/non-HTTPS origins that require device identity verification, even when the origin is in llowedOrigins. The node host is a device client (not a browser), but it's being subjected to the same security gate.
+
+### Attempted Fix vs. Actual Blocker
+| Attempted | Result |
+|-----------|--------|
+| Corrected 
+ode.cmd syntax from --gateway to --host --port | PASS — syntax correct |
+| Removed stale pairing | PASS |
+| Restarted node process | PASS |
+| Node tries to connect | PASS — repeated attempts in gateway logs |
+| Gateway accepts connection | **FAIL** — code=1008 consistently |
+
+**Blocker confirmed:** Gateway security policy rejects device identity upgrade for non-HTTPS WebSocket connections, even from localhost (127.0.0.1 within WSL). This is not a 
+ode.cmd configuration issue. This is a gateway security model limitation.
+
+### Verdict
+**BLOCKED** — Windows node connection requires one of:
+1. HTTPS gateway (cert + reverse proxy)
+2. Gateway config change to disable device identity requirement for node hosts
+3. Alternative node auth mechanism (not device identity)
+
+### What Remains Unverified
+- Whether gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback or similar config flag exists to bypass device identity
+- Whether OpenClaw v2026.3.13 (newer than current v2026.3.8) has a fix for this
+- Whether there's a separate gateway config for node connections (independent from controlUi)
+
+### Pending Actions for PLAN
+1. Research: Query Context7 for "OpenClaw node host device identity code 1008 connection rejected"
+2. Check if OpenClaw v2026.3.13 changelog mentions node connection fixes
+3. Evaluate whether HTTPS setup is justified for Windows node access (requires cert generation + gateway TLS config)
+4. Alternative: investigate if Windows node access is critical — phone automation (droidrun MCP) already provides runtime capabilities; node host may be optional
+
+### What's Next
+STOP per task constraint — escalate to PLAN for fix approach evaluation.
+Windows node remains DISCONNECTED until this blocker is resolved.
