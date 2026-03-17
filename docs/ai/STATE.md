@@ -121,6 +121,7 @@ These files preserve original content verbatim. PLAN does not consult them.
 | docs/ai/archive/state-log-phase-6c-archive.md | Superseded Phase 6C entries | ~14 |
 | docs/ai/archive/state-log-phase-6c-active.md | Phase 6C active execution entries (2026-03-08 to 2026-03-14) | 7 |
 | docs/ai/archive/state-log-post-6c-ops.md | Post-6C operational fixes (sandbox, lossless-claw, OpenClaw update, headless node) | 4 |
+| docs/ai/archive/state-log-mcp-triworkspace-2026-03-16.md | MCP context optimization + tri-workspace expansion (2026-03-16) | 2 |
 
 ---
 
@@ -129,167 +130,7 @@ These files preserve original content verbatim. PLAN does not consult them.
 <!-- AGENT appends entries below this line after each execution block. -->
 
 
-## 2026-03-16 14:00 — MCP Context Optimization + Governance Rules Update
 
-### Goal
-Fix context window exhaustion (90% consumed before conversation starts) by reducing active MCP tools from ~200 to ~52, mandating Clear Thought 1.5 as primary reasoning tool, and updating governance rules to reflect the new toolset.
-
-### Scope
-- AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md (rewritten)
-- AI-Project-Manager/.cursor/rules/10-project-workflow.md (2 targeted edits)
-- AI-Project-Manager/.cursor/rules/20-project-quality.md (1 targeted edit)
-- AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md (restructured)
-- AI-Project-Manager/docs/ai/STATE.md (rolling archive + this entry)
-- AI-Project-Manager/docs/ai/archive/state-log-phase-6c-active.md (new archive file)
-
-### Commands / Tool Calls
-- Read: 05-global-mcp-usage.md, 10-project-workflow.md, 20-project-quality.md, MCP_CANONICAL_CONFIG.md
-- Write: 05-global-mcp-usage.md (full rewrite)
-- StrReplace x2: 10-project-workflow.md (PLAN output contract + DEBUG contract)
-- StrReplace x1: 20-project-quality.md (dependency hygiene section)
-- Write: MCP_CANONICAL_CONFIG.md (full restructure with enabled/disabled split)
-- PowerShell: Get-Content STATE.md line count check (1188 lines → triggered archive)
-- PowerShell: archive Phase 6C entries to state-log-phase-6c-active.md (633 lines)
-- PowerShell: rebuild STATE.md keeping header + post-6C entries (563 lines)
-- StrReplace: STATE.md archive reference table updated
-
-### Changes
-- **05-global-mcp-usage.md**: Full rewrite. Clear Thought 1.5 is now primary reasoning tool with mandatory operation table by situation. sequential-thinking demoted to fallback. droidrun section added. Disabled tool activation policy added (stop, explain, ask user, wait). firecrawl active tool list clarified (scrape/map/search only). Playwright, Magic MCP, Exa Search references removed.
-- **10-project-workflow.md**: PLAN output contract line updated ("reasoning MCP tool" → "Clear Thought 1.5 mental_model or sequential_thinking"). DEBUG contract: added "DEBUG must use Clear Thought 1.5 debugging_approach operation before producing ranked causes".
-- **20-project-quality.md**: Dependency hygiene: "docs MCP tool" → "Context7 (query-docs)".
-- **MCP_CANONICAL_CONFIG.md**: Last verified date updated to 2026-03-16. Working server list split into "Enabled" and "Disabled" sections with active tool counts. JSON template split into enabled block + disabled commented block. Context budget rationale added. Secrets section updated to include WSLENV + .gateway-env transient file flow.
-- **docs/ai/archive/state-log-phase-6c-active.md**: 7 Phase 6C active execution entries archived verbatim (2026-03-08 to 2026-03-14).
-- **docs/ai/STATE.md**: Rolling archive applied (1188 → 565 lines). Archive reference table updated.
-
-### Evidence
-| Check | Result |
-|---|---|
-| 05-global-mcp-usage.md exists at expected path | PASS |
-| 05-global-mcp-usage.md has no playwright/Magic MCP/Exa Search as mandatory | PASS |
-| 05-global-mcp-usage.md contains Clear Thought 1.5 mandatory ops table | PASS |
-| 05-global-mcp-usage.md contains disabled tool activation policy | PASS |
-| 10-project-workflow.md PLAN output contract updated | PASS |
-| 10-project-workflow.md DEBUG contract updated | PASS |
-| 20-project-quality.md dependency hygiene updated | PASS |
-| MCP_CANONICAL_CONFIG.md last verified = 2026-03-16 | PASS |
-| MCP_CANONICAL_CONFIG.md has enabled/disabled split | PASS |
-| STATE.md line count before archive | 1188 (over 500 — archive triggered) |
-| Phase 6C entries archived | PASS — 633 lines to state-log-phase-6c-active.md |
-| STATE.md line count after archive | 565 |
-| Secret scan | PASS — no secrets in committed files |
-
-### Verdict
-READY — all 4 rule/doc files updated; STATE.md archived and under control.
-
-### Blockers
-None
-
-### Fallbacks Used
-None — all edits performed with Write/StrReplace tools directly.
-
-### Cross-Repo Impact
-Rules files are AI-Project-Manager only. open--claw does not duplicate rules.
-
-### Decisions Captured
-- Clear Thought 1.5 is now the mandatory primary reasoning tool; sequential-thinking is fallback only
-- Disabled MCP servers must NOT be silently worked around — agent must stop, explain, ask user
-- firecrawl active tools: scrape, map, search only (8 others disabled for context budget)
-- MCP tool count: ~200 → ~52 active (context budget restored)
-
-### Pending Actions
-None from this block.
-
-### What Remains Unverified
-- Whether the actual Cursor MCP panel reflects the disabled servers (user-managed, outside repo)
-
-### What's Next
-Continue with gateway Bitwarden/WSLENV secret injection verification (Sparky responsiveness).
-
-## 2026-03-16 15:00 — Tri-Workspace Expansion: Add DroidRun
-
-### Goal
-Expand from dual-workspace (AI-Project-Manager + open--claw) to tri-workspace by adding droidrun as the runtime/mobile control layer. Merge DroidRun startup logic into the main launch script, register droidrun in Serena, synchronize cursor rules, and document the tri-workspace architecture.
-
-### Scope
-- C:\Users\ynotf\.openclaw\openclaw.code-workspace (workspace file)
-- C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1 (startup script)
-- C:\Users\ynotf\.serena\serena_config.yml (Serena project registry)
-- D:\github\droidrun\.cursor\rules\ (00, 05, 10, 20 synced from AI-PM)
-- AI-Project-Manager\docs\tooling\MCP_CANONICAL_CONFIG.md (tri-workspace section added)
-- AI-Project-Manager\docs\ai\STATE.md (this entry)
-Repos affected: AI-Project-Manager (governance), droidrun (rules sync). open--claw: no changes.
-
-### Commands / Tool Calls
-- Read: startup_droidrun.ps1, start-cursor-with-secrets.ps1, openclaw.code-workspace, serena_config.yml, all 4 droidrun rule files, all 4 AI-PM rule files
-- Write: openclaw.code-workspace (add droidrun folder)
-- StrReplace x2: start-cursor-with-secrets.ps1 (optionalVars + DroidRun block)
-- StrReplace: serena_config.yml (add open--claw + droidrun to projects list)
-- Shell: Copy-Item x4 (rules sync AI-PM → droidrun)
-- Shell: Get-FileHash x4 (verify identical content)
-- StrReplace: MCP_CANONICAL_CONFIG.md (tri-workspace section prepended)
-
-### Changes
-- **openclaw.code-workspace**: Added droidrun as third folder (D:\github\droidrun)
-- **start-cursor-with-secrets.ps1**:
-  - Added DROIDRUN_DEEPSEEK_KEY and DROIDRUN_OPENROUTER_KEY to $optionalVars
-  - Inserted DroidRun block (try/catch, non-blocking) between proxy start and Cursor launch:
-    - Block A: Bootstrap BWS_DROIDRUN_TOKEN from regular Bitwarden vault → fetch DeepSeek + OpenRouter keys via droidrun machine account → store as User env vars + process env
-    - Block B: Smart ADB reconnect (check → connect → db_find_port.ps1 → WARNING if all fail)
-- **serena_config.yml**: Added D:\github\open--claw and D:\github\droidrun to projects list
-- **droidrun/.cursor/rules/**: Synced  0-global-core.md,  5-global-mcp-usage.md, 10-project-workflow.md, 20-project-quality.md from AI-PM (all previously outdated — referenced playwright, old sequential-thinking as primary)
-- **MCP_CANONICAL_CONFIG.md**: Added "Tri-workspace architecture" section documenting project roles, integration points, both Bitwarden accounts, merged startup flow, and rules sync table. Updated "Last verified" date.
-
-### Evidence
-| Check | Result |
-|---|---|
-| openclaw.code-workspace has exactly 3 folders | PASS |
-| startup_droidrun.ps1 exists at expected path | PASS |
-| start-cursor-with-secrets.ps1 exists | PASS |
-| serena_config.yml exists | PASS |
-| DroidRun optionalVars added | PASS |
-| DroidRun block inserted before Cursor launch | PASS |
-| DroidRun block wrapped in try/catch | PASS |
-| BWS_DROIDRUN_TOKEN uses separate bw account | PASS — w get item BWS_DROIDRUN_TOKEN pattern; OpenClaw BWS_ACCESS_TOKEN restored after |
-| serena_config.yml: droidrun added | PASS |
-| 00-global-core.md synced (was outdated) | PASS — MD5 identical |
-| 05-global-mcp-usage.md synced | PASS — MD5 identical |
-| 10-project-workflow.md synced | PASS — MD5 identical |
-| 20-project-quality.md synced | PASS — MD5 identical |
-| MCP_CANONICAL_CONFIG.md tri-workspace section | PASS |
-| No secrets in committed files | PASS — BWS_DROIDRUN_TOKEN, API keys not committed; IDs are non-secret references |
-| Existing OpenClaw flow intact | PASS — proxy, gateway, node host sections unmodified |
-
-### Verdict
-READY — tri-workspace expansion complete. droidrun integrated into workspace, startup, Serena, and governance docs.
-
-### Blockers
-None
-
-### Fallbacks Used
-None — all edits performed with Read/Write/StrReplace/Shell tools directly.
-
-### Cross-Repo Impact
-- **droidrun**: .cursor/rules/ synced (4 files updated). droidrun is now governed by the same rules as AI-Project-Manager.
-- **open--claw**: No changes made.
-- **AI-Project-Manager**: MCP_CANONICAL_CONFIG.md updated, this STATE.md entry appended.
-
-### Decisions Captured
-- DroidRun uses a separate Bitwarden machine account (droidrun-windows) with its own BWS_DROIDRUN_TOKEN, independent from OpenClaw's BWS_ACCESS_TOKEN
-- DroidRun block in startup script is fully non-blocking (try/catch); failure prints warning and continues
-- Cursor rules are canonical in AI-Project-Manager; droidrun gets copies (not symlinks); sync must be re-run when rules change
-- open--claw was NOT previously registered in serena_config.yml; added alongside droidrun
-
-### Pending Actions
-- Restart Serena (toggle in MCP panel or restart Cursor) to pick up the new project registrations
-- Test DroidRun key injection on next ws run launch (verify DROIDRUN_DEEPSEEK_KEY appears in ENV_CHECK output)
-- Verify phone reconnect logic on next startup
-
-### What Remains Unverified
-- Whether BWS_DROIDRUN_TOKEN is actually present in the regular Bitwarden vault (value not verified — runtime test needed)
-- Whether db_find_port.ps1 correctly re-locks to port 5555 in a post-reboot scenario
-
-### What's Next
-Next startup via ws run ... start-cursor-with-secrets.ps1 will exercise the new DroidRun block. Monitor output for DROIDRUN: status lines.
 
 ## 2026-03-16 16:00 — Update TAB_BOOTSTRAP_PROMPTS.md (Clear Thought 1.5 + tri-workspace)
 
@@ -446,3 +287,191 @@ Phase 1 — Security & Agent Docs:
 3. owasp-llm-review.md (OWASP Top 10 for LLM Apps)
 4. kill-switch-runbook.md (gateway stop, systemd disable, feature flags)
 5. rollback-plan.md (version rollback via VENDOR_PIN.md)
+
+## 2026-03-16 21:15 — BLOCKER: Gateway Crash Loop on WSL Restart (API Keys Not Persisted)
+
+### Goal
+Document the recurring gateway crash-loop failure for PLAN to diagnose and design a permanent fix.
+Gateway is currently RUNNING (manually recovered), but will crash again on next WSL restart.
+
+### Scope
+- open--claw: WSL2, ~/.config/systemd/user/openclaw-gateway.service + .service.d/api-keys.conf
+- open--claw: ~/.openclaw/.gateway-env (transient — the root of the problem)
+- AI-Project-Manager: this STATE.md entry
+- No code changed in this entry — diagnosis only
+
+---
+
+## DIAGNOSIS: What Happened
+
+### Failure Sequence (confirmed by journalctl)
+
+`
+1. WSL restarted (multiple times — different systemd PIDs: 343, 427, 447, 506, 433)
+   Cause: WSL exits/restarts when all terminal sessions close, or after PC wake from sleep.
+
+2. Cursor startup script (start-cursor-with-secrets.ps1) ran and:
+   a. Fetched API keys from Bitwarden into PowerShell env vars
+   b. Wrote transient ~/.openclaw/.gateway-env (chmod 600) to WSL
+   c. Restarted openclaw-gateway.service via systemd
+   d. Slept 8 seconds
+   e. DELETED ~/.openclaw/.gateway-env  ← THE PROBLEM
+
+3. Gateway started successfully (EnvironmentFile loaded keys from .gateway-env before deletion).
+   This works ONCE.
+
+4. Later: WSL restarted again (e.g., all terminal sessions closed, or next PC wake)
+   - systemd auto-starts openclaw-gateway.service (WantedBy=default.target, Restart=always)
+   - .gateway-env NO LONGER EXISTS (was deleted in step 2e)
+   - Gateway reads EnvironmentFile=-... (the - means "optional, ignore if missing")
+   - ANTHROPIC_API_KEY not in environment → gateway exits with code 1
+   - systemd retries every 5 seconds → crash-loops indefinitely (76+ restarts observed today)
+`
+
+### First crash event today: 20:59:07
+`
+Mar 16 20:59:07 - WSL restarted (new systemd PID 506)
+Mar 16 20:59:10 - ANTHROPIC_API_KEY missing → crash
+Mar 16 20:59:30 - restart counter 1 → crash
+... crash-loops until manually fixed at ~21:14
+`
+
+### Manual fix applied (works until next WSL restart):
+`powershell
+# Wrote .gateway-env again from PowerShell env vars
+# Restarted systemd service
+# Confirmed "active" after 10 seconds
+# Deleted .gateway-env
+`
+
+---
+
+## ROOT CAUSE ANALYSIS
+
+### Why the transient file approach fails on WSL restart:
+
+The current design assumes:
+> "startup script runs → writes .gateway-env → service starts → file deleted → done"
+
+But systemd has Restart=always. Every time WSL restarts, systemd auto-starts the service.
+The EnvironmentFile is marked optional (-) so it silently succeeds with missing keys,
+then the gateway fails because auth-profiles.json uses SecretRef pointing to env vars.
+
+This is NOT a bug in the transient-file design for the FIRST startup.
+It IS a bug for any subsequent WSL restart without running the full startup script again.
+
+### Structural conflict:
+| Component | Behavior |
+|-----------|----------|
+| Restart=always + WantedBy=default.target | Service starts automatically on every WSL boot |
+| .gateway-env | Transient — deleted 8 seconds after startup script runs |
+| EnvironmentFile=-/.../.gateway-env | Optional — silently absent after first startup |
+| uth-profiles.json → SecretRef env | Requires ANTHROPIC_API_KEY in process environment |
+| Result | Any WSL restart after startup = crash loop |
+
+---
+
+## ALL POSSIBLE FIX APPROACHES (for PLAN to evaluate)
+
+### Option A — Persistent EnvironmentFile (simplest fix)
+Write API keys to ~/.openclaw/.gateway-env and DON'T delete it.
+File is chmod 600, not committed to git.
+No security regression vs current openclaw.json (which has the gateway auth token).
+- Pros: 1 line change in startup script (remove the rm command). Works on every WSL restart.
+- Cons: Keys on disk (encrypted by WSL user perms, but plaintext in the file).
+- Risk: Low — file is 600, same risk level as ~/.openclaw/.env which already has TELEGRAM_BOT_TOKEN.
+
+### Option B — systemd Service with Inline Environment= (medium complexity)
+Add the keys directly to the [Service] section of api-keys.conf using systemd Environment= directives.
+Done via startup script: write the conf file instead of .gateway-env.
+`
+[Service]
+Environment="ANTHROPIC_API_KEY=sk-ant-..."
+Environment="OPENAI_API_KEY=sk-..."
+`
+- Pros: Keys survive WSL restarts (conf file persists).
+- Cons: Plaintext in systemd drop-in; startup script must re-write the conf on each rotation.
+- Risk: Similar to Option A. File is under ~/.config/ (user-only access).
+
+### Option C — WSL Startup Hook (correct architecture, complex)
+Write a WSL boot script (~/.profile or systemd service) that fetches keys from Bitwarden
+and writes .gateway-env before openclaw-gateway.service starts.
+Requires: bws CLI available in WSL, BWS_ACCESS_TOKEN stored somewhere in WSL.
+- Pros: Fully automatic — no manual intervention after PC restart.
+- Cons: BWS_ACCESS_TOKEN must be stored in WSL (e.g., ~/.config/bws/token) — this is a secret on disk.
+  Order-of-operations: bws service must run BEFORE openclaw-gateway service starts.
+- Risk: Medium — introduces another secret on disk in WSL (the bws token).
+
+### Option D — Remove Restart=always from systemd (avoid auto-restart)
+Set Restart=on-failure or Restart=no so the service doesn't auto-restart.
+Only start gateway via startup script (manual trigger).
+- Pros: No crash loop. Gateway only starts when script runs.
+- Cons: Gateway dead after any crash (OOM, transient error, etc.). Not resilient.
+  If WSL restarts while user is away, Sparky is unreachable until manual restart.
+- Risk: Availability risk — not recommended for always-on use case.
+
+### Option E — OpenClaw Native Secret Provider (future / best practice)
+Configure openclaw.json to use openclaw doctor --generate-gateway-token equivalent for API keys.
+Use OpenClaw's built-in Bitwarden integration (if it exists in v2026.3.8/13).
+- Pros: Fully managed by OpenClaw.
+- Cons: Unknown if OpenClaw 2026.3.8 supports Bitwarden as a native secret provider.
+  Requires research (Context7 query: "OpenClaw secrets provider Bitwarden").
+- Risk: Unknown — needs investigation before committing.
+
+### RECOMMENDATION FOR PLAN:
+Option A (persistent .gateway-env, don't delete) is the fastest safe fix with lowest risk.
+Option C (WSL boot hook) is the correct long-term architecture.
+These can be combined: Option A for now, Option C as Phase 7 hardening.
+
+---
+
+## CURRENT STATE (as of 21:15)
+
+| Item | Status |
+|------|--------|
+| Gateway process | RUNNING — manually recovered |
+| Health endpoint :18792 | OK |
+| Telegram (@Sparky4bot) | Connected |
+| WhatsApp | NOT LINKED (separate issue — needs QR scan) |
+| Next WSL restart | WILL CRASH AGAIN without fix |
+| .gateway-env | Deleted (as designed) |
+| NRestarts since recovery | 0 |
+
+---
+
+## KEY FILES AND LOCATIONS
+
+| File | Path | Contents |
+|------|------|---------|
+| Service unit | ~/.config/systemd/user/openclaw-gateway.service | ExecStart, Restart=always, no API key env vars |
+| Drop-in | ~/.config/systemd/user/openclaw-gateway.service.d/api-keys.conf | EnvironmentFile=-~/.openclaw/.gateway-env |
+| Startup script | C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1 | Writes+deletes .gateway-env; rm command is the problem |
+| auth-profiles | ~/.openclaw/agents/main/agent/auth-profiles.json | SecretRef → ANTHROPIC_API_KEY (env source) |
+| .env | ~/.openclaw/.env | TELEGRAM_BOT_TOKEN, GOG_KEYRING_PASSWORD (95 bytes; no LLM keys) |
+
+---
+
+## WHAT PLAN NEEDS TO DECIDE
+
+1. Choose fix option (A, B, C, or combination)
+2. For Option A: specify security acceptance — keys in ~/.openclaw/.gateway-env (chmod 600, no-secrets-in-files.mdc exception)
+3. For Option C: decide where BWS_ACCESS_TOKEN lives in WSL and what starts it
+4. Update no-secrets-in-files.mdc if persisting .gateway-env becomes policy
+5. Determine if WhatsApp re-link is also in scope for the same fix block
+
+### Verdicts
+- Root cause: CONFIRMED — transient .gateway-env + Restart=always = crash on WSL restart
+- Fix applied today: TEMPORARY — will break on next WSL restart
+- Priority: HIGH — Sparky goes unreachable after every WSL exit
+
+### Blockers
+None preventing fix — all options are implementable.
+
+### Cross-Repo Impact
+Changes will be in: start-cursor-with-secrets.ps1 (Windows) and/or openclaw-gateway.service.d/api-keys.conf (WSL).
+Neither file is in any git repo (both are local-only). No git commits required for the fix itself.
+STATE.md update in AI-Project-Manager should document the chosen approach.
+
+### What's Next
+PLAN: evaluate options A-E above, choose approach, write AGENT execution block.
+AGENT: implement chosen fix, verify gateway survives a WSL restart (test: wsl --shutdown then reopen).
