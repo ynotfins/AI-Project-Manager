@@ -358,3 +358,91 @@ None.
 
 ### What's Next
 Continue with next planned work item.
+
+## 2026-03-16 20:00 — Release Documentation Phase 0: Foundation Docs
+
+### Goal
+Create the master release checklist and 5 foundation documents in AI-Project-Manager/docs/release/ using real data extracted from all three repos. Internal v1.0 release documentation — no public release language, no Google Play / App Store references.
+
+### Scope
+- AI-Project-Manager/docs/release/ (new directory + 6 files)
+- AI-Project-Manager/docs/ai/STATE.md (this entry)
+- No changes to open--claw or droidrun
+
+### Commands / Tool Calls
+- Shell: New-Item docs/release/ directory
+- Read: vendor/openclaw/package.json (52 npm deps extracted)
+- Read: open-claw/configs/openclaw.template.json5 (gateway/agents/channels/skills config)
+- Read: droidrun/mcp_server.py (3 MCP tools, DEFAULT_DEVICE, provider logic)
+- Read: droidrun/docs/architecture_overview.md (device info, network topology, secret injection)
+- Read: droidrun/src/pyproject.toml (18 Python deps + optional extras)
+- Read: vendor/openclaw/apps/android/app/build.gradle.kts (28 Android deps, signing config)
+- Read: droidrun/src/.github/workflows/ (6 workflow files)
+- Read: vendor/openclaw/docs/help/environment.md (OpenClaw env var precedence)
+- Read: droidrun/docs/environment-config-reference.md (DroidRun config reference)
+- Read: start-cursor-with-secrets.ps1 (required/optional env vars)
+- Clear Thought 1.5: systems_thinking operation (architecture boundary analysis)
+- Write: 6 files in docs/release/
+- Shell: grep verification (no store refs, real package names present)
+
+### Changes
+| File | Action | Notes |
+|------|--------|-------|
+| docs/release/RELEASE_CHECKLIST.md | Created | 23 items + 4 release tasks; 5 checked |
+| docs/release/system-architecture.md | Created | Mermaid diagrams (system, user→agent, phone control); service boundary table; MCP server table |
+| docs/release/repo-boundaries.md | Created | 3-layer breakdown; integration contracts; mermaid cross-repo map; decision log |
+| docs/release/sbom.md | Created | 52 npm + 28 Android + 18 Python + 0 AI-PM deps; license risk notes |
+| docs/release/configuration.md | Created | All env vars from all 3 repos; secret delivery flow; rotation process |
+| docs/release/ci-cd.md | Created | 6 droidrun workflows; no CI in open--claw (gap documented); Android manual build |
+
+### Evidence
+| Check | Result |
+|-------|--------|
+| docs/release/ directory exists | PASS |
+| RELEASE_CHECKLIST.md has 5 [x] items | PASS |
+| system-architecture.md has mermaid diagrams | PASS — 3 diagrams (graph TB, sequenceDiagram x2) |
+| system-architecture.md uses real service names (:18789, :18792, Baileys, etc.) | PASS |
+| sbom.md contains @whiskeysockets/baileys | PASS |
+| sbom.md contains llama-index | PASS |
+| sbom.md contains openclaw | PASS |
+| No Google Play / App Store references in any doc | PASS |
+| No secrets in any doc | PASS |
+| ci-cd.md documents 6 droidrun workflows | PASS |
+| ci-cd.md notes no CI in open--claw and AI-PM | PASS |
+| STATE.md line count before entry (360) | PASS — no archive needed |
+| Clear Thought 1.5 systems_thinking used before system-architecture.md | PASS |
+
+### Verdict
+READY — all 6 files created, grep verifications PASS, checklist updated.
+
+### Blockers
+None
+
+### Fallbacks Used
+- Clear Thought 1.5 systems_thinking returned JSON scaffold; architecture derived from real scanned data.
+
+### Cross-Repo Impact
+None — all changes in AI-Project-Manager only. open--claw and droidrun not modified.
+
+### Decisions Captured
+- Release docs live in AI-Project-Manager/docs/release/ (orchestration layer owns cross-cutting docs)
+- droidrun CI/CD workflows are upstream (github.com/droidrun/droidrun) — they run in the upstream GitHub environment, not our local fork
+- @whiskeysockets/baileys flagged Medium risk (GPL-3.0) — acceptable for internal deployment; must be reviewed if system is commercialized
+- @lydell/node-pty flagged Medium risk (native shell access) — mitigated by sandbox config in openclaw.json
+- open--claw has no CI/CD — gap documented; recommended workflows listed in ci-cd.md
+
+### Pending Actions
+- Phase 1: agent-skill-registry.md, security-data-privacy.md, owasp-llm-review.md, kill-switch-runbook.md, rollback-plan.md
+
+### What Remains Unverified
+- Token cost data for token-costs.md requires actual usage metrics from user
+- Privacy Policy and Terms of Service drafts need legal review
+- OWASP LLM review requires security expertise — Phase 1 item
+
+### What's Next
+Phase 1 — Security & Agent Docs:
+1. agent-skill-registry.md (scan openclaw.template.json5 skills + vendored code)
+2. security-data-privacy.md (data flow, Bitwarden, ADB tunnel security)
+3. owasp-llm-review.md (OWASP Top 10 for LLM Apps)
+4. kill-switch-runbook.md (gateway stop, systemd disable, feature flags)
+5. rollback-plan.md (version rollback via VENDOR_PIN.md)
