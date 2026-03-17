@@ -397,3 +397,36 @@ Backup restored immediately. Gateway healthy.
 - Check v2026.3.13 changelog for the correct key name
 - Consider upgrading OpenClaw vendor if autoApprove exists in newer version
 - Alternative: evaluate if Windows node host is necessary given droidrun MCP already covers phone control
+
+---
+
+## Decision: Two-gate model for Windows node execution (2026-03-17)
+
+**Date:** 2026-03-17  
+**Status:** Gate 1 (pairing) DONE; Gate 2 (execution) PARTIAL — `nodes run` blocked by WSL-embedded node issue
+
+### Context
+ChaosCentral was connected (gate 1: device pairing — `paired · connected` in `nodes status`) but Sparky could not run commands (gate 2: execution approvals). These are separate security layers in OpenClaw.
+
+### Decision
+Set `tools.exec.host=node`, `tools.exec.security=allowlist`, `tools.exec.node=ChaosCentral` in `openclaw.json` via `openclaw config set`. Added wildcard `*` glob pattern to `exec-approvals.json` for ChaosCentral node ID (`847202f0...bea4e`) for all agents.
+
+### Source
+OpenClaw docs — device pairing determines whether a node is authorized to connect; execution approvals govern whether a node is permitted to run specific shell commands.
+
+### Security
+Acceptable for personal home system. `allowlist` mode with `*` glob is permissive but scoped to ChaosCentral node only. Can be narrowed to specific glob patterns later.
+
+### Outcome / Consequences
+Config applied successfully. However, `nodes run` fails with `invalid system.run.prepare response` because:
+- `nodes status` shows "ChaosCentral" as connected, but this is the **WSL-embedded node** running inside the gateway's own process (v2026.3.13), not the actual Windows node.cmd host
+- The Windows node.cmd STILL cannot connect to the gateway over plaintext `ws://` (SECURITY ERROR)
+- The embedded WSL node does not support `system.run` as it is not a real remote execution host
+
+### Root Cause
+The Windows node.cmd uses the WSL gateway's LAN IP (`172.23.156.209:18789`) which is non-loopback → plaintext WebSocket rejected by OpenClaw security policy. Requires either:
+- `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1` env var in node.cmd (break-glass for trusted private networks — explicitly documented in OpenClaw error message)
+- SSH tunnel (`ssh -N -L 18789:127.0.0.1:18789`) so Windows node connects to 127.0.0.1
+
+### Recommended Next Fix
+Add `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1` to `C:\Users\ynotf\.openclaw\node.cmd` as the first environment variable, then restart the Windows node service. This is the lowest-friction resolution and is scoped to private/trusted networks per OpenClaw's own documentation.
