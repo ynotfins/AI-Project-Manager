@@ -419,3 +419,64 @@ ode.cmd configuration issue. This is a gateway security model limitation.
 ### What's Next
 STOP per task constraint — escalate to PLAN for fix approach evaluation.
 Windows node remains DISCONNECTED until this blocker is resolved.
+
+## 2026-03-17 00:00 — FAIL: gateway.nodes.autoApprove Not Supported in v2026.3.8
+
+### Goal
+Add gateway.nodes.autoApprove.local = true to openclaw.json to auto-approve Windows node connections.
+
+### Scope
+- ~/.openclaw/openclaw.json (WSL, local-only)
+
+### Commands / Tool Calls
+- Shell: backup → openclaw.json.bak.autoapprove (PASS)
+- Shell: Python3 heredoc — add c['gateway']['nodes']['autoApprove'] = {'local': True} (PASS — written)
+- Shell: verify {'autoApprove': {'local': True}} in gateway.nodes (PASS)
+- Shell: systemctl --user restart openclaw-gateway.service (PASS)
+- Shell: openclaw nodes status → config validation error (FAIL)
+- Shell: restore from backup (PASS), verify JSON valid (PASS)
+- Shell: restart gateway with clean config (PASS), health check PASS
+
+### Changes
+None — backup restored. openclaw.json is identical to pre-edit state.
+
+### Evidence
+| Check | Result |
+|-------|--------|
+| Backup created (.bak.autoapprove) | PASS |
+| JSON edit applied (autoApprove written) | PASS |
+| gateway.nodes.autoApprove.local verified in file | PASS |
+| Gateway restart with new config | PASS (restarted) |
+| openclaw nodes status after restart | **FAIL** |
+| Error | Invalid config: gateway.nodes: Unrecognized key: "autoApprove" |
+| Backup restored | PASS |
+| Restored JSON valid | PASS |
+| Gateway restarted with clean config | PASS |
+| Gateway health — Telegram: ok | PASS |
+
+### Root Cause
+gateway.nodes.autoApprove is **not a recognized key in OpenClaw v2026.3.8**. The schema validator rejects it at startup. The feature either:
+- Exists in v2026.3.13 (newer version the config was last written by)
+- Does not exist under this exact key path in any version
+- Uses a different config key name
+
+### Verdict
+**FAIL** — config key not supported in installed version. Backup restored. Gateway healthy.
+
+### Blockers
+Windows node connection remains blocked by code=1008 device identity requirement.
+
+### Fallbacks Used
+- Restored from openclaw.json.bak.autoapprove after validation failure.
+
+### Cross-Repo Impact
+None — no files committed.
+
+### Pending Actions for PLAN
+1. Check OpenClaw v2026.3.13 changelog for correct autoApprove config key name
+2. Query Context7: "OpenClaw node auto-approve device pairing configuration"
+3. Option: upgrade to v2026.3.13 if autoApprove is available there
+4. Option: evaluate if Windows node is actually needed — droidrun MCP already provides phone control
+
+### What's Next
+STOP — escalate to PLAN. Windows node connection remains BLOCKED.

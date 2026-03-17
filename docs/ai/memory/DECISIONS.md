@@ -375,3 +375,25 @@ Extend start-cursor-with-secrets.ps1 to auto-update openclaw.json's llowedOrigi
 
 ### Note on Control UI Windows Access
 The Control UI still rejects Windows browser connections with code=1008 "control ui requires device identity (use HTTPS or localhost secure context)". This is a separate Control UI security feature — it requires HTTPS for non-localhost WebSocket origins regardless of allowedOrigins. A solution requires either: (a) SSH tunnel from Windows to localhost, or (b) HTTPS reverse proxy. Not a blocker for Telegram/WhatsApp operation.
+
+---
+
+## Decision: gateway.nodes.autoApprove — Not Available in OpenClaw v2026.3.8 (ATTEMPTED, FAILED)
+
+**Date:** 2026-03-17  
+**Status:** FAILED — key not recognized in v2026.3.8
+
+### Attempted
+Added gateway.nodes.autoApprove = {local: True} to openclaw.json to auto-approve Windows node connections from the local host.
+
+### Result
+OpenClaw v2026.3.8 schema validator rejected the key:
+`
+Invalid config: gateway.nodes: Unrecognized key: "autoApprove"
+`
+Backup restored immediately. Gateway healthy.
+
+### Pending
+- Check v2026.3.13 changelog for the correct key name
+- Consider upgrading OpenClaw vendor if autoApprove exists in newer version
+- Alternative: evaluate if Windows node host is necessary given droidrun MCP already covers phone control
