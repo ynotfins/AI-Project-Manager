@@ -463,3 +463,61 @@ Windows node.cmd rejected with `SECURITY ERROR: Cannot connect over plaintext ws
 
 ### Security Assessment
 Acceptable for personal home system. `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1` is scoped to the Windows/WSL local bridge — not exposed to public internet. `exec-approvals` allows all commands on Windows Desktop, which is the user's own machine. For future production use, tighten to specific glob patterns.
+
+---
+
+## Decision: Sparky full autonomous access — sudo + Windows admin + exec-approvals full (2026-03-18)
+
+**Date:** 2026-03-18  
+**Status:** IMPLEMENTED — all verified
+
+### Context
+Multiple security gates were blocking Sparky from running commands autonomously:
+1. `openclaw.json`: `sandbox.mode="all"` and `tools.exec.host="sandbox"` — routing to non-functional sandbox path
+2. `exec-approvals.json`: `defaults.security=deny` + `agents.main` had empty allowlist with `ask=always`
+3. WSL: `sudo` required a password (blocking root-level operations)
+
+### Decisions Made
+
+**1. sandbox.mode stays "off" by design**
+Sparky needs direct host access (WSL filesystem, Windows node, Docker daemon) for autonomous work. Docker sandbox containers (openclaw-sandbox:bookworm-slim) are for future CrewClaw employee containers only. Setting sandbox=off gives Sparky unrestricted access to the host environment — intentional for personal use.
+
+**2. tools.exec.host=node, security=full**
+Routes all command execution through the Windows Desktop node host (direct, no approval checks). `security=full` means the node runs any command without filtering.
+
+**3. exec-approvals: security=full, ask=off, askFallback=allow, autoAllowSkills=true**
+Applied to both `defaults` and `agents.main`:
+- `ask=off`: disables the approval socket request path entirely
+- `askFallback=allow`: fallback if approval socket unreachable → allow (not block)
+- `autoAllowSkills=true`: skills auto-allowed without explicit approval
+- Net effect: zero approval prompts for any command
+
+**4. WSL passwordless sudo**
+Created `/etc/sudoers.d/ynotf-nopasswd` with `ynotf ALL=(ALL) NOPASSWD: ALL`. Validated with `visudo -cf`. Allows Sparky to run `sudo` commands in WSL without any password prompt — required for system administration tasks (package installs, service management, file ownership changes, etc.).
+
+**5. Windows Administrator (pre-existing)**
+`ynotf` was already a member of the Administrators group — no change needed. Confirmed with `Get-LocalGroupMember`.
+
+### Security Assessment
+Acceptable for personal home system. ChaosCentral is a private PC with no public internet exposure. Risk is contained to:
+- Sparky running arbitrary commands on the local machine (intentional — this is the design goal)
+- No remote access path beyond WhatsApp/Telegram channels which are already owner-ID locked
+
+---
+
+## Decision: Docker v29.1.3 discovered installed — BLOCKER 1 resolved (2026-03-18)
+
+**Date:** 2026-03-18  
+**Status:** RESOLVED — Docker available, sandbox kept off by design
+
+### Context
+BLOCKER 1 was documented as "Docker not installed in WSL — sandbox mode causes gateway crash-loop." This was incorrect. Docker v29.1.3 + Docker Compose v2.40.3 ARE installed and the daemon is running. The `openclaw-sandbox:bookworm-slim` container was already active with 7h+ uptime.
+
+### Decision
+Keep `sandbox.mode=off` even though Docker is now confirmed available. Rationale:
+- Sparky needs direct host access, not sandboxed containers
+- Docker sandbox is reserved for future CrewClaw employee containers
+- Changing to sandbox=on would re-introduce approval gate overhead that blocks autonomous operation
+
+### Impact
+BLOCKER 1 is resolved (Docker exists). STATE.md updated accordingly.

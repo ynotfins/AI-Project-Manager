@@ -31,8 +31,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-03-17 (Windows Desktop node fully operational — PowerShell verified)
-> Last verified runtime: 2026-03-17 (Windows Desktop node connected, PowerShell execution verified)
+> Last updated: 2026-03-18 (Sparky full autonomous access — sudo + Windows admin + Docker confirmed + exec-approvals full)
+> Last verified runtime: 2026-03-18 (WSL sudo root, Windows PowerShell, Docker v29.1.3, nodes invoke verified)
 
 ### Phase Status
 | Phase | Status | Closed |
@@ -57,15 +57,16 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - [x] gog OAuth complete (Gmail read access verified)
 - [x] First integration tested � weather skill, 42�F NY, runId 2a3f0990 (2026-03-14)
 
-### Runtime Snapshot (as of 2026-03-17)
+### Runtime Snapshot (as of 2026-03-18)
 - Gateway: 127.0.0.1:18789 (UI), :18792 (API health), systemd managed � **openclaw v2026.3.13** (updated from 2026.3.8)
 - Install type: npm global, stable channel (was: git tag detached HEAD � `openclaw update` now works)
 - Node: v22.22.0 (nvm), pnpm 10.23.0
 - Skills: 19/59 ready
 - Channels: WhatsApp (linked), Telegram (secured), Signal (disabled)
-- Windows nodes: **1 connected** � headless node host v2026.3.13, `system` + `browser` caps, paired 2026-03-16
+- - Windows nodes: **1 connected** — Windows Desktop (node.cmd v2026.3.13, IP: 172.23.144.1, caps: browser+system) — PowerShell + hostname VERIFIED. WSL sudo: root (passwordless). ynotf: Windows Administrator.
 - Model routing: anthropic/claude-sonnet-4-20250514, fallback openai/gpt-4o-mini
-- **Sandbox: mode=off** (reverted 2026-03-15 � Docker not installed in WSL; sandbox=all caused gateway crash loop)
+- **Sandbox: mode=off** (reverted 2026-03-15 � Docker not installed in WSL; sandbox=all caused gateway crash loop)
+- **Docker: v29.1.3 installed + running** — openclaw-sandbox:bookworm-slim container active. sandbox.mode stays off by design (Sparky needs direct host access)
 - **Context engine: lossless-claw v0.3.0** (LCM active, db=`~/.openclaw/lcm.db`, native API � legacy fallback warning resolved by 2026.3.13 upgrade)
 - exec-approvals.json: security=deny in defaults � policy file exists but NOT enforced without sandbox
 - **DroidRun MCP**: added to other Cursor project window (2026-03-16) � phone automation tool for Samsung Galaxy S25 Ultra
@@ -83,13 +84,12 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - **Verified:** hostname→ChaosCentral, powershell.exe Get-Date→Tuesday, March 17, 2026 5:08:20 PM
 - **Status:** `nodes status` shows Known:2 Paired:2 Connected:2 — Windows Desktop (IP: 172.23.144.1, v2026.3.13, caps: browser+system)
 - **Known limitation:** `nodes run` CLI hangs due to approval socket; agent's `nodes()` tool uses invoke path which works correctly
-#### BLOCKER 1 � Sandbox requires Docker (not installed)
-- **Symptom:** Setting `agents.defaults.sandbox.mode: "all"` in `openclaw.json` causes the gateway to crash-loop on every agent request with: `Failed to inspect sandbox image: failed to connect to docker API at unix:///var/run/docker.sock`
-- **Impact:** exec-approvals policy is NOT enforced (sandbox=off means the approval gate is bypassed)
-- **Current state:** Reverted to `sandbox.mode: "off"` as emergency fix. Gateway healthy but exec-approvals not active.
-- **Fix options:** (A) Install Docker Desktop for Windows + enable WSL2 integration, OR (B) research whether OpenClaw supports a non-Docker sandbox mode (e.g. firejail, bubblewrap, or process-level isolation)
-- **Ref:** DECISIONS.md 2026-03-14 � exec-approvals + sandbox mechanism
-
+#### BLOCKER 1 — Sandbox + Docker — **RESOLVED 2026-03-18**
+- **Was:** Docker not found in WSL; sandbox.mode: "all" caused gateway crash-loop.
+- **Discovery 2026-03-18:** Docker v29.1.3 IS installed and running. Sandbox container openclaw-sandbox:bookworm-slim already active (7h uptime).
+- **Decision:** sandbox.mode stays "off" by design — Sparky needs direct host access for autonomous work. Docker sandbox is reserved for CrewClaw employee containers if/when needed.
+- **exec-approvals:** Set to security=full, ask=off, askFallback=allow, autoAllowSkills=true — commands run without any approval prompts.
+- **Status:** No blocking issue. Sparky has full autonomous access.
 #### BLOCKER 2 � Agent session context overflow � **RESOLVED 2026-03-16**
 - **Was:** Agent session `e3853d85` overflowed at 171 messages / 171,384 tokens, causing silent failures on WhatsApp/Telegram.
 - **Fix (permanent):** Installed `lossless-claw` v0.3.0 LCM plugin (`pnpm openclaw plugins install @martian-engineering/lossless-claw`). Plugin is now the active `contextEngine`. DAG-based summarization prevents overflow permanently.
@@ -97,9 +97,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - **Evidence:** `[lcm] Plugin loaded (enabled=true, db=~/.openclaw/lcm.db, threshold=0.75)` � warning gone, agent responsive.
 
 ### Pending User Actions
-1. Decide on Docker installation (enables sandbox + approval gate enforcement)
-2. Name agent via WhatsApp (bootstrap conversation) � cosmetic, non-blocking
-3. MXRoute email: install imap-smtp-email skill + provide credentials � Phase 7 work
+1. Name agent via WhatsApp (bootstrap conversation) � cosmetic, non-blocking
+2. MXRoute email: install imap-smtp-email skill + provide credentials � Phase 7 work
 
 ### Known Recurring Issues
 | Issue | Trigger | Fix | Permanent Fix Needed |
@@ -362,3 +361,88 @@ See DECISIONS.md: "Windows node full resolution — OPENCLAW_ALLOW_INSECURE_PRIV
 
 ### What's Next
 Phase 7 planning — agent naming, MXRoute email integration, expanded skill setup.
+
+## 2026-03-18 19:11 — RESOLVED: Sparky Full Autonomous Access (sudo + Windows Admin + exec-approvals full + Docker confirmed)
+
+### Goal
+Remove all execution blocks so Sparky can run commands on WSL, Windows, and Docker without per-command approval prompts or password requirements, enabling autonomous unattended operation.
+
+### Scope
+- `~/.openclaw/openclaw.json` (WSL, local-only)
+- `~/.openclaw/exec-approvals.json` (WSL, local-only)
+- `/etc/sudoers.d/ynotf-nopasswd` (WSL, local-only)
+- `C:\Users\ynotf\.openclaw\node.cmd` (Windows, local-only)
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/memory/DECISIONS.md`
+
+### Commands / Tool Calls
+- Shell: `cp ~/.openclaw/openclaw.json ~/.openclaw/openclaw.json.bak.fullaccess` (backup)
+- Shell: Python3 — set `sandbox.mode=off`, `tools.exec.host=node`, `tools.exec.security=full`, `tools.exec.node="Windows Desktop"`
+- Shell: Python3 — set `exec-approvals.json` defaults + agents.main: `security=full, ask=off, askFallback=allow, autoAllowSkills=true`
+- Shell: `wsl -u root` — write `/etc/sudoers.d/ynotf-nopasswd` + `visudo -cf` validation
+- PowerShell: `Get-LocalGroupMember` — verified ynotf already in Administrators
+- Shell: `systemctl --user restart openclaw-gateway.service`
+- Shell: Killed stale node processes, restarted `node.cmd`
+- Shell: `pnpm openclaw nodes status` — Windows Desktop paired · connected
+- Shell: `nodes invoke system.run hostname` → ChaosCentral (PASS)
+- Shell: `nodes invoke system.run powershell.exe -Command Get-Date` → Wednesday, March 18, 2026 7:11:57 PM (PASS)
+- Shell: `sudo whoami` (direct WSL) → root (PASS)
+- Shell: `docker ps` + `docker info` → v29.1.3 running, sandbox container active (PASS)
+
+### Changes
+| Target | Change |
+|--------|--------|
+| `openclaw.json` | `sandbox.mode`: all → off |
+| `openclaw.json` | `tools.exec.host`: sandbox → node |
+| `openclaw.json` | `tools.exec.security`: allowlist → full |
+| `openclaw.json` | `tools.exec.node`: ChaosCentral → Windows Desktop |
+| `exec-approvals.json` | defaults: security=full, ask=off, askFallback=allow, autoAllowSkills=true |
+| `exec-approvals.json` | agents.main: security=full, ask=off, askFallback=allow, autoAllowSkills=true |
+| `/etc/sudoers.d/ynotf-nopasswd` | Created: `ynotf ALL=(ALL) NOPASSWD: ALL` |
+| Windows Administrators | ynotf already a member (no change needed) |
+
+### Evidence
+| Check | Result | Output |
+|-------|--------|--------|
+| openclaw.json backup | PASS | .bak.fullaccess created |
+| sandbox.mode=off | PASS | verified via Python3 |
+| tools.exec.host=node | PASS | verified |
+| tools.exec.security=full | PASS | verified |
+| exec-approvals defaults | PASS | security=full, ask=off, askFallback=allow |
+| exec-approvals agents.main | PASS | security=full, ask=off, askFallback=allow |
+| sudoers file written | PASS | visudo parsed OK |
+| `sudo whoami` (no prompt) | PASS | root |
+| ynotf in Administrators | PASS | already member |
+| Gateway restart | PASS | |
+| nodes status | PASS | Windows Desktop paired · connected (891178e9) |
+| `nodes invoke hostname` | PASS | ChaosCentral |
+| `nodes invoke powershell Get-Date` | PASS | Wednesday, March 18, 2026 7:11:57 PM |
+| Docker v29.1.3 | PASS | sandbox container running |
+| `nodes invoke ChaosCentral` | FAIL (expected) | ChaosCentral = WSL-embedded, only connected when gateway first starts |
+
+### Verdict
+**PASS** — Sparky has full autonomous access: WSL root (passwordless sudo), Windows Administrator, Docker, exec-approvals full (no approval prompts). Windows Desktop node operational.
+
+### Blockers
+None. All execution blockers resolved.
+
+### Fallbacks Used
+- `sudo` required `wsl -u root` approach (interactive prompt avoided)
+- Used `nodes invoke` instead of `nodes run` for testing (socket hang workaround)
+
+### Cross-Repo Impact
+None — all changed files are local-only (not in any repo).
+
+### Decisions Captured
+See DECISIONS.md: "Sparky full autonomous access" + "Docker v29.1.3 discovered — BLOCKER 1 resolved"
+
+### Pending Actions
+1. Name agent via WhatsApp (cosmetic, non-blocking)
+2. MXRoute email integration (Phase 7)
+
+### What Remains Unverified
+- `nodes run` CLI still hangs (known limitation — agent invoke path works, not blocking)
+- Docker sandbox mode available if ever needed (currently off by design)
+
+### What's Next
+Phase 7 — agent persona setup, MXRoute email skill, expanded integrations.
