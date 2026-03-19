@@ -1,4 +1,6 @@
 # Secrets and local config — NEVER commit secrets (see .cursor/rules/no-secrets-in-files.mdc)
+docs/ai/protected/
+.openclaw/
 .env
 .env.*
 .env.local

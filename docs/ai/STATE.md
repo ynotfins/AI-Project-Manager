@@ -31,7 +31,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-03-18 (Sparky full autonomous access — sudo + Windows admin + Docker confirmed + exec-approvals full)
+> Last updated: 2026-03-18 (CrewClaw 5 employees deployed via Docker + Bitwarden injection; Sparky full autonomous access)
 > Last verified runtime: 2026-03-18 (WSL sudo root, Windows PowerShell, Docker v29.1.3, nodes invoke verified)
 
 ### Phase Status
@@ -70,6 +70,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - **Context engine: lossless-claw v0.3.0** (LCM active, db=`~/.openclaw/lcm.db`, native API � legacy fallback warning resolved by 2026.3.13 upgrade)
 - exec-approvals.json: security=deny in defaults � policy file exists but NOT enforced without sandbox
 - **DroidRun MCP**: added to other Cursor project window (2026-03-16) � phone automation tool for Samsung Galaxy S25 Ultra
+- **CrewClaw Employees**: 5/10 deployed in Docker (api-integration-specialist, code-reviewer, financial-analyst, frontend-developer, overnight-coder) — Bitwarden injection, 512M limit each, D:/github:/workspace:rw; 5 pending Telegram bot creation
 
 ### Active Blockers
 
@@ -446,3 +447,68 @@ See DECISIONS.md: "Sparky full autonomous access" + "Docker v29.1.3 discovered �
 
 ### What's Next
 Phase 7 — agent persona setup, MXRoute email skill, expanded integrations.
+
+## 2026-03-18 21:30 -- CrewClaw Employees Deployed via Docker + Bitwarden Injection
+
+### Goal
+Deploy 5 pre-configured CrewClaw employees as Docker containers with secrets injected at startup via Bitwarden -- no .env files ever touch disk.
+
+### Scope
+- `D:\github\open--claw\open-claw\employees\deployed\` (gitignored)
+- `D:\github\open--claw\.gitignore` (added `open-claw/employees/deployed/`)
+- `D:\github\AI-Project-Manager\.gitignore` (added `docs/ai/protected/` and `.openclaw/`)
+- `AI-Project-Manager/docs/ai/STATE.md` (this entry)
+- `AI-Project-Manager/docs/ai/DECISIONS.md` (new entry)
+
+### Commands / Tool Calls
+- `bws secret get <id>` x 6 (anthropic + 5 telegram tokens)
+- `Expand-Archive` x 5 employee zips
+- `Get-ChildItem -Recurse -Filter ".env*" | Remove-Item` -- removed 5 .env.example files
+- `docker compose build` -- all 5 images built
+- `docker compose up -d` -- all 5 started in one shell call with env vars in scope
+- `docker ps --filter "name=crewclaw"` -- 5 containers Up verified
+
+### Changes
+- `.gitignore` (AI-PM): added `docs/ai/protected/` + `.openclaw/`
+- `.gitignore` (open--claw): added `open-claw/employees/deployed/`
+- `deployed/start-employees.ps1`: created -- fetches secrets from Bitwarden, sets env vars, runs docker compose up -d
+- `deployed/docker-compose.yml`: created -- 5 services, 512M limit each, D:/github:/workspace:rw mount, env from process vars
+- Dockerfiles: fixed `COPY bot.js` to `COPY bot-telegram.js` in all 5 (bug in CrewClaw template)
+- `.env.example` removed from all 5 employee directories
+
+### Evidence
+- PASS: All 6 secrets fetched (ANTHROPIC len=108, Telegram tokens len=46 x5)
+- PASS: 5 containers Up (api-integration-specialist, code-reviewer, financial-analyst, frontend-developer, overnight-coder)
+- PASS: docker logs -- all 5 show "Bot is running..."
+- PASS: zero .env files in deployed/ directory
+- PASS: zero secret pattern hits in any file on disk
+
+### Verdict
+PASS -- All 5 ready employees deployed. No secrets on disk.
+
+### Blockers
+- restart: unless-stopped means containers restart on Docker daemon restart but WITHOUT secrets (tokens will be blank). start-employees.ps1 must be re-run after each system restart.
+- 5 pending employees (personal-crm, script-builder, seo-specialist, software-engineer, ux-designer) need Telegram bots created first.
+
+### Fallbacks Used
+- BWS_ACCESS_TOKEN loaded from User registry (stored there by startup script but not always inherited by Cursor terminals)
+- Dockerfile bot.js bug fixed in all 5 employees before build
+
+### Cross-Repo Impact
+- open--claw/.gitignore updated (deployed/ excluded)
+- AI-Project-Manager/.gitignore updated (protected/ excluded)
+
+### Decisions Captured
+See DECISIONS.md: "CrewClaw employees deployed with Bitwarden secret injection -- no .env files (2026-03-18)"
+
+### Pending Actions
+1. Create Telegram bots for 5 pending employees -> add tokens to Bitwarden -> deploy
+2. Document restart procedure: run start-employees.ps1 after each system restart
+3. Consider: Windows Task Scheduler trigger for start-employees.ps1 on Docker start
+
+### What Remains Unverified
+- Container behavior after Windows reboot (restart: unless-stopped restarts with blank tokens without start-employees.ps1)
+- Long-term Telegram bot connectivity
+
+### What's Next
+CrewClaw employee naming/persona setup, pending employee Telegram bot creation, Phase 7 integrations.
