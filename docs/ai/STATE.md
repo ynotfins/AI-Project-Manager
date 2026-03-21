@@ -32,8 +32,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-03-21 (OpenClaw startup/restart canonical path + CLI/runtime alignment to v2026.3.13-1)
-> Last verified runtime: 2026-03-21 (systemd gateway OK; health Telegram/WhatsApp OK; nodes Connected:0 PARTIAL)
+> Last updated: 2026-03-21 (Post-restart hardening: rate limiting added, stale node removed, orphans archived, Windows Desktop reconnected)
+> Last verified runtime: 2026-03-21 (systemd gateway OK; Telegram healthy; WhatsApp NOT LINKED — QR re-scan required; Windows Desktop Connected:1)
 
 ### Phase Status
 
@@ -67,8 +67,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - Canonical restart: `AI-Project-Manager/scripts/restart-openclaw-gateway.ps1` (+ `openclaw_gateway_required_env.py`); `start-cursor-with-secrets.ps1` delegates to it (`AI_PROJECT_MANAGER_ROOT` override supported)
 - Node: v22.22.0 (nvm), pnpm 10.23.0
 - Skills: 19/59 ready
-- Channels: WhatsApp (linked), Telegram (secured), Signal (disabled)
-- Windows nodes: **PARTIAL 2026-03-21** - `nodes status`: Known:2 Paired:2 **Connected:0** (Windows Desktop + embedded entry show disconnected); `tools.exec`: host=`node`, node=`Windows Desktop`, security=`full` unchanged. Re-launch `node.cmd` / approve pairing after reboot when needed.
+- Channels: **WhatsApp: NOT LINKED (QR re-scan required — session expired after restart)**, Telegram (secured, ok), Signal (disabled)
+- Windows nodes: **Connected:1** - Windows Desktop (v2026.3.13, IP: 172.23.144.1, caps: browser+system) connected after node.cmd launched. Stale second entry (847202f0) removed. `tools.exec`: host=node, security=full unchanged.
 - Model routing: anthropic/claude-sonnet-4-20250514, fallback openai/gpt-4o-mini
 - **Sandbox: mode=off** (reverted 2026-03-15 - sandbox stays off by design for direct host access)
 - **Docker: v29.1.3 installed + running** - openclaw-sandbox:bookworm-slim container active.
@@ -79,7 +79,14 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ### Active Blockers
 
-#### BLOCKER 3 - Windows node host - **REGRESSED / PARTIAL 2026-03-21** (was resolved 2026-03-17)
+#### BLOCKER 4 - WhatsApp NOT LINKED - **ACTIVE 2026-03-21** (requires user QR scan)
+
+- **Cause:** WhatsApp Baileys session expired on restart (401 Unauthorized, reason: `vll`/`cco` — auth key invalidated by WhatsApp servers). Session cache cleared via `channels login` first-run.
+- **Fix:** User must run `source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw channels login --channel whatsapp` in a WSL terminal and scan the QR with WhatsApp → Linked Devices.
+- **Telegram: unaffected.** Remains healthy and running.
+- **Status:** Pending user QR scan. Cannot be automated — requires physical phone access.
+
+#### BLOCKER 3 - Windows node host - **RESOLVED 2026-03-21** (re-connected after node.cmd launch)
 
 - **Was:** Molty removed 2026-03-16 (XamlParseException crash loop)
 - **Fix chain:**
@@ -89,8 +96,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
   4. `tools.exec`: host=node, security=allowlist, node="Windows Desktop"
   5. `exec-approvals.json`: defaults set to security=full, ask=off, askFallback=allow + wildcard `*` allowlist
 - **Verified:** hostname?ChaosCentral, powershell.exe Get-Date?Tuesday, March 17, 2026 5:08:20 PM
-- **Status (2026-03-21 verify):** `nodes status` shows Known:2 Paired:2 **Connected:0** - Windows Desktop disconnected until `node.cmd` relaunched / network stable (was Connected:2 on 2026-03-17)
-- **Known limitation:** `nodes run` CLI hangs due to approval socket; agent `nodes()` invoke path works.
+- **Status (2026-03-21 Phase 1 hardening):** Re-connected. Stale second entry (847202f0…) removed. `nodes status` shows Known:1 Paired:1 **Connected:1** after node.cmd launched.
+- **Known limitation:** Loses connection after reboot until node.cmd is relaunched (startup script handles IP update).
 
 #### BLOCKER 1 - Sandbox + Docker - **RESOLVED 2026-03-18**
 
@@ -109,8 +116,9 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ### Pending User Actions
 
-1. Name agent via WhatsApp (bootstrap conversation) ? cosmetic, non-blocking
-2. MXRoute email: install imap-smtp-email skill + provide credentials ? Phase 7 work
+1. **WhatsApp re-link (REQUIRED):** Run in WSL terminal: `source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw channels login --channel whatsapp` → scan QR in WhatsApp → Linked Devices
+2. Name agent via WhatsApp (bootstrap conversation) — cosmetic, non-blocking
+3. MXRoute email: install imap-smtp-email skill + provide credentials — Phase 7 work
 
 ### Known Recurring Issues
 
@@ -1108,3 +1116,97 @@ Stabilize OpenClaw startup/restart, fix secret injection consistency, eliminate 
 
 ### What's Next
 User: restart Windows node host; AGENT/PLAN: optional archive slice for STATE.md; consider `openclaw doctor --repair` for lingering only after node stable.
+
+## 2026-03-21 18:00 — Post-Restart Hardening: WhatsApp Recovery + Security + Node/Device Hygiene
+
+### Goal
+Fix all remaining post-restart OpenClaw issues: recover WhatsApp (401 expired session), add gateway auth rate limiting, remove stale node entry, archive orphan transcripts, reconnect Windows Desktop node. Skip email-skill finding (out of scope/accepted risk).
+
+### Scope
+- ~/.openclaw/openclaw.json (WSL-local): add gateway.auth.rateLimit
+- ~/.openclaw/openclaw.json.bak.20260321-phase2: backup created
+- ~/.openclaw/agents/main/sessions/orphan-archive/: 7 orphan transcripts archived (~19MB freed)
+- Device 847202f0...ea4e removed (stale disconnected entry)
+- Windows Desktop node: relaunched via 
+ode.cmd from PowerShell
+
+### Commands / Tool Calls
+1. pnpm openclaw --version → OpenClaw 2026.3.13 (61d171a)
+2. pnpm openclaw gateway status → running pid 22106, bind=lan, UI=172.23.156.209:18789
+3. pnpm openclaw health → Telegram: ok, WhatsApp: linked (auth age 2669m — STALE)
+4. pnpm openclaw channels status --probe → WhatsApp: linked/stopped/disconnected, 401 error
+5. pnpm openclaw nodes status → Known:2 Paired:2 Connected:1 (Windows Desktop connected at first run)
+6. pnpm openclaw doctor → 4 orphan transcripts, openclaw-node.service present, LAN bind WARN, memory search WARN
+7. pnpm openclaw security audit --deep → CRITICAL: imap-smtp-email (out of scope), 5 WARN, 1 INFO
+8. Phase 2: Python added gateway.auth.rateLimit = {maxAttempts:10, windowMs:60000, lockoutMs:300000} → JSON VALID
+9. systemctl --user restart openclaw-gateway + curl 127.0.0.1:18792/ → OK (active)
+10. pnpm openclaw channels login --channel whatsapp (first run) → session cleared (was stale, logged out)
+11. pnpm openclaw channels login --channel whatsapp (second run) → QR displayed, 3 rotations, timed out (no phone scan)
+12. pnpm openclaw devices remove 847202f0...ea4e → Removed
+13. pnpm openclaw nodes status → Known:1 Paired:1 Connected:0 (before node.cmd launch)
+14. openclaw-node.service status → inactive
+15. Orphan transcript scan → 7 orphan files identified, archived to orphan-archive/
+16. Start-Process node.cmd (Windows) + wait 15s → node connected
+17. pnpm openclaw nodes status → Known:1 Paired:1 **Connected:1** (Windows Desktop, just now)
+18. pnpm openclaw nodes describe → caps: browser, system; commands: browser.proxy, system.run, system.run.prepare, system.which
+19. pnpm openclaw nodes invoke --command system.run --params '{"command":"hostname"}' → INVALID_REQUEST: command required (schema mismatch — node connected, CLI param name not documented for system.run)
+
+### Changes
+| Item | Before | After |
+|---|---|---|
+| gateway.auth.rateLimit | not configured | {maxAttempts:10, windowMs:60000, lockoutMs:300000} |
+| WhatsApp session | stale (401, auth age 2669m) | cleared — awaiting QR re-scan |
+| Stale node 847202f0 | paired/disconnected (Unknown label) | removed |
+| Orphan transcripts | 7 files (~19MB) in sessions dir | moved to orphan-archive/ subdirectory |
+| Windows Desktop node | Connected:0 (post-restart) | Connected:1 after node.cmd relaunch |
+| nodes count | Known:2 Paired:2 | Known:1 Paired:1 Connected:1 |
+
+### Evidence
+- Security audit: 1 CRITICAL (imap-smtp-email, out of scope), gateway.auth_no_rate_limit WARN → FIXED
+- gateway.probe_failed in security audit: missing operator.read scope (known — audit runs without gateway token)
+- models.weak_tier WARN: accepted — model selection is intentional (claude-sonnet-4 is cost/perf balance)
+- plugins.tools_reachable_permissive_policy WARN: accepted — lossless-claw is a trusted internal plugin
+- plugins.code_safety lossless-claw WARN: accepted — src/engine.ts file read + network send is LCM's designed behavior
+- Rate limit config: {"maxAttempts":10,"windowMs":60000,"lockoutMs":300000} confirmed in JSON
+- Gateway restart after config: curl 127.0.0.1:18792/ → OK, systemctl is-active → active
+- WhatsApp: session expired → cleared → QR displayed → NOT SCANNED (requires phone)
+- Stale node removed: Removed 847202f0...
+- Orphan archive: 7 files moved to orphan-archive/
+- Windows Desktop: 
+odes status → Connected:1, caps: browser+system, v2026.3.13
+- openclaw-node.service: inactive — no action needed (doctor flags as 'another gateway-like service'; it's the old WSL-side headless node install, inactive, safe to leave)
+
+### Verdict
+**PARTIAL** — Rate limit PASS, stale node removed PASS, orphans archived PASS, Windows Desktop Connected PASS.
+WhatsApp: PENDING USER ACTION (QR scan required — session expired on restart, cannot be automated).
+
+### Blockers
+- WhatsApp NOT LINKED: user must scan QR via pnpm openclaw channels login --channel whatsapp in WSL terminal.
+
+### Fallbacks Used
+- None — all operations used Shell tool directly (MCP Context7 not needed for OpenClaw ops).
+
+### Cross-Repo Impact
+- open--claw/docs/ai/STATE.md: mirror entry appended (abbreviated).
+- openclaw.json is WSL-local, never committed.
+
+### Decisions Captured
+- gateway.auth.rateLimit added as permanent hardening (non-breaking, recommended by security audit).
+- models.weak_tier WARN: ACCEPTED — claude-sonnet-4 is intentional cost/perf choice; upgrade to Claude 4.5+ is Phase 7+ decision.
+- plugins.code_safety lossless-claw WARN: ACCEPTED — LCM engine design; src/engine.ts file read+send is its core mechanism.
+- openclaw-node.service (inactive WSL node): LEFT AS-IS — inactive, harmless, removing it is optional hygiene; risk of breaking unknown workflows outweighs benefit.
+- Orphan transcripts: archived (not deleted) — preserves data, satisfies doctor, allows recovery if needed.
+
+### Pending Actions
+1. **User: scan WhatsApp QR** — source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw channels login --channel whatsapp
+2. After WhatsApp linked: re-run pnpm openclaw channels status --probe → verify WhatsApp: running
+3. Optional: systemctl --user disable --now openclaw-node.service && rm ~/.config/systemd/user/openclaw-node.service to fully clear doctor warning (safe, service is inactive)
+4. Optional: install Node 22 LTS system-wide to eliminate nvm WARN from doctor
+
+### What Remains Unverified
+- WhatsApp channel health after re-link (pending user QR scan)
+- system.run CLI invocation schema (param name not documented; agent-side tool call works fine via tools.exec routing)
+- Whether disabling openclaw-node.service has any side effects (left as optional)
+
+### What's Next
+User scans WhatsApp QR. AGENT verifies channel probe. No further blockers for Telegram/gateway runtime.
