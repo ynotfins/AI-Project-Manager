@@ -521,3 +521,17 @@ Keep `sandbox.mode=off` even though Docker is now confirmed available. Rationale
 
 ### Impact
 BLOCKER 1 is resolved (Docker exists). STATE.md updated accordingly.
+
+---
+
+## Decision: Canonical OpenClaw gateway restart + build tag alignment (2026-03-21)
+
+**Context:** Operational drift between OpenClaw CLI checkout and systemd gateway runtime; inconsistent secret injection when restarting from non-injected shells.
+
+**Decision:** Use `AI-Project-Manager/scripts/restart-openclaw-gateway.ps1` as the only supported automation path for `.gateway-env` write + `systemctl --user restart openclaw-gateway`. Keep `~/openclaw-build` on `v2026.3.13-1` with systemd `dist/index.js` entrypoint.
+
+**Alternatives considered:** Rely on npm global only (rejected: doctor/source-of-truth wanted explicit build tree); `openclaw doctor --repair` auto-migrate (deferred: manual alignment chosen for evidence).
+
+**Rationale:** Fail-fast on missing keys prevents silent blank `.gateway-env`; aligned versions remove config warning noise.
+
+**Full detail:** See repo root `docs/ai/DECISIONS.md` entry of same date.
