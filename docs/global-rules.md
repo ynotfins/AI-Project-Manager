@@ -1,5 +1,9 @@
 # Global Rules Reference
 
+> Status note (2026-03-19): This file is a historical/generated reference snapshot.
+> Canonical active behavior is defined by `.cursor/rules/*.md` and `AGENTS.md`.
+> If content here conflicts with active rules, treat this document as non-authoritative.
+
 All active Cursor rules across the global user scope (`~/.cursor/rules/`) and this project (`.cursor/rules/`).
 
 **Generated:** 2026-02-23

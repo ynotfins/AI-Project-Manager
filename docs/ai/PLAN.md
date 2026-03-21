@@ -162,3 +162,23 @@
 - [x] Audit log captures the action — `command-logger` hook enabled; `config-audit.jsonl` active; gateway file log at `/tmp/openclaw/` captures runtime events; `exec-approv` + `sandboxed` entries confirmed in log
 - [x] Hybrid model routing configured (local vs Claude) — primary: `anthropic/claude-sonnet-4-20250514`, fallback: `openai/gpt-4o-mini`; agent confirmed model identity via Control UI
 - [x] Evidence logged — Phase 6C STATE.md entries in both repos
+
+---
+
+## Phase 7: Runtime Hardening + Employee Ops (ACTIVE)
+
+**Goal:** Keep the tri-workspace stack stable for family-safe daily operation while expanding employee automation with strict secret hygiene.
+
+**Current priorities:**
+- [x] Windows node access path validated for autonomous execution
+- [x] Startup flow hardened to persist gateway auth (`.gateway-env`) across restarts
+- [x] CrewClaw deployment baseline established with Docker + Bitwarden injection
+- [ ] Complete remaining employee onboarding artifacts (pending bot token inventory and controlled rollout)
+- [ ] Harden startup UX (avoid fragile long-running terminal coupling; resilient launch/detach behavior)
+- [ ] Finalize deterministic Firestore ingest sanity test runbook and operator checklist
+- [ ] Continue documentation parity between `AI-Project-Manager` and `open--claw`
+
+**Guardrails:**
+- No secrets in git; `.env*` files remain excluded from commits
+- Prefer modular changes and evidence-backed state updates
+- Apps Script delivery path remains unblocked by new feature work

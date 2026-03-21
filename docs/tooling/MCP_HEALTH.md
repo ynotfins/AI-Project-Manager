@@ -1,5 +1,12 @@
 # MCP Health Log
 
+## Current Status (2026-03-19)
+
+- This file is a historical health/evidence log.
+- Canonical active MCP policy and expected topology live in `docs/tooling/MCP_CANONICAL_CONFIG.md`.
+- Current operations rely on the reduced MCP set and updated rule mapping (including Clear Thought 1.5 and Context7 policy in project rules).
+- Any unresolved TODO blocks below should be interpreted as historical checkpoints unless re-opened in `docs/ai/STATE.md`.
+
 ## Entry: 2026-03-02 — OpenMemory: secret-free mcp.json + local proxy
 
 **Timestamp:** 2026-03-02 local

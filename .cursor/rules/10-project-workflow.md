@@ -6,18 +6,29 @@
 ## PLAN output contract
 
 PLAN must produce:
+
 - Phases with explicit exit criteria
 - Risks and unknowns
 - A single AGENT prompt for the next phase
+- End every PLAN response with exactly one copy-pastable AGENT prompt block
+- AGENT prompt format requirements:
+  - Line 1: `You are AGENT (Executioner)`
+  - Line 2: `Model: <model> — <thinking|non-thinking>`
+  - Choose lowest-cost model that safely fits task complexity; default non-thinking for straightforward execution
 - If the phase has >5 connected steps, use Clear Thought 1.5 (`mental_model` or `sequential_thinking` operation) before finalizing
 
 ## AGENT execution contract
 
 AGENT must:
+
 - Follow the PLAN prompt exactly — no freelancing
 - Use MCP tools per `05-global-mcp-usage.md`
-- Run tests and commands required by the phase
+- Run required quality checks before completion:
+  - linter
+  - type/compile/build checks
+  - tests required by the phase
 - Update `docs/ai/STATE.md` after each execution block
+- Keep `docs/ai/HANDOFF.md` accurate after meaningful project-state changes; if no handoff change was needed, state that explicitly in `docs/ai/STATE.md`
 - Produce PASS/FAIL evidence for every tool call and command
 - Stop immediately if assumptions break or requirements conflict
 - After meaningful verified work, commit focused changes and push the current repo to origin unless explicitly blocked, unsafe, or awaiting approval. In a shared multi-root workspace, apply this per repo. If commit or push is skipped, record why in docs/ai/STATE.md.
@@ -25,6 +36,7 @@ AGENT must:
 ## DEBUG output contract
 
 DEBUG must produce:
+
 - Ranked likely causes (most to least probable)
 - Minimal fix plan (smallest diff)
 - Reproduction steps with evidence
@@ -39,42 +51,55 @@ Every AGENT execution block appended to `docs/ai/STATE.md` must use this exact s
 ## <YYYY-MM-DD HH:MM> — <task name>
 
 ### Goal
+
 One or two sentences stating what this block aimed to achieve.
 
 ### Scope
+
 Files touched or inspected. Repos affected.
 
 ### Commands / Tool Calls
+
 Exact shell commands and exact MCP tool names invoked (no paraphrasing).
 
 ### Changes
+
 What was created, edited, or deleted.
 
 ### Evidence
+
 PASS/FAIL per command/tool with brief output or error.
 
 ### Verdict
+
 READY / BLOCKED / PARTIAL — with one-line reason.
 
 ### Blockers
+
 List each blocker. Write `None` if unblocked.
 
 ### Fallbacks Used
+
 MCP tools that failed and the fallback used. Write `None` if no fallbacks needed.
 
 ### Cross-Repo Impact
+
 Effect on the paired repo, or `None`.
 
 ### Decisions Captured
+
 Decisions made during this block that should be promoted to DECISIONS.md or memory. Write `None` if none.
 
 ### Pending Actions
+
 Follow-up items not completed in this block.
 
 ### What Remains Unverified
+
 Anything that was assumed but not confirmed by evidence.
 
 ### What's Next
+
 The immediate next action for AGENT or PLAN.
 ```
 
@@ -96,6 +121,7 @@ Archive files in `docs/ai/archive/` are never consulted by PLAN for operational 
 PLAN must reconstruct current system state from repository-tracked sources before consulting artifacts or chat history.
 
 Priority order:
+
 1. `docs/ai/STATE.md`
 2. `docs/ai/memory/DECISIONS.md`
 3. `docs/ai/memory/PATTERNS.md`
