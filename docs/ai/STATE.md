@@ -48,6 +48,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 | 6A - Architecture Design        | COMPLETE     | 2026-03-06     |
 | 6B - Gateway Boot               | COMPLETE     | 2026-03-08     |
 | **6C - First Live Integration** | **COMPLETE** | **2026-03-14** |
+| **Phase 1A — CrewClaw Stabilization** | **IN PROGRESS** | — |
 
 ### Phase 6C Exit Criteria - ALL PASSED (2026-03-14)
 
@@ -497,3 +498,77 @@ None for this governance block. Open operational items in HANDOFF.md § Recent U
 
 ### What's Next
 PLAN to use new model-selection rationale format in next AGENT prompt. AGENT to consult HANDOFF.md § Recent Unresolved Issues at start of next task block.
+
+---
+
+## 2026-03-29 16:00 — Governance consistency pass: source-priority unification + HANDOFF routing fix
+
+### Goal
+Verify all recent governance changes are present and internally consistent, unify PLAN source-of-truth priority across all three workflow docs, and fix the HANDOFF.md agent-routing entry that read as a permanent architectural constraint.
+
+### Scope
+- docs/ai/CURSOR_WORKFLOW.md
+- .cursor/rules/10-project-workflow.md
+- docs/ai/HANDOFF.md
+- docs/ai/STATE.md (Phase Status table + this entry)
+
+### Commands / Tool Calls
+- Read: AGENTS.md, 10-project-workflow.md, CURSOR_WORKFLOW.md, TAB_BOOTSTRAP_PROMPTS.md, HANDOFF.md, STATE.md, CONTEXT_WINDOW_MONITORING.md
+- Shell: file size / line count check (PowerShell)
+- StrReplace: CURSOR_WORKFLOW.md (source priority), 10-project-workflow.md (item 6 wording), HANDOFF.md (routing entry moved)
+- Shell: STATE.md Phase Status table update
+
+### Changes
+
+| File | Change |
+|---|---|
+| CURSOR_WORKFLOW.md | Context source priority: 7-item divergent list → 6-item canonical list matching AGENTS.md and 10-project-workflow.md. HANDOFF.md added at position 4; PROJECT_LONGTERM_AWARENESS.md and CONTEXT_WINDOW_MONITORING.md moved to a "Supporting planning references" note below the list |
+| 10-project-workflow.md | Item 6: "Chat history / pasted artifacts (last resort)" → "Chat history / @Past Chats — last resort only" (matches AGENTS.md exactly) |
+| HANDOFF.md | Removed openclaw agent --agent main from § Standing Constraints; added § Current Worker Routing (temporary workaround — Phase 1B item) under §2 Runtime highlights, clearly marking it as a gap not a design |
+| STATE.md | Added Phase 1A row to Phase Status table; this entry |
+
+### Evidence
+
+| Check | Result |
+|---|---|
+| 10-project-workflow.md: Line 3 Rationale requirement | PASS — present |
+| 10-project-workflow.md: model selection matrix (Composer2/Sonnet 4.6/Opus 4.6) | PASS — present |
+| 10-project-workflow.md: turbulence promotion rule | PASS — present |
+| 10-project-workflow.md: 140KB/180KB archive thresholds + ~800/1000 line proxy | PASS — present |
+| HANDOFF.md: § Recent Unresolved Issues | PASS — present (4 items) |
+| HANDOFF.md: § Standing Constraints | PASS — present (4 items after routing entry removed) |
+| TAB_BOOTSTRAP_PROMPTS.md: model policy + Rationale line | PASS — present |
+| CURSOR_WORKFLOW.md source priority: was 7-item (missing HANDOFF.md, had ops docs inline) | FAIL → FIXED |
+| 10-project-workflow.md item 6: "pasted artifacts" vs @Past Chats | FAIL → FIXED |
+| HANDOFF.md routing entry read as permanent constraint | FAIL → FIXED — moved to Current Worker Routing subsection with explicit "temporary workaround" label |
+| STATE.md Phase Status table: Phase 1A row missing | FAIL → FIXED |
+| STATE.md ↔ HANDOFF.md WhatsApp status alignment | PASS — both say 401 Unauthorized / QR re-scan required |
+| STATE.md ↔ HANDOFF.md CrewClaw status alignment | PASS — both say pending bws deploy + device approval |
+| STATE.md file size: 33.2 KB / ~8500 tokens | PASS — well within 140KB target |
+| HANDOFF.md file size: 4.4 KB | PASS — well within 16KB target |
+| No conflicting PLAN source-priority list remains | PASS — AGENTS.md, 10-project-workflow.md, CURSOR_WORKFLOW.md now identical order |
+
+### Verdict
+READY — All four targeted fixes applied. All governance changes from previous session verified present. No deeper contradictions found.
+
+### Blockers
+None.
+
+### Fallbacks Used
+- PowerShell String.Replace() for STATE.md Phase Status table (StrReplace could not match due to encoding — fallback succeeded).
+
+### Cross-Repo Impact
+None — governance-only changes in AI-Project-Manager.
+
+### Decisions Captured
+- PROJECT_LONGTERM_AWARENESS.md and CONTEXT_WINDOW_MONITORING.md are supporting planning references, not part of the authoritative source-priority list. This distinction is now explicit in CURSOR_WORKFLOW.md.
+- Worker routing workaround (--agent main) is a Phase 1B item, not a standing architectural constraint. Documented as such in HANDOFF.md.
+
+### Pending Actions
+None for this block. Open operational items in HANDOFF.md § Recent Unresolved Issues.
+
+### What Remains Unverified
+- Whether existing PLAN sessions will pick up the source-priority unification without re-bootstrapping from TAB_BOOTSTRAP_PROMPTS.md.
+
+### What's Next
+PLAN: use updated source-priority order (HANDOFF.md at position 4, no ops docs in the list) on next session bootstrap. AGENT: Phase 1A completion — bws deploy + device approval smoke test.

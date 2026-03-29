@@ -39,6 +39,10 @@ Application runtime code is not hosted here; this repo defines operating policy,
 - CrewClaw: 5 workers updated (node:22-slim, openclaw@2026.3.13, entrypoint.sh). **Pending**: bws deploy run + device pairing approval (one-time per worker).
 - Context pressure mitigation active via lossless-claw context engine.
 
+### Current Worker Routing (temporary workaround — Phase 1B item)
+
+CrewClaw bots currently route all messages to `--agent main` because per-employee agent IDs require `setup.sh` to register them at build time, which is not run in the Docker build context. This is a known gap, not a permanent design. Resolving it is part of Phase 1B scope.
+
 ### Startup baseline
 
 ```powershell
@@ -74,7 +78,6 @@ Structural limits that affect all planning. Not resolvable in a single task bloc
 - **Bitwarden dependency**: all secret injection requires `bws` CLI and vault access. Any automated deploy is blocked without it.
 - **WhatsApp QR re-scan**: cannot be automated — requires physical phone access. Recurs after each gateway restart cycle if session expires.
 - **CrewClaw device pairing**: first-run one-time approval per named Docker volume lifetime. Named volumes persist identity across container rebuilds.
-- **`openclaw agent --agent main`**: only the `main` agent is registered on the host gateway. Per-employee agent IDs require `setup.sh` (not run in Docker context); all CrewClaw bots must call `main`.
 
 ---
 

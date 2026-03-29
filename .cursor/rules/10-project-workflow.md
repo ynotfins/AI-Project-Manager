@@ -141,7 +141,7 @@ Priority order:
 3. `docs/ai/memory/PATTERNS.md`
 4. `docs/ai/HANDOFF.md`
 5. `docs/ai/context/`
-6. Chat history / pasted artifacts (last resort)
+6. Chat history / `@Past Chats` — last resort only
 
 If repository-tracked sources and chat context disagree, repository-tracked sources win unless current execution evidence proves otherwise.
 

@@ -57,13 +57,17 @@ Developer-local (optional):
 
 When PLAN or DEBUG needs to understand current state, consult sources in this order:
 
-1. `docs/ai/STATE.md` — primary
-2. `docs/ai/memory/DECISIONS.md` — key decisions
+1. `docs/ai/STATE.md` — primary operational source of truth
+2. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
 3. `docs/ai/memory/PATTERNS.md` — reusable patterns
-4. `docs/ai/operations/PROJECT_LONGTERM_AWARENESS.md` — long-term goals and constraints
-5. `docs/ai/operations/CONTEXT_WINDOW_MONITORING.md` — context budget guardrails
-6. `docs/ai/context/` — session artifacts and dumps
-7. `@Past Chats` — **last resort only**; use only if all above sources are insufficient
+4. `docs/ai/HANDOFF.md` — session handoff context
+5. `docs/ai/context/` — transcript-derived artifacts and session dumps
+6. Chat history / `@Past Chats` — **last resort only**; use only if the above sources are insufficient
+
+Supporting planning references (consult as needed; not part of the authoritative priority order):
+
+- `docs/ai/operations/PROJECT_LONGTERM_AWARENESS.md` — long-term goals and anti-drift constraints
+- `docs/ai/operations/CONTEXT_WINDOW_MONITORING.md` — context budget and file-size guardrails
 
 ## Memory
 
