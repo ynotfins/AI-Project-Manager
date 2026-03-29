@@ -2,7 +2,7 @@
 
 Superseded docs. Not consulted by PLAN. Historical reference only.
 
-## Archive index (2026-03-21)
+## Archive index (2026-03-29)
 
 | File | Contents | Entries |
 |---|---|---|
@@ -20,3 +20,4 @@ Superseded docs. Not consulted by PLAN. Historical reference only.
 | `state-log-security-winnode-2026-03-16.md` | Foundation security hardening + Windows node execution fixes (2026-03-16) | 1 |
 | `state-log-windows-node-crewclaw-2026-03-17-18.md` | Windows node resolution + Sparky full access + CrewClaw deploy (2026-03-17 to 2026-03-18) | 5 |
 | `state-log-ops-governance-2026-03-19.md` | Doc truth reconciliation + markdown norm + governance/rule audit (2026-03-19) | 5 |
+| `state-log-2026-03-21.md` | OpenClaw startup hardening + post-restart hardening + STATE rolling archive (2026-03-21) | 3 |
