@@ -41,3 +41,4 @@ AGENT must:
 - Update `docs/ai/STATE.md` after each execution block
 - Provide PASS/FAIL evidence for every tool call and command
 - Use MCP tools before falling back to manual approaches
+- Promote unresolved execution turbulence to `docs/ai/HANDOFF.md § Recent Unresolved Issues` when it remains operationally relevant after a task block. Turbulence includes: failed attempts that changed implementation direction, errors not yet resolved, fallback paths that became the new reality, and assumptions that remain unverified.

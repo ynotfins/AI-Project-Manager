@@ -14,7 +14,12 @@ PLAN must produce:
 - AGENT prompt format requirements:
   - Line 1: `You are AGENT (Executioner)`
   - Line 2: `Model: <model> — <thinking|non-thinking>`
-  - Choose lowest-cost model that safely fits task complexity; default non-thinking for straightforward execution
+  - Line 3 (required): `Rationale: <one-line reason for this model and mode>`
+- Model selection is intentional — PLAN must not silently default. Allowed choices:
+  - `Composer2 — non-thinking`: straightforward execution, high-volume or long-but-simple tasks. Use as default when no complexity flag is present.
+  - `Sonnet 4.6 — non-thinking`: medium complexity, multi-file scope, conditional branching.
+  - `Sonnet 4.6 — thinking`: multi-step reasoning, debugging, non-obvious trade-offs.
+  - `Opus 4.6 — thinking`: high-ambiguity novel problems or complex architecture decisions. Explicit justification required; do not use by default.
 - If the phase has >5 connected steps, use Clear Thought 1.5 (`mental_model` or `sequential_thinking` operation) before finalizing
 
 ## AGENT execution contract
@@ -29,6 +34,7 @@ AGENT must:
   - tests required by the phase
 - Update `docs/ai/STATE.md` after each execution block
 - Keep `docs/ai/HANDOFF.md` accurate after meaningful project-state changes; if no handoff change was needed, state that explicitly in `docs/ai/STATE.md`
+- Promote unresolved execution turbulence to `docs/ai/HANDOFF.md § Recent Unresolved Issues` when it remains operationally relevant after a task block. Turbulence includes: failed attempts that changed implementation direction, errors not yet resolved, fallback paths that became the new reality, and assumptions that remain unverified. Do not bury active turbulence in STATE.md alone.
 - Produce PASS/FAIL evidence for every tool call and command
 - Stop immediately if assumptions break or requirements conflict
 - After meaningful verified work, commit focused changes and push the current repo to origin unless explicitly blocked, unsafe, or awaiting approval. In a shared multi-root workspace, apply this per repo. If commit or push is skipped, record why in docs/ai/STATE.md.
@@ -105,7 +111,15 @@ The immediate next action for AGENT or PLAN.
 
 ## STATE.md Rolling Archive Policy
 
-STATE.md must not exceed ~500 lines. When it approaches this limit or when a phase is marked COMPLETE, AGENT must:
+STATE.md archive is governed by the token/size thresholds in `docs/ai/operations/CONTEXT_WINDOW_MONITORING.md`:
+
+- **Target**: ≤ 140 KB (stay below to preserve PLAN preload budget)
+- **Warn** (schedule archive at next convenient point): > 140 KB
+- **Archive required** (do before the next non-trivial AGENT block): > 180 KB
+
+As a practical line-count proxy: treat **~800 lines** as a soft warning and **~1000 lines** as a hard ceiling. Do not archive solely on line count if content is still operationally relevant and within the KB target. Do not allow uncontrolled bloat past the hard ceiling.
+
+When approaching the warn threshold, or when a phase is marked COMPLETE, AGENT must:
 
 1. Move completed-phase entries verbatim to `docs/ai/archive/state-log-<descriptor>.md`
 2. Update the "Current State Summary" section at the top of STATE.md

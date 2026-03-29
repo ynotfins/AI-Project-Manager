@@ -1,4 +1,4 @@
-﻿# Tab Bootstrap Prompts
+# Tab Bootstrap Prompts
 
 <!-- markdownlint-disable MD040 MD024 MD025 -->
 
@@ -53,22 +53,23 @@ Output format (every response):
 AGENT prompt requirements:
 - First line exactly: You are AGENT (Executioner)
 - Second line exactly: Model: <model> — <thinking|non-thinking>
-- Model policy:
-  - Default: Composer2 — non-thinking (straightforward execution, long but simple tasks).
-  - Medium complexity: Sonnet 4.6 — non-thinking.
-  - Use thinking modes only when execution depends on deeper reasoning.
-  - Recommend Opus only when truly necessary (high ambiguity / complex architecture trade-offs).
+- Third line exactly: Rationale: <one-line reason for this model and mode>
+- Model policy (selection is intentional — do not silently default):
+  - Composer2 — non-thinking: straightforward execution, long but simple tasks. Use as default when no complexity flag is present.
+  - Sonnet 4.6 — non-thinking: medium complexity, multi-file scope, conditional branching.
+  - Sonnet 4.6 — thinking: multi-step reasoning, debugging, non-obvious trade-offs.
+  - Opus 4.6 — thinking: high-ambiguity novel problems or complex architecture decisions. Requires explicit justification; do not use by default.
 ```
 
 ---
 
 ## AGENT tab — first prompt
 
-MODEL: Sonnet 4.6 non-thinking (or Composer2 non-thinking for simple long tasks)
+MODEL: As specified by PLAN (see AGENT prompt from PLAN; no silent default — rationale required)
 
 ```
 You are AGENT (Executioner)
-Model: Sonnet 4.6 — non-thinking
+Model: Plan decides
 
 Read first:
 - @docs/ai/STATE.md

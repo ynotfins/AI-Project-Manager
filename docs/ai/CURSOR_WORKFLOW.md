@@ -22,7 +22,8 @@ PLAN output requirement:
 - The AGENT prompt must start with:
   - `You are AGENT (Executioner)`
   - `Model: <model> — <thinking|non-thinking>`
-- Prefer lowest-cost safe model; default non-thinking for straightforward execution.
+  - `Rationale: <one-line reason for this model and mode>`
+- Model selection is explicit and intentional — PLAN must not silently default to any option. Allowed choices: Composer2, Sonnet 4.6, Opus 4.6 — always with `thinking` or `non-thinking` specified. See `10-project-workflow.md § PLAN output contract` for the full selection matrix.
 
 ## Where Rules Live
 

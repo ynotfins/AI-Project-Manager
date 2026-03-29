@@ -425,3 +425,75 @@ Fix Blocker A (CrewClaw workers unable to call OpenClaw gateway), Blocker C (ope
 
 ### What's Next
 User completes pending actions 1-3 above (Bitwarden + deploy + device approval). Then: live smoke test from Telegram ? CrewClaw bot ? Sparky response. If PASS: Phase 1A COMPLETE; proceed to Phase 1B memory bridge design.
+
+---
+
+## 2026-03-29 15:00 - Workflow governance update: turbulence promotion, archival policy, model selection
+
+### Goal
+Implement minimum workflow changes to ensure unresolved AGENT turbulence is reliably surfaced in HANDOFF.md, replace the blunt ~500 line archive limit with a token/size-first policy, and require PLAN to explicitly justify model selection with rationale.
+
+### Scope
+- .cursor/rules/10-project-workflow.md
+- docs/ai/CURSOR_WORKFLOW.md
+- docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md
+- AGENTS.md
+- docs/ai/HANDOFF.md
+- docs/ai/STATE.md (this entry)
+
+### Commands / Tool Calls
+- Read: AGENTS.md, CURSOR_WORKFLOW.md, TAB_BOOTSTRAP_PROMPTS.md, 00-global-core.md, 10-project-workflow.md, STATE.md, HANDOFF.md, DECISIONS.md, PATTERNS.md, CONTEXT_WINDOW_MONITORING.md
+- StrReplace: 10-project-workflow.md (3 changes), CURSOR_WORKFLOW.md (1 change), TAB_BOOTSTRAP_PROMPTS.md (2 changes), AGENTS.md (1 change)
+- Write: HANDOFF.md (full rewrite with new structure)
+
+### Changes
+
+| File | Change |
+|---|---|
+| 10-project-workflow.md | Model selection matrix + rationale requirement in AGENT prompt (3rd line); turbulence promotion rule added to AGENT contract; ~500 lines replaced with 140KB/180KB size policy + ~800/1000 line proxies |
+| CURSOR_WORKFLOW.md | PLAN output requirement updated: rationale line required; explicit model choices named |
+| TAB_BOOTSTRAP_PROMPTS.md | PLAN tab: model policy rewritten with justification requirement; AGENT tab header: removed implicit Sonnet 4.6 default bias |
+| AGENTS.md | Added turbulence promotion requirement to Agent contract |
+| HANDOFF.md | Full rewrite: date updated to 2026-03-29; WhatsApp staleness fixed; added § Recent Unresolved Issues (4 items); added § Standing Constraints (5 items) |
+
+### Evidence
+
+| Check | Result |
+|---|---|
+| 10-project-workflow.md model policy update | PASS — added rationale requirement + Composer2/Sonnet 4.6/Opus 4.6 matrix |
+| 10-project-workflow.md turbulence promotion rule | PASS — added to AGENT execution contract |
+| 10-project-workflow.md archive policy | PASS — ~500 lines replaced with 140KB/180KB + ~800/1000 proxy |
+| CURSOR_WORKFLOW.md model wording | PASS — rationale line + explicit choices required |
+| TAB_BOOTSTRAP_PROMPTS.md PLAN tab | PASS — justification requirement added to model policy |
+| TAB_BOOTSTRAP_PROMPTS.md AGENT tab header | PASS — removed "Sonnet 4.6 non-thinking" implicit default |
+| AGENTS.md turbulence promotion | PASS — bullet added to Agent contract |
+| HANDOFF.md staleness fix | PASS — WhatsApp now correctly states 401/QR-rescan |
+| HANDOFF.md new sections | PASS — Recent Unresolved Issues + Standing Constraints added |
+| CONTEXT_WINDOW_MONITORING.md | No change needed — already authoritative; 10-project-workflow.md now references it |
+|  0-global-core.md | No change needed — delegates correctly to 10-project-workflow.md |
+
+### Verdict
+READY — All five required changes implemented and consistent across docs.
+
+### Blockers
+None.
+
+### Fallbacks Used
+None.
+
+### Cross-Repo Impact
+Governance-only change. open--claw HANDOFF.md was updated separately in Phase 1A commit. No open--claw changes needed for this governance update.
+
+### Decisions Captured
+- Archive policy: token/size-first (CONTEXT_WINDOW_MONITORING.md thresholds) is authoritative. Line count (~800 soft, ~1000 hard) is a practical proxy only — do not trigger archive on line count alone if content is within KB target.
+- Model selection: PLAN must explicitly choose and justify. No silent defaults. Composer2 non-thinking is the default when no complexity flag is present; Sonnet 4.6 non-thinking for medium complexity; Sonnet 4.6 thinking for reasoning tasks; Opus 4.6 thinking for novel/high-ambiguity only.
+- Turbulence promotion: AGENT must update HANDOFF.md § Recent Unresolved Issues when open issues survive a task block, not only STATE.md.
+
+### Pending Actions
+None for this governance block. Open operational items in HANDOFF.md § Recent Unresolved Issues.
+
+### What Remains Unverified
+- Whether PLAN tabs in existing sessions will adopt the new rationale requirement without re-bootstrapping (requires session restart to take effect).
+
+### What's Next
+PLAN to use new model-selection rationale format in next AGENT prompt. AGENT to consult HANDOFF.md § Recent Unresolved Issues at start of next task block.
