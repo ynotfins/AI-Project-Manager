@@ -35,8 +35,11 @@ Application runtime code is not hosted here; this repo defines operating policy,
 - **Telegram**: healthy, running.
 - **WhatsApp**: 401 Unauthorized — QR re-scan required (`pnpm openclaw channels login --channel whatsapp` in WSL).
 - **Signal**: disabled by design.
-- Windows Desktop node may be disconnected after reboot — verify `nodes status` and relaunch `%USERPROFILE%\.openclaw\node.cmd`.
-- CrewClaw: 5 workers updated (node:22-slim, openclaw@2026.3.13, entrypoint.sh). **Pending**: bws deploy run + device pairing approval (one-time per worker).
+- Windows Desktop node is currently reconnected and Sparky can execute on it again (`hostname` probe passed). Cursor CLI paths are visible from that node, but the node still tends to disconnect after reboot until `%USERPROFILE%\.openclaw\node.cmd` is relaunched.
+- CrewClaw: 10 Telegram workers are now running from the shared deployment. The original 5 plus `personal-crm`, `script-builder`, `seo-specialist`, `software-engineer`, and `ux-designer` all have Bitwarden-backed Telegram bot tokens and live containers. The original 5 still route to host `main`; the newer 5 route to their own agent IDs.
+- CrewClaw workers are active and paired, and the gateway is open. Live model order is now `openai/gpt-5.4` primary, `openrouter/x-ai/grok-4` fallback, `anthropic/claude-opus-4-6` fallback. Direct `main` replies and representative worker-routed replies both succeeded on 2026-03-29. The canonical gateway restart path is now xAI-aware, but direct `xai/*` fallback is still inactive because no `XAI_API_KEY` secret is exposed through the active Bitwarden project/injected env.
+- CrewClaw dashboard monitoring now uses an approved narrow exception: per-worker local `.env` files may store `CREWCLAW_MONITOR_KEY` for `heartbeat.sh` only. This replaces the earlier assumption that monitor keys had to be Bitwarden-native. Portal activation is still per worker, but runtime prep and deployment can now be done in batches.
+- A new curated source of truth now exists at `open--claw/open-claw/AI_Employee_knowledgebase`: 15 repo-tracked employee packets, zipped portable bundles, copied high-value reference assets, and 10 new development skills. This library is now a better future packaging base than the raw downloaded CrewClaw ZIPs.
 - Context pressure mitigation active via lossless-claw context engine.
 
 ### Current Worker Routing (temporary workaround — Phase 1B item)
@@ -62,10 +65,14 @@ bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -Fi
 Issues that survived the last task block and remain relevant to future planning. Updated by AGENT after each block where turbulence remains open.
 
 | Issue | Severity | Status | Context |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | WhatsApp 401 — session expired | MEDIUM | PENDING USER ACTION | Run `channels login --channel whatsapp` in WSL and scan QR |
-| `OPENCLAW_GATEWAY_TOKEN_SECRET_ID` placeholder in `start-employees.ps1` | MEDIUM | PENDING USER ACTION | Replace with real Bitwarden secret UUID |
-| CrewClaw device pairing not yet done | MEDIUM | PENDING USER ACTION | After bws deploy: `openclaw devices approve <id>` for each of 5 workers |
+| Direct xAI provider key missing from active Bitwarden path | MEDIUM | PENDING USER ACTION | Repo restart path now supports `XAI_API_KEY`, but the active Bitwarden project/injected env still does not expose any xAI/Grok secret, so desired direct `xai/*` fallback cannot be enabled yet |
+| CrewClaw portal activation is still per-worker UI work | LOW | EXPECTED OPERATION | Runtime prep is now batched, but CrewClaw `Add Agent` / first-ping confirmation still happens per employee unless CrewClaw adds bulk tooling |
+| CrewClaw ZIP packaging defect | HIGH | ACTIVE BLOCKER | All audited CrewClaw ZIPs currently ship with `Dockerfile` lines that `COPY bot.js`, but the packages contain `bot-telegram.js`, requiring manual repair before clean deploys |
+| Most named CrewClaw employees are still generic templates | HIGH | ACTIVE BLOCKER | 9 of the 10 named worker packages are structurally complete but role-thin; their docs and skills do not yet justify their labels for autonomous website work |
+| Five generic CrewClaw downloads are identical template clones | MEDIUM | ACTIVE BLOCKER | The `generic/crewclaw-agent-deploy (12-16).zip` files are the same `My Agent` template, not five distinct specialists |
+| Curated standard not yet synced into deployed CrewClaw workers | HIGH | ACTIVE BLOCKER | `open--claw/open-claw/AI_Employee_knowledgebase` now contains the stronger 15-person standard, but the live deployed workers still use the older downloaded employee definitions |
 | Memory bridge OpenClaw ↔ OpenMemory not implemented | HIGH | DEFERRED — Phase 1B | Design required before implementation |
 
 ---
@@ -83,9 +90,11 @@ Structural limits that affect all planning. Not resolvable in a single task bloc
 
 ## 5. Current Focus
 
-1. Complete Phase 1A: deploy CrewClaw workers end-to-end (bws run + device approval + smoke test).
+1. Complete Phase 0 activation: keep the shared OpenAI -> Grok -> Anthropic model chain stable, then prove one real Telegram round trip through the paired worker fleet.
 2. Maintain stable autonomous runtime (gateway/node/startup resiliency).
-3. Keep documentation and phase records synchronized across governance and execution repos.
+3. Use the curated employee standard in `open--claw/open-claw/AI_Employee_knowledgebase` as the new baseline for future website/app squads instead of trusting the raw CrewClaw ZIPs.
+4. Keep the approved CrewClaw monitor-key local `.env` exception documented and use it for portal heartbeat activation as workers are added.
+5. Keep documentation and phase records synchronized across governance and execution repos.
 
 ---
 

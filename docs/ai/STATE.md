@@ -32,8 +32,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-03-29 (Phase 1A: CrewClaw worker stabilization ? Dockerfiles fixed, entrypoints added, STATE archival, HANDOFF drift fixed)
-> Last verified runtime: 2026-03-29 (systemd gateway OK; Telegram healthy; WhatsApp 401 ? QR re-scan required; Windows Desktop Connected:1; CrewClaw workers pending bws deploy + device approval)
+> Last updated: 2026-03-29 (Phase 0B: CrewClaw Bitwarden activation ? shared deploy fixed, secret inventory added, all five workers running + paired, gateway route still blocked, dashboard heartbeat still absent)
+> Last verified runtime: 2026-03-29 (systemd gateway OK; Telegram healthy; WhatsApp 401 ? QR re-scan required; Windows Desktop Connected:1; CrewClaw workers running with Bitwarden-injected tokens; all five point to host `main`; representative gateway route times out at host model call; CrewClaw first ping still unproven)
 
 ### Phase Status
 
@@ -48,7 +48,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 | 6A - Architecture Design        | COMPLETE     | 2026-03-06     |
 | 6B - Gateway Boot               | COMPLETE     | 2026-03-08     |
 | **6C - First Live Integration** | **COMPLETE** | **2026-03-14** |
-| **Phase 1A — CrewClaw Stabilization** | **IN PROGRESS** | — |
+| **Phase 1A ? CrewClaw Stabilization** | **IN PROGRESS** | ? |
 
 ### Phase 6C Exit Criteria - ALL PASSED (2026-03-14)
 
@@ -75,7 +75,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - **Docker: v29.1.3** running; openclaw-sandbox:bookworm-slim active
 - **Context engine: lossless-claw v0.3.0** (LCM active, db=`~/.openclaw/lcm.db`)
 - **DroidRun MCP**: enabled (Samsung Galaxy S25 Ultra)
-- **CrewClaw Employees (Phase 1A updated)**: 5 workers deployed ? node:22-slim, openclaw@2026.3.13, entrypoint.sh writes gateway config, bot calls `--agent main`, named volumes for device persistence. **Pending**: bws deploy run + device pairing approval.
+- **CrewClaw Employees (Phase 0B updated)**: 5 workers deployed ? node:22-slim, openclaw@2026.3.13, entrypoint.sh writes gateway config, bot calls `--agent main`, named volumes for device persistence, Bitwarden-backed startup script now uses the real gateway-token UUID and fails closed on missing secrets. **Verified**: all five containers running, Telegram bot tokens valid, gateway health reachable, pairing requests approved. **Still failing**: shared gateway route to host `main` times out on the Anthropic model call; dashboard heartbeat path is absent from the shared deployment.
 
 ### Active Blockers
 
@@ -117,9 +117,10 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 ### Pending User Actions
 
 1. **WhatsApp re-link (REQUIRED):** Run in WSL terminal: `source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw channels login --channel whatsapp` ? scan QR in WhatsApp ? Linked Devices
-2. **CrewClaw deploy**: Update `OPENCLAW_GATEWAY_TOKEN_SECRET_ID` in `start-employees.ps1` ? run `start-employees.ps1` with bws ? `openclaw devices approve <id>` for each of 5 workers
-3. Name agent via WhatsApp (bootstrap conversation) ? cosmetic, non-blocking
-4. MXRoute email: install imap-smtp-email skill + provide credentials ? Phase 7 work
+2. **CrewClaw host gateway route**: diagnose/fix the host `main` gateway run timeout (`[agent/embedded] Profile anthropic:default timed out`) so paired workers stop falling back locally.
+3. **CrewClaw dashboard heartbeat**: decide whether dashboard compatibility remains required, then add Bitwarden-backed `CREWCLAW_MONITOR_KEY` mapping(s) to the shared deployment or explicitly drop dashboard compatibility.
+4. Name agent via WhatsApp (bootstrap conversation) ? cosmetic, non-blocking
+5. MXRoute email: install imap-smtp-email skill + provide credentials ? Phase 7 work
 
 ### Known Recurring Issues
 
@@ -455,26 +456,26 @@ Implement minimum workflow changes to ensure unresolved AGENT turbulence is reli
 | CURSOR_WORKFLOW.md | PLAN output requirement updated: rationale line required; explicit model choices named |
 | TAB_BOOTSTRAP_PROMPTS.md | PLAN tab: model policy rewritten with justification requirement; AGENT tab header: removed implicit Sonnet 4.6 default bias |
 | AGENTS.md | Added turbulence promotion requirement to Agent contract |
-| HANDOFF.md | Full rewrite: date updated to 2026-03-29; WhatsApp staleness fixed; added § Recent Unresolved Issues (4 items); added § Standing Constraints (5 items) |
+| HANDOFF.md | Full rewrite: date updated to 2026-03-29; WhatsApp staleness fixed; added ? Recent Unresolved Issues (4 items); added ? Standing Constraints (5 items) |
 
 ### Evidence
 
 | Check | Result |
 |---|---|
-| 10-project-workflow.md model policy update | PASS — added rationale requirement + Composer2/Sonnet 4.6/Opus 4.6 matrix |
-| 10-project-workflow.md turbulence promotion rule | PASS — added to AGENT execution contract |
-| 10-project-workflow.md archive policy | PASS — ~500 lines replaced with 140KB/180KB + ~800/1000 proxy |
-| CURSOR_WORKFLOW.md model wording | PASS — rationale line + explicit choices required |
-| TAB_BOOTSTRAP_PROMPTS.md PLAN tab | PASS — justification requirement added to model policy |
-| TAB_BOOTSTRAP_PROMPTS.md AGENT tab header | PASS — removed "Sonnet 4.6 non-thinking" implicit default |
-| AGENTS.md turbulence promotion | PASS — bullet added to Agent contract |
-| HANDOFF.md staleness fix | PASS — WhatsApp now correctly states 401/QR-rescan |
-| HANDOFF.md new sections | PASS — Recent Unresolved Issues + Standing Constraints added |
-| CONTEXT_WINDOW_MONITORING.md | No change needed — already authoritative; 10-project-workflow.md now references it |
-|  0-global-core.md | No change needed — delegates correctly to 10-project-workflow.md |
+| 10-project-workflow.md model policy update | PASS ? added rationale requirement + Composer2/Sonnet 4.6/Opus 4.6 matrix |
+| 10-project-workflow.md turbulence promotion rule | PASS ? added to AGENT execution contract |
+| 10-project-workflow.md archive policy | PASS ? ~500 lines replaced with 140KB/180KB + ~800/1000 proxy |
+| CURSOR_WORKFLOW.md model wording | PASS ? rationale line + explicit choices required |
+| TAB_BOOTSTRAP_PROMPTS.md PLAN tab | PASS ? justification requirement added to model policy |
+| TAB_BOOTSTRAP_PROMPTS.md AGENT tab header | PASS ? removed "Sonnet 4.6 non-thinking" implicit default |
+| AGENTS.md turbulence promotion | PASS ? bullet added to Agent contract |
+| HANDOFF.md staleness fix | PASS ? WhatsApp now correctly states 401/QR-rescan |
+| HANDOFF.md new sections | PASS ? Recent Unresolved Issues + Standing Constraints added |
+| CONTEXT_WINDOW_MONITORING.md | No change needed ? already authoritative; 10-project-workflow.md now references it |
+|  0-global-core.md | No change needed ? delegates correctly to 10-project-workflow.md |
 
 ### Verdict
-READY — All five required changes implemented and consistent across docs.
+READY ? All five required changes implemented and consistent across docs.
 
 ### Blockers
 None.
@@ -486,22 +487,22 @@ None.
 Governance-only change. open--claw HANDOFF.md was updated separately in Phase 1A commit. No open--claw changes needed for this governance update.
 
 ### Decisions Captured
-- Archive policy: token/size-first (CONTEXT_WINDOW_MONITORING.md thresholds) is authoritative. Line count (~800 soft, ~1000 hard) is a practical proxy only — do not trigger archive on line count alone if content is within KB target.
+- Archive policy: token/size-first (CONTEXT_WINDOW_MONITORING.md thresholds) is authoritative. Line count (~800 soft, ~1000 hard) is a practical proxy only ? do not trigger archive on line count alone if content is within KB target.
 - Model selection: PLAN must explicitly choose and justify. No silent defaults. Composer2 non-thinking is the default when no complexity flag is present; Sonnet 4.6 non-thinking for medium complexity; Sonnet 4.6 thinking for reasoning tasks; Opus 4.6 thinking for novel/high-ambiguity only.
-- Turbulence promotion: AGENT must update HANDOFF.md § Recent Unresolved Issues when open issues survive a task block, not only STATE.md.
+- Turbulence promotion: AGENT must update HANDOFF.md ? Recent Unresolved Issues when open issues survive a task block, not only STATE.md.
 
 ### Pending Actions
-None for this governance block. Open operational items in HANDOFF.md § Recent Unresolved Issues.
+None for this governance block. Open operational items in HANDOFF.md ? Recent Unresolved Issues.
 
 ### What Remains Unverified
 - Whether PLAN tabs in existing sessions will adopt the new rationale requirement without re-bootstrapping (requires session restart to take effect).
 
 ### What's Next
-PLAN to use new model-selection rationale format in next AGENT prompt. AGENT to consult HANDOFF.md § Recent Unresolved Issues at start of next task block.
+PLAN to use new model-selection rationale format in next AGENT prompt. AGENT to consult HANDOFF.md ? Recent Unresolved Issues at start of next task block.
 
 ---
 
-## 2026-03-29 16:00 — Governance consistency pass: source-priority unification + HANDOFF routing fix
+## 2026-03-29 16:00 ? Governance consistency pass: source-priority unification + HANDOFF routing fix
 
 ### Goal
 Verify all recent governance changes are present and internally consistent, unify PLAN source-of-truth priority across all three workflow docs, and fix the HANDOFF.md agent-routing entry that read as a permanent architectural constraint.
@@ -522,53 +523,1283 @@ Verify all recent governance changes are present and internally consistent, unif
 
 | File | Change |
 |---|---|
-| CURSOR_WORKFLOW.md | Context source priority: 7-item divergent list → 6-item canonical list matching AGENTS.md and 10-project-workflow.md. HANDOFF.md added at position 4; PROJECT_LONGTERM_AWARENESS.md and CONTEXT_WINDOW_MONITORING.md moved to a "Supporting planning references" note below the list |
-| 10-project-workflow.md | Item 6: "Chat history / pasted artifacts (last resort)" → "Chat history / @Past Chats — last resort only" (matches AGENTS.md exactly) |
-| HANDOFF.md | Removed openclaw agent --agent main from § Standing Constraints; added § Current Worker Routing (temporary workaround — Phase 1B item) under §2 Runtime highlights, clearly marking it as a gap not a design |
+| CURSOR_WORKFLOW.md | Context source priority: 7-item divergent list ? 6-item canonical list matching AGENTS.md and 10-project-workflow.md. HANDOFF.md added at position 4; PROJECT_LONGTERM_AWARENESS.md and CONTEXT_WINDOW_MONITORING.md moved to a "Supporting planning references" note below the list |
+| 10-project-workflow.md | Item 6: "Chat history / pasted artifacts (last resort)" ? "Chat history / @Past Chats ? last resort only" (matches AGENTS.md exactly) |
+| HANDOFF.md | Removed openclaw agent --agent main from ? Standing Constraints; added ? Current Worker Routing (temporary workaround ? Phase 1B item) under ?2 Runtime highlights, clearly marking it as a gap not a design |
 | STATE.md | Added Phase 1A row to Phase Status table; this entry |
 
 ### Evidence
 
 | Check | Result |
 |---|---|
-| 10-project-workflow.md: Line 3 Rationale requirement | PASS — present |
-| 10-project-workflow.md: model selection matrix (Composer2/Sonnet 4.6/Opus 4.6) | PASS — present |
-| 10-project-workflow.md: turbulence promotion rule | PASS — present |
-| 10-project-workflow.md: 140KB/180KB archive thresholds + ~800/1000 line proxy | PASS — present |
-| HANDOFF.md: § Recent Unresolved Issues | PASS — present (4 items) |
-| HANDOFF.md: § Standing Constraints | PASS — present (4 items after routing entry removed) |
-| TAB_BOOTSTRAP_PROMPTS.md: model policy + Rationale line | PASS — present |
-| CURSOR_WORKFLOW.md source priority: was 7-item (missing HANDOFF.md, had ops docs inline) | FAIL → FIXED |
-| 10-project-workflow.md item 6: "pasted artifacts" vs @Past Chats | FAIL → FIXED |
-| HANDOFF.md routing entry read as permanent constraint | FAIL → FIXED — moved to Current Worker Routing subsection with explicit "temporary workaround" label |
-| STATE.md Phase Status table: Phase 1A row missing | FAIL → FIXED |
-| STATE.md ↔ HANDOFF.md WhatsApp status alignment | PASS — both say 401 Unauthorized / QR re-scan required |
-| STATE.md ↔ HANDOFF.md CrewClaw status alignment | PASS — both say pending bws deploy + device approval |
-| STATE.md file size: 33.2 KB / ~8500 tokens | PASS — well within 140KB target |
-| HANDOFF.md file size: 4.4 KB | PASS — well within 16KB target |
-| No conflicting PLAN source-priority list remains | PASS — AGENTS.md, 10-project-workflow.md, CURSOR_WORKFLOW.md now identical order |
+| 10-project-workflow.md: Line 3 Rationale requirement | PASS ? present |
+| 10-project-workflow.md: model selection matrix (Composer2/Sonnet 4.6/Opus 4.6) | PASS ? present |
+| 10-project-workflow.md: turbulence promotion rule | PASS ? present |
+| 10-project-workflow.md: 140KB/180KB archive thresholds + ~800/1000 line proxy | PASS ? present |
+| HANDOFF.md: ? Recent Unresolved Issues | PASS ? present (4 items) |
+| HANDOFF.md: ? Standing Constraints | PASS ? present (4 items after routing entry removed) |
+| TAB_BOOTSTRAP_PROMPTS.md: model policy + Rationale line | PASS ? present |
+| CURSOR_WORKFLOW.md source priority: was 7-item (missing HANDOFF.md, had ops docs inline) | FAIL ? FIXED |
+| 10-project-workflow.md item 6: "pasted artifacts" vs @Past Chats | FAIL ? FIXED |
+| HANDOFF.md routing entry read as permanent constraint | FAIL ? FIXED ? moved to Current Worker Routing subsection with explicit "temporary workaround" label |
+| STATE.md Phase Status table: Phase 1A row missing | FAIL ? FIXED |
+| STATE.md ? HANDOFF.md WhatsApp status alignment | PASS ? both say 401 Unauthorized / QR re-scan required |
+| STATE.md ? HANDOFF.md CrewClaw status alignment | PASS ? both say pending bws deploy + device approval |
+| STATE.md file size: 33.2 KB / ~8500 tokens | PASS ? well within 140KB target |
+| HANDOFF.md file size: 4.4 KB | PASS ? well within 16KB target |
+| No conflicting PLAN source-priority list remains | PASS ? AGENTS.md, 10-project-workflow.md, CURSOR_WORKFLOW.md now identical order |
 
 ### Verdict
-READY — All four targeted fixes applied. All governance changes from previous session verified present. No deeper contradictions found.
+READY ? All four targeted fixes applied. All governance changes from previous session verified present. No deeper contradictions found.
 
 ### Blockers
 None.
 
 ### Fallbacks Used
-- PowerShell String.Replace() for STATE.md Phase Status table (StrReplace could not match due to encoding — fallback succeeded).
+- PowerShell String.Replace() for STATE.md Phase Status table (StrReplace could not match due to encoding ? fallback succeeded).
 
 ### Cross-Repo Impact
-None — governance-only changes in AI-Project-Manager.
+None ? governance-only changes in AI-Project-Manager.
 
 ### Decisions Captured
 - PROJECT_LONGTERM_AWARENESS.md and CONTEXT_WINDOW_MONITORING.md are supporting planning references, not part of the authoritative source-priority list. This distinction is now explicit in CURSOR_WORKFLOW.md.
 - Worker routing workaround (--agent main) is a Phase 1B item, not a standing architectural constraint. Documented as such in HANDOFF.md.
 
 ### Pending Actions
-None for this block. Open operational items in HANDOFF.md § Recent Unresolved Issues.
+None for this block. Open operational items in HANDOFF.md ? Recent Unresolved Issues.
 
 ### What Remains Unverified
 - Whether existing PLAN sessions will pick up the source-priority unification without re-bootstrapping from TAB_BOOTSTRAP_PROMPTS.md.
 
 ### What's Next
-PLAN: use updated source-priority order (HANDOFF.md at position 4, no ops docs in the list) on next session bootstrap. AGENT: Phase 1A completion — bws deploy + device approval smoke test.
+PLAN: use updated source-priority order (HANDOFF.md at position 4, no ops docs in the list) on next session bootstrap. AGENT: Phase 1A completion ? bws deploy + device approval smoke test.
+
+---
+
+## 2026-03-29 16:35 ? Phase 0A: CrewClaw baseline + deployment-path verification
+
+### Goal
+
+Prove the active CrewClaw deployment path, capture the current dashboard-access baseline, and classify whether the worker fleet is blocked by architecture conflict or by incomplete Bitwarden-backed activation.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `open--claw/AGENTS.md`
+- `open--claw/open-claw/employees/deployed/start-employees.ps1`
+- `open--claw/open-claw/employees/deployed/docker-compose.yml`
+- `open--claw/open-claw/employees/deployed/*/docker-compose.yml`
+- `open--claw/open-claw/employees/deployed/*/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/api-integration-specialist/{Dockerfile,bot-telegram.js,entrypoint.sh}`
+- Live Docker state for `crewclaw-financial-analyst`
+
+### Commands / Tool Calls
+
+- `ReadFile` ? `D:\github\AI-Project-Manager\AGENTS.md`
+- `ReadFile` ? `D:\github\open--claw\AGENTS.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\.cursor\rules\00-global-core.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\.cursor\rules\05-global-mcp-usage.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\.cursor\rules\10-project-workflow.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\.cursor\rules\20-project-quality.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\docs\ai\STATE.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\docs\ai\HANDOFF.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\docs\ai\PLAN.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\docs\ai\memory\DECISIONS.md`
+- `ReadFile` ? `D:\github\AI-Project-Manager\docs\ai\memory\PATTERNS.md`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\start-employees.ps1`
+- `user-Clear_Thought_1_5-clear_thought` (`causal_analysis`)
+- `user-serena-activate_project` (`D:\github\open--claw`)
+- `user-serena-check_onboarding_performed`
+- `ListMcpResources`
+- `user-openmemory-search-memory`
+- `ReadFile` ? `agent-browser` skill
+- `user-serena-initial_instructions`
+- `user-serena-onboarding`
+- `user-serena-search_for_pattern`
+- `Shell` ? `Get-ChildItem -Force "D:\github\open--claw\open-claw\employees\deployed"`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\docker-compose.yml`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\api-integration-specialist\Dockerfile`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\api-integration-specialist\bot-telegram.js`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\api-integration-specialist\entrypoint.sh`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\api-integration-specialist\docker-compose.yml`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\financial-analyst\heartbeat.sh`
+- `ReadFile` ? `D:\github\open--claw\open-claw\employees\deployed\financial-analyst\docker-compose.yml`
+- `rg` ? `crewclaw\.com|CREWCLAW_MONITOR_KEY|waiting for first ping|dashboard`
+- `Shell` ? `docker compose ps`
+- `Shell` ? `docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"`
+- `Shell` ? `docker inspect crewclaw-financial-analyst`
+- `Shell` ? `agent-browser --version`
+- `Subagent` (`browser-use`) ? CrewClaw dashboard baseline attempt
+- `Shell` ? `docker logs crewclaw-financial-analyst --tail 100`
+- `Shell` ? `git status --short` (`D:\github\AI-Project-Manager`)
+- `Shell` ? `git status --short` (`D:\github\open--claw`)
+- `Shell` ? `$env:BWS_ACCESS_TOKEN | ForEach-Object { if ($_){'SET'} else {'EMPTY'} }`
+- `Shell` ? `bws --version`
+- `Shell` ? `docker inspect --format "{{.Config.Image}}|{{.Config.Labels.com.docker.compose.project.config_files}}|{{.State.Status}}|{{.RestartCount}}" crewclaw-financial-analyst`
+- `Shell` ? `[System.Environment]::GetEnvironmentVariable('BWS_ACCESS_TOKEN','User')`
+- `firecrawl_scrape` ? `https://www.crewclaw.com/app/my-agents`
+- `WebFetch` ? `https://www.crewclaw.com/app/my-agents`
+
+### Changes
+
+Appended this verification block to `AI-Project-Manager/docs/ai/STATE.md`. No runtime code changed yet.
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| `ReadFile` / requested governance docs | PASS | All requested AI-PM governance docs and both `AGENTS.md` files loaded successfully. |
+| `user-Clear_Thought_1_5-clear_thought` | PASS (low-value output) | Tool returned a minimal causal-analysis shell; usable outcome came mainly from repo evidence rather than the tool graph. |
+| `user-serena-activate_project` | PASS | Activated `open--claw` project. |
+| `user-serena-check_onboarding_performed` | FAIL | Serena reported onboarding not yet performed for this project. |
+| `ListMcpResources` | FAIL | Returned no MCP resources. |
+| `user-openmemory-search-memory` | PASS | Query succeeded but returned 0 related memories. |
+| `user-serena-search_for_pattern` | PASS | Found prior repo-tracked evidence showing the placeholder gateway-token issue and prior dashboard assumptions. |
+| `user-serena-read_file` on `open-claw/employees/deployed/*` | FAIL | Serena safety layer refused ignored-path reads; fallback to direct `ReadFile` was required. |
+| `Get-ChildItem -Force "D:\github\open--claw\open-claw\employees\deployed"` | PASS | Confirmed top-level shared deployment root plus 5 generated per-agent subfolders. |
+| `ReadFile` top-level `deployed/docker-compose.yml` | PASS | Shared compose injects env from process vars only; no `.env` file dependency. |
+| `ReadFile` per-agent `docker-compose.yml` | PASS | Generated per-agent templates still depend on `.env` and separate `heartbeat` services. |
+| `ReadFile` `financial-analyst/heartbeat.sh` | PASS | Heartbeat requires `CREWCLAW_MONITOR_KEY` from local `.env`, proving dashboard ping is absent from the shared runtime path. |
+| `docker compose ps` | FAIL | No active services from the current top-level compose in this shell; Compose warned that required env vars were unset in the current process. |
+| `docker ps --format ...` | FAIL | No `crewclaw-*` containers currently running; only unrelated `seatrush-*` containers were up. |
+| `docker inspect crewclaw-financial-analyst` | PASS | Existing container object proved prior launch came from `D:\github\open--claw\open-claw\employees\deployed\docker-compose.yml` and used named volume persistence. |
+| `docker logs crewclaw-financial-analyst --tail 100` | FAIL | Container crash-looped with `Error: Empty token!` from `grammy`, proving `TELEGRAM_BOT_TOKEN` was blank at runtime. |
+| `agent-browser --version` | FAIL | `agent-browser` CLI is not installed in this environment. |
+| `Subagent` (`browser-use`) | FAIL | Subagent reported no browser tools available; could not perform authenticated dashboard automation. |
+| `firecrawl_scrape https://www.crewclaw.com/app/my-agents` | PASS | Page redirected to `https://www.crewclaw.com/login`; fallback proved dashboard is not publicly readable without login. |
+| `WebFetch https://www.crewclaw.com/app/my-agents` | PASS (limited) | Returned public site/login-marketing content, not per-worker dashboard state. |
+| `git status --short` in `AI-Project-Manager` | PASS | Only pre-existing dirty file: `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`. |
+| `git status --short` in `open--claw` | PASS | Deployment subtree is untracked (`?? open-claw/employees/`); no tracked-file conflicts found. |
+| `$env:BWS_ACCESS_TOKEN` in current shell | FAIL | Current shell env is empty; this session was not launched via `bws run`. |
+| `bws --version` | PASS | Bitwarden CLI available: `bws 2.0.0`. |
+| User-registry `BWS_ACCESS_TOKEN` check | PASS | Registry copy exists, so `start-employees.ps1` can still attempt Bitwarden-backed activation. |
+| `start-employees.ps1` gateway secret ID | FAIL | Still uses `PLACEHOLDER_OPENCLAW_GATEWAY_TOKEN_SECRET_ID` instead of the active Bitwarden UUID `79f3acf8-c855-4c0d-9726-b40d01278bb6`. |
+| Canonical deploy path vs generated path | PASS | No architecture conflict proven: top-level shared compose is the active/canonical runtime path; per-agent `.env` composes are generated templates, not runtime truth. |
+| Dashboard baseline for all 5 workers | FAIL | Could not access authenticated CrewClaw dashboard state in this session; public fallback only proved login is required. |
+
+### Verdict
+
+PARTIAL ? no architecture-stop conflict found, but Phase 0 activation is still blocked operationally by the placeholder gateway-token UUID, missing browser automation, and at least one worker crash-loop caused by an empty Telegram token.
+
+### Blockers
+
+- `start-employees.ps1` still uses a placeholder for `OPENCLAW_GATEWAY_TOKEN_SECRET_ID`.
+- Browser automation is unavailable in this session, so authenticated CrewClaw dashboard baseline could not be captured.
+- `financial-analyst` crash-loops with blank `TELEGRAM_BOT_TOKEN`, so representative-worker verification cannot pass until Bitwarden-backed redeploy succeeds.
+
+### Fallbacks Used
+
+- Serena ignored-path read failure ? fallback to direct `ReadFile`.
+- Browser automation failure (`browser-use` + missing `agent-browser`) ? fallback to `firecrawl_scrape` and `WebFetch` for unauthenticated page-state proof.
+
+### Cross-Repo Impact
+
+- `open--claw` runtime truth was reclassified: top-level `deployed/docker-compose.yml` is canonical; per-agent `.env` compose files remain generated reference templates only.
+
+### Decisions Captured
+
+- The generated per-agent CrewClaw deployment path does not currently conflict with the Bitwarden-native shared path; it is legacy/generated scaffolding, not active runtime truth.
+- `waiting for first ping` cannot be blamed on dashboard alone: the current shared path omits heartbeat entirely, and the representative worker is also failing earlier with an empty Telegram token.
+
+### Pending Actions
+
+1. Patch `start-employees.ps1` to use the real Bitwarden UUID for `OPENCLAW_GATEWAY_TOKEN`.
+2. Fail closed on missing required Bitwarden secrets so workers do not start with blank tokens.
+3. Re-run deployment and verify `financial-analyst` first.
+4. Decide whether dashboard compatibility remains required, then either restore heartbeat through the shared path or document its intentional removal.
+
+### What Remains Unverified
+
+- Authenticated CrewClaw dashboard state for all five workers.
+- Whether the registry-backed Bitwarden token is still sufficient for a full `bws secret get` deployment in this session.
+- Device pairing, routing validity, and Telegram end-to-end behavior after a corrected redeploy.
+
+### What's Next
+
+Patch the shared deployment script with the real Bitwarden gateway-token UUID, enforce hard failure on missing worker secrets, then redeploy and verify `financial-analyst` as the representative worker.
+
+---
+
+## 2026-03-29 18:05 ? Phase 0B: CrewClaw Bitwarden-native activation + representative proof
+
+### Goal
+
+Activate the shared Bitwarden-native CrewClaw deployment, prove `financial-analyst` across the required runtime states, and generalize the resulting classification to the other four workers without assuming containers being up means the fleet is actually working.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md`
+- `open--claw/open-claw/employees/deployed/start-employees.ps1`
+- `open--claw/open-claw/employees/deployed/docker-compose.yml`
+- Live Docker workers: all five `crewclaw-*` containers
+- Host gateway runtime via WSL `~/openclaw-build`
+
+### Commands / Tool Calls
+
+- `ApplyPatch` ? `open--claw/open-claw/employees/deployed/start-employees.ps1`
+- `ApplyPatch` ? `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md`
+- `pwsh -NoProfile -File "D:\github\open--claw\open-claw\employees\deployed\start-employees.ps1"` (initial run)
+- `ApplyPatch` ? `open--claw/open-claw/employees/deployed/start-employees.ps1` (PowerShell interpolation fix)
+- `pwsh -NoProfile -File "D:\github\open--claw\open-claw\employees\deployed\start-employees.ps1"` (retry)
+- `docker exec crewclaw-financial-analyst sh -lc '...TELEGRAM_BOT_TOKEN...OPENCLAW_GATEWAY_TOKEN...'`
+- `docker exec crewclaw-financial-analyst node -e "fetch('http://host.docker.internal:18792/')..."`
+- `docker logs crewclaw-financial-analyst --tail 50`
+- `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw devices list"`
+- `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw nodes status"`
+- `docker exec crewclaw-financial-analyst openclaw agent --agent main --message "phase-0 direct probe" --timeout 60`
+- `user-Context7-resolve-library-id` ? `OpenClaw`
+- `user-Context7-query-docs` ? device pairing / remote mode / timeout docs
+- `docker exec crewclaw-financial-analyst node -e "fetch('https://api.telegram.org/bot'+process.env.TELEGRAM_BOT_TOKEN+'/getMe')..."`
+- `docker update --memory 1g crewclaw-financial-analyst`
+- `docker exec crewclaw-financial-analyst sh -lc 'cat /sys/fs/cgroup/memory.max'`
+- `docker exec -e NODE_OPTIONS=--max-old-space-size=1536 crewclaw-financial-analyst openclaw agent --agent main --message "phase-0 direct probe" --timeout 60`
+- `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw devices list --json"`
+- `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw devices approve 155b2556-22a9-4efa-aec7-3246b55f0393"`
+- `bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -File "D:\github\AI-Project-Manager\scripts\restart-openclaw-gateway.ps1"` (failed)
+- `$env:BWS_ACCESS_TOKEN = [System.Environment]::GetEnvironmentVariable('BWS_ACCESS_TOKEN','User'); bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -File "D:\github\AI-Project-Manager\scripts\restart-openclaw-gateway.ps1"` (passed)
+- `wsl bash -lc "journalctl --user -u openclaw-gateway.service -n 120 --no-pager"`
+- `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw gateway status"`
+- `rg` ? `const agentId = "main"|OPENCLAW_GATEWAY_URL=|OPENCLAW_GATEWAY_TOKEN=|OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
+- Batch shell check for `api-integration-specialist`, `code-reviewer`, `frontend-developer`, `overnight-coder`:
+  - container status
+  - masked env presence
+  - gateway health fetch
+  - Telegram `getMe`
+- `ApplyPatch` ? `open--claw/open-claw/employees/deployed/docker-compose.yml`
+- `pwsh -NoProfile -File "D:\github\open--claw\open-claw\employees\deployed\start-employees.ps1"` (redeploy after compose fix)
+- `docker exec crewclaw-{api-integration-specialist,code-reviewer,frontend-developer,overnight-coder} openclaw agent --agent main --message "pairing probe" --timeout 60`
+- `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw devices approve <requestId>"` (four approvals)
+
+### Changes
+
+| File | Change |
+|---|---|
+| `open--claw/open-claw/employees/deployed/start-employees.ps1` | Replaced placeholder gateway-token UUID with the live Bitwarden UUID; changed missing gateway/worker secrets from WARN/blank start to hard failure; fixed PowerShell string interpolation bug. |
+| `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md` | Added repo-tracked inventory with active Bitwarden names + UUIDs only; `CREWCLAW_MONITOR_KEY` recorded as reserved with UUID pending. |
+| `open--claw/open-claw/employees/deployed/docker-compose.yml` | Raised all worker memory limits from `512M` to `2G` and added `NODE_OPTIONS=--max-old-space-size=1536` to prevent worker-local heap OOM before gateway routing. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Updated summary and appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| `start-employees.ps1` first run | FAIL | Parser error at `"$name: token fetched"` proved the script had a latent PowerShell interpolation bug. |
+| `start-employees.ps1` after syntax fix | PASS | Loaded `BWS_ACCESS_TOKEN` from User registry, fetched all seven active Bitwarden secrets, rebuilt containers, and brought all five workers `Up`. |
+| Secret inventory doc | PASS | Added governance-side Bitwarden inventory with names + UUIDs only; no raw values written. |
+| `financial-analyst` token injection | PASS | `TELEGRAM_BOT_TOKEN=SET`, `OPENCLAW_GATEWAY_TOKEN=SET`, `OPENCLAW_GATEWAY_URL=ws://host.docker.internal:18789`. |
+| `financial-analyst` container running | PASS | Container logs show `[bot-telegram] financial-analyst bot is running`; `docker inspect` reported `running|0` after redeploy. |
+| `financial-analyst` gateway reachable | PASS | In-container fetch to `http://host.docker.internal:18792/` returned `OK`. |
+| `financial-analyst` Telegram bot token validity | PASS | Telegram `getMe` returned `ok=true`, username `FINANCE_FRANKY_BOT`. |
+| `financial-analyst` initial route probe at original `512M` | FAIL | `openclaw agent` crashed with V8 heap OOM around 250 MB. |
+| `financial-analyst` route probe at `1G` | FAIL | Heap OOM moved to ~500 MB, proving the original shared memory cap was too low. |
+| `financial-analyst` route probe at `2G` + `NODE_OPTIONS=--max-old-space-size=1536` | PASS (diagnostic) | Worker cleared local OOM and exposed the real gateway error: `pairing required`. |
+| `financial-analyst` device pairing | PASS | `devices list --json` showed pending request `155b2556-22a9-4efa-aec7-3246b55f0393`; `devices approve` succeeded; later `devices list --json` showed the device under `paired`. |
+| `financial-analyst` post-pair gateway routing | FAIL | Same direct probe no longer hit pairing/OOM, but gateway timed out after 90s and worker fell back to embedded execution. |
+| Host gateway restart via `bws run` | FAIL | First attempt failed with `Missing access token` because `bws run` only saw process env, not registry env. |
+| Host gateway restart with registry token copied into process env | PASS | Canonical restart script refreshed `.gateway-env` and restarted the systemd gateway successfully. |
+| Host gateway route after restart | FAIL | Host `pnpm openclaw agent --agent main ...` still timed out via gateway after 90s. |
+| Gateway service logs | FAIL | Journal showed the live failure inside the host process: `[agent/embedded] Profile anthropic:default timed out` and `FailoverError: LLM request timed out.` OpenRouter fallback was then unavailable. |
+| Dashboard compatibility baseline | FAIL | Shared path still has no heartbeat service; generated per-agent heartbeat remains `.env`-bound; no authenticated dashboard automation was available in this session; no first-ping proof exists. |
+| `api-integration-specialist` generalized preconditions | PASS | Running, both tokens injected, gateway health reachable, Telegram bot valid (`API_ANDY_BOT`). |
+| `code-reviewer` generalized preconditions | PASS | Running, both tokens injected, gateway health reachable, Telegram bot valid (`CODE_CARL_BOT`). |
+| `frontend-developer` generalized preconditions | PASS | Running, both tokens injected, gateway health reachable, Telegram bot valid (`FRONTEND_FELIX_BOT`). |
+| `overnight-coder` generalized preconditions | PASS | Running, both tokens injected, gateway health reachable, Telegram bot valid (`OVERNIGHT_OLIVER_BOT`). |
+| Other four device-pair trigger | PASS | Each first probe returned `pairing required`; subsequent `devices list --json` showed four pending backend requests. |
+| Other four device approvals | PASS | All four pending worker requests were approved successfully. |
+| Other four routing classification | FAIL (generalized) | All five workers route to shared host `main` via the same gateway URL/token and the same `agentId = "main"` code path; after pairing, they inherit the same shared host-gateway timeout until the gateway-side model timeout is fixed. |
+| Telegram end-to-end message success | FAIL / UNPROVEN | Bot tokens are valid and bots are running, but no real chat/update evidence was available (`financial-analyst` `getUpdates` returned `updates=0`), and gateway-routed execution still times out. |
+
+### Verdict
+
+BLOCKED ? Bitwarden-native activation succeeded up to running + paired workers, but the exact failed step is gateway-routed inference: the host `main` agent times out on the Anthropic model call, so workers fall back locally and true Telegram end-to-end success is not proven. Dashboard `first ping` is also still blocked because the shared deployment has no heartbeat path or active `CREWCLAW_MONITOR_KEY` mapping.
+
+### Blockers
+
+- Shared host gateway run for `main` times out (`[agent/embedded] Profile anthropic:default timed out` / `LLM request timed out` in gateway journal).
+- Shared deployment still lacks a Bitwarden-native dashboard heartbeat path; `CREWCLAW_MONITOR_KEY` UUID mapping is still pending.
+- Authenticated CrewClaw dashboard baseline could not be captured in this session because browser automation was unavailable and the page requires login.
+
+### Fallbacks Used
+
+- Registry `BWS_ACCESS_TOKEN` ? copied into process env before `bws run` gateway restart.
+- Worker-local embedded fallback responses were used only as diagnostics after gateway failures; they were not counted as successful gateway routing.
+
+### Cross-Repo Impact
+
+- `open--claw` deployment files now match the active Bitwarden-native path more closely (`start-employees.ps1`, `docker-compose.yml`).
+- `AI-Project-Manager` now carries the authoritative CrewClaw Bitwarden inventory and the updated activation state.
+
+### Decisions Captured
+
+- CrewClaw dashboard compatibility is still treated as a requirement; the absence of heartbeat in the shared path is a live FAIL, not an intentional removal.
+- Worker pairing is real for the shared backend clients; the old ?pending device approval? story was partially stale only because it had not been triggered yet in this deployment session.
+- The fleet-wide routing blocker is shared-host, not per-worker token wiring: all five route to the same `main` agent and therefore share the same gateway timeout once paired.
+
+### Pending Actions
+
+1. Diagnose/fix the host gateway Anthropic timeout or provide a working fallback model/provider for `main`.
+2. Add Bitwarden-native `CREWCLAW_MONITOR_KEY` mapping(s) and a shared heartbeat path if dashboard compatibility remains required.
+3. Re-run a real Telegram conversation against at least one paired worker after the gateway timeout is fixed.
+
+### What Remains Unverified
+
+- Authenticated CrewClaw dashboard state for each worker after heartbeat restoration.
+- Whether the host Anthropic timeout is network/provider latency, account-level API behavior, or another gateway-side transport issue.
+- Real Telegram chat round-trip with user-originated input after shared gateway routing is fixed.
+
+### What's Next
+
+Stay in execution mode only long enough to fix the shared host gateway timeout or wire a working fallback model; do not start memory-bridge or unrelated follow-on work until one paired worker can complete a real gateway-routed Telegram round trip and, if retained, a dashboard heartbeat appears.
+
+---
+
+## 2026-03-29 18:25 ? Phase 0C: Dashboard first-ping verification
+
+### Goal
+
+Verify whether the CrewClaw dashboard is still showing `waiting for first ping` because the shared deployment lacks a live heartbeat path, and determine whether a Bitwarden-backed monitor-key secret exists to restore that contract.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md`
+- `open--claw/open-claw/employees/deployed/docker-compose.yml`
+- `open--claw/open-claw/employees/deployed/financial-analyst/heartbeat.sh`
+- Live shared worker container env for `crewclaw-financial-analyst`
+
+### Commands / Tool Calls
+
+- `user-Clear_Thought_1_5-clear_thought` (`debugging_approach`)
+- `ReadFile` ? `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md`
+- `ReadFile` ? `open--claw/open-claw/employees/deployed/financial-analyst/heartbeat.sh`
+- `ReadFile` ? `open--claw/open-claw/employees/deployed/docker-compose.yml`
+- `Shell` ? `bws secret list f14a97bb-5183-4b11-a6eb-b3fe0015fedf`
+- `Shell` ? `bws secret list f14a97bb-5183-4b11-a6eb-b3fe0015fedf | Select-String -Pattern 'CREWCLAW|MONITOR|PING|FINANCIAL|FRONTEND|CODE|API|OVERNIGHT'`
+- `Shell` ? `docker compose ps`
+- `Shell` ? `docker inspect --format "{{.Name}}|{{json .Config.Env}}" crewclaw-financial-analyst`
+
+### Changes
+
+| File | Change |
+|---|---|
+| `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md` | Updated reserved `CREWCLAW_MONITOR_KEY` row from `UUID pending` to `absent from Bitwarden project`. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Added sharper unresolved blockers: no shared heartbeat path and no `CREWCLAW_MONITOR_KEY` secret in Bitwarden. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this verification block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| `ReadFile` inventory doc | PASS | Inventory still had `CREWCLAW_MONITOR_KEY` only as reserved, not active. |
+| `ReadFile` `financial-analyst/heartbeat.sh` | PASS | Generated heartbeat script still requires `CREWCLAW_MONITOR_KEY` from local `.env` and exits early when absent. |
+| `ReadFile` shared `docker-compose.yml` | PASS | Shared deployment runs only the five worker services; no heartbeat service or monitor-key env appears anywhere in the canonical compose. |
+| `docker compose ps` | PASS | Live shared deployment currently consists only of the five worker containers. |
+| `docker inspect ... crewclaw-financial-analyst` | PASS | Live worker env includes gateway/token/bot settings but no `CREWCLAW_MONITOR_KEY`, confirming the running shared path has no dashboard-ping variable to send. |
+| `bws secret list f14a97bb-5183-4b11-a6eb-b3fe0015fedf` | PASS | Active Bitwarden project secrets include the worker bot tokens and gateway token, but no `CREWCLAW_MONITOR_KEY` secret exists to inject. |
+| `Select-String` on Bitwarden secret names | PASS | Search returned no CrewClaw monitor/ping secret name; only the existing worker/gateway keys were present. |
+| Dashboard first-ping contract | FAIL | `waiting for first ping` is still expected because the canonical shared deployment has no heartbeat implementation and no monitor-key secret to drive one. |
+
+### Verdict
+
+BLOCKED ? exact cause proven: the active shared CrewClaw deployment cannot send dashboard pings because it has no heartbeat service/env wiring, and the Bitwarden project currently has no `CREWCLAW_MONITOR_KEY` secret/UUID to inject.
+
+### Blockers
+
+- No heartbeat path in the canonical shared deployment.
+- No `CREWCLAW_MONITOR_KEY` secret exists in the active Bitwarden project.
+- Authenticated dashboard automation is still unavailable in this session, so the website state cannot be captured directly beyond the user?s report.
+
+### Fallbacks Used
+
+- Browser/dashboard evidence still relies on user-observed state because authenticated browser automation remains unavailable.
+
+### Cross-Repo Impact
+
+- `open--claw`: no code change required for this proof block; canonical compose remains the operative source showing the missing heartbeat.
+- `AI-Project-Manager`: inventory, handoff, and state now reflect the exact dashboard blocker.
+
+### Decisions Captured
+
+- Dashboard compatibility remains retained by behavior: until it is explicitly dropped, `waiting for first ping` must be treated as a real failure, not cosmetic drift.
+- The next heartbeat fix cannot be implemented Bitwarden-natively until a `CREWCLAW_MONITOR_KEY` secret is created and its UUID is recorded.
+
+### Pending Actions
+
+1. Create the required `CREWCLAW_MONITOR_KEY` Bitwarden secret(s) and capture the UUID(s).
+2. Add a shared heartbeat path to the canonical compose using Bitwarden-backed env injection only.
+3. Re-verify the dashboard after the first successful ping.
+
+### What Remains Unverified
+
+- Whether CrewClaw expects one shared monitor key or one distinct key per worker.
+- The exact per-worker mapping between dashboard tiles and monitor keys.
+
+### What's Next
+
+Create the missing `CREWCLAW_MONITOR_KEY` secret(s) in Bitwarden, then wire a heartbeat path into the shared deployment and re-check the dashboard.
+
+---
+
+## 2026-03-29 20:20 — Phase 0D: Worker activity + Sparky gateway diagnosis
+
+### Goal
+
+Verify whether the five CrewClaw employees are actually active and configured correctly, determine whether the gateway is open, and diagnose the exact cause of Sparky failing with stale OpenAI model errors.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- Live host config: `~/.openclaw/openclaw.json`
+- Live host model registry: `~/.openclaw/agents/main/agent/models.json`
+- Live host auth store: `~/.openclaw/agents/main/agent/auth-profiles.json`
+- Live Docker workers
+- Host gateway journal + health
+
+### Commands / Tool Calls
+
+- `user-Clear_Thought_1_5-clear_thought` (`debugging_approach`)
+- `user-Context7-resolve-library-id` — `OpenClaw`
+- `user-Context7-query-docs` — model config / models.json / auth profile behavior
+- `Shell` — `docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Image}}"`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw gateway status && printf '\n---\n' && pnpm openclaw health"`
+- `Shell` — `wsl bash -lc "journalctl --user -u openclaw-gateway.service -n 120 --no-pager"`
+- `Shell` — Python inspection of `~/.openclaw/agents/main/agent/models.json`
+- `Shell` — Python inspection of `~/.openclaw/openclaw.json`
+- `Shell` — `docker exec crewclaw-financial-analyst ... getMe`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw devices list --json"`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw models status"`
+- `Shell` — Python inspection of `auth-profiles.json`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw models set anthropic/claude-sonnet-4-20250514 && pnpm openclaw models fallbacks clear && pnpm openclaw models status"`
+- `Shell` — `bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -File "D:\github\AI-Project-Manager\scripts\restart-openclaw-gateway.ps1"`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw agent --agent main --message 'Say only: Sparky is back.' --timeout 60"`
+- `Shell` — `docker exec crewclaw-financial-analyst openclaw agent --agent main --message "Say only: financial worker route ok." --timeout 60`
+- `Shell` — `wsl bash -lc "journalctl --user -u openclaw-gateway.service -n 80 --no-pager"`
+- `Shell` — Python inspection of `.gateway-env` provider key presence
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw models list | head -n 60"`
+
+### Changes
+
+| File | Change |
+|---|---|
+| `~/.openclaw/openclaw.json` | Live runtime default model changed from `openai/gpt-4-turbo-preview` to `anthropic/claude-sonnet-4-20250514`; stale OpenAI fallback chain cleared. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Updated unresolved issue from generic Anthropic timeout to the now-proven Anthropic usage-limit blocker. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Worker fleet running | PASS | All five `crewclaw-*` containers were `Up 4 hours` during verification. |
+| Gateway open | PASS | `gateway status` reported `Runtime: running`, `RPC probe: ok`, listening on `*:18789`. |
+| Gateway health | PASS | `health` reported Telegram OK, `Agents: main (default)`, and the usual channel summary. |
+| Representative worker bot validity | PASS | `crewclaw-financial-analyst` Telegram token still returned `ok=true`, username `FINANCE_FRANKY_BOT`. |
+| Worker pairing state | PASS | `devices list --json` showed no pending requests and all backend worker devices remained paired. |
+| Root cause of user-reported stale OpenAI error | PASS | Live `~/.openclaw/openclaw.json` showed `agents.defaults.model.primary = openai/gpt-4-turbo-preview` with fallbacks `openai/gpt-4` and `openai/gpt-3.5-turbo-0125`, exactly matching the user-facing failure. |
+| Live configured models | PASS | `models status` showed only one configured model: `anthropic/claude-sonnet-4-20250514`; the stale OpenAI default chain was config drift. |
+| Auth profile state | PASS | `anthropic:default` existed as `ref(env:ANTHROPIC_API_KEY)`; `openrouter:default` and `openai:default` were missing. |
+| Live model fix | PASS | `pnpm openclaw models set anthropic/claude-sonnet-4-20250514` and `pnpm openclaw models fallbacks clear` succeeded. |
+| Gateway restart after fix | PASS | Canonical Bitwarden-backed restart completed successfully. |
+| Post-fix direct Sparky probe | FAIL | Old OpenAI model error is gone, but request now fails with `LLM request rejected: You have reached your specified API usage limits. You will regain access on 2026-04-01 at 00:00 UTC.` |
+| Post-fix worker route | FAIL | Representative worker inherited the same Anthropic usage-limit rejection. |
+| Gateway logs after fix | PASS | Recent journal shows gateway booting with `agent model: anthropic/claude-sonnet-4-20250514`; the stale OpenAI chain no longer appears after the fix window. |
+
+### Verdict
+
+PARTIAL — employees are active, paired, and mostly set up correctly; the gateway is open; the stale OpenAI-model misconfiguration causing the quoted error has been fixed. Sparky is still not responding because the Anthropic account itself is now over its usage limit until `2026-04-01 00:00 UTC`.
+
+### Blockers
+
+- Anthropic provider usage limit is currently exhausted for the host `main` agent.
+- No OpenRouter/OpenAI fallback profile is configured in the live auth store, so there is no immediate automatic backup model.
+- Dashboard heartbeat is still unwired and independent of worker functionality.
+
+### Fallbacks Used
+
+- None beyond the documented canonical gateway restart path.
+
+### Cross-Repo Impact
+
+- Host runtime state changed outside the repo (`~/.openclaw/openclaw.json`).
+- Governance docs in `AI-Project-Manager` now reflect the more precise live blocker.
+
+### Decisions Captured
+
+- Worker activity and dashboard heartbeat must be treated separately: employees can be active even while the CrewClaw dashboard still says `waiting for first ping`.
+- The reported OpenAI model error was real config drift, not a closed gateway.
+
+### Pending Actions
+
+1. Wait for Anthropic limit reset or configure a working fallback provider/profile (for example OpenRouter) for `main`.
+2. After model access is restored, re-test Sparky and a representative worker route.
+3. Separately, wire dashboard heartbeat once the monitor key is available.
+
+### What Remains Unverified
+
+- Whether OpenRouter fallback can be enabled cleanly from the existing env keys without broader runtime changes.
+- End-to-end Telegram conversation after provider access is restored.
+
+### What's Next
+
+If immediate recovery is needed before Anthropic resets, configure an OpenRouter fallback profile for `main`; otherwise wait for the Anthropic reset window and re-test Sparky after `2026-04-01 00:00 UTC`.
+
+---
+
+## 2026-03-29 20:40 — Phase 0E: Switch live model chain to OpenAI with Grok backup
+
+### Goal
+
+Change the live host gateway model order to OpenAI first, Grok second, Anthropic third, using a reasoning-capable OpenAI primary that is the closest current OpenClaw-supported match to the user's request for "ChatGPT 4.5 thinking."
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- Live host config: `~/.openclaw/openclaw.json`
+- Live host auth store: `~/.openclaw/agents/main/agent/auth-profiles.json`
+- Host gateway journal + live agent routing
+- Representative worker route through `crewclaw-financial-analyst`
+
+### Commands / Tool Calls
+
+- `user-Context7-query-docs` — OpenClaw OpenAI provider docs, xAI provider docs, OpenRouter provider docs
+- `WebSearch` — OpenRouter Grok model ID verification
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw models set openai/gpt-5.4 && pnpm openclaw models status"`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw models fallbacks add openrouter/x-ai/grok-4 && pnpm openclaw models fallbacks add anthropic/claude-sonnet-4-20250514 && pnpm openclaw models status"`
+- `Shell` — Python update of `~/.openclaw/agents/main/agent/auth-profiles.json` to add env-backed `openai:default` and `openrouter:default`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw models status"`
+- `Shell` — `bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -File "D:\github\AI-Project-Manager\scripts\restart-openclaw-gateway.ps1"`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw agent --agent main --message 'Reply with exactly: model chain works.' --timeout 90"`
+- `Shell` — `docker exec crewclaw-financial-analyst openclaw agent --agent main --message "Reply with exactly: worker chain works." --timeout 90`
+- `Shell` — `wsl bash -lc "journalctl --user -u openclaw-gateway.service -n 80 --no-pager"`
+
+### Changes
+
+| File | Change |
+|---|---|
+| `~/.openclaw/openclaw.json` | Live model order changed to `openai/gpt-5.4` primary, `openrouter/x-ai/grok-4` fallback, `anthropic/claude-sonnet-4-20250514` fallback. |
+| `~/.openclaw/agents/main/agent/auth-profiles.json` | Added env-backed `openai:default` and `openrouter:default` profiles referencing `OPENAI_API_KEY` and `OPENROUTER_API_KEY`. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Replaced stale Anthropic usage-limit blocker with the new live model-chain truth and remaining direct-xAI note. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Closest current OpenAI match in OpenClaw docs | PASS | Context7 docs show current direct API-key path uses `openai/gpt-5.4`; no current OpenClaw doc path exposed a `gpt-4.5 thinking` model ID. |
+| Desired Grok backup path | PASS | OpenClaw docs confirm `openrouter/<provider>/<model>` model naming; external verification confirmed `x-ai/grok-4` as a valid Grok model ID on OpenRouter. |
+| Direct xAI env availability | FAIL | `XAI_API_KEY` / `GROK_API_KEY` were not present in `.gateway-env`, so direct `xai/grok-*` could not be wired without new credentials. |
+| OpenAI primary configured | PASS | `models status` resolved `Default: openai/gpt-5.4`. |
+| Fallback order configured | PASS | `models status` resolved fallbacks in the requested order: `openrouter/x-ai/grok-4`, then `anthropic/claude-sonnet-4-20250514`. |
+| Env-backed auth profiles present | PASS | `models status` resolved `openai:default=ref(env:OPENAI_API_KEY)` and `openrouter:default=ref(env:OPENROUTER_API_KEY)` alongside Anthropic. |
+| Gateway restart after model-chain change | PASS | Canonical Bitwarden-backed restart completed successfully. |
+| Gateway boot model | PASS | Journal shows `agent model: openai/gpt-5.4` after restart. |
+| Direct Sparky reply after switch | PASS | `pnpm openclaw agent --agent main ...` returned `model chain works.` |
+| Representative worker-routed reply after switch | PASS | `docker exec crewclaw-financial-analyst openclaw agent --agent main ...` returned `worker chain works.` |
+
+### Verdict
+
+PASS — the live gateway is now using OpenAI first, Grok second, Anthropic third, and both direct host routing and representative worker routing succeeded after the change.
+
+### Blockers
+
+- Direct xAI fallback is not configured because `XAI_API_KEY` is not present; Grok fallback currently runs through OpenRouter instead.
+- Dashboard heartbeat remains unwired and independent of worker/model functionality.
+- WhatsApp channel is still logged out and requires user re-link.
+
+### Fallbacks Used
+
+- Grok fallback is currently implemented through `openrouter/x-ai/grok-4` rather than direct `xai/grok-4` because no live xAI API key is present.
+
+### Cross-Repo Impact
+
+- Host runtime state changed outside the repo (`~/.openclaw/openclaw.json`, `~/.openclaw/agents/main/agent/auth-profiles.json`).
+- Governance docs in `AI-Project-Manager` now reflect the working provider chain and remaining blockers.
+
+### Decisions Captured
+
+- The closest current OpenClaw-supported OpenAI choice to "ChatGPT 4.5 thinking" is `openai/gpt-5.4`, so that is now the live primary.
+- Until an `XAI_API_KEY` exists, Grok is best implemented through the already-present OpenRouter credential instead of delaying the working fallback chain.
+
+### Pending Actions
+
+1. If desired later, switch Grok from `openrouter/x-ai/grok-4` to direct `xai/grok-4` once an `XAI_API_KEY` is available.
+2. Re-link WhatsApp in WSL if Sparky needs to answer there.
+3. Wire dashboard heartbeat once the `CREWCLAW_MONITOR_KEY` is available.
+
+### What Remains Unverified
+
+- Whether the live OpenAI primary selected for this simple probe will remain the preferred provider under heavier real-world conversations versus falling through to Grok or Anthropic.
+- Real user-originated Telegram round-trip after the provider switch.
+
+### What's Next
+
+Use Telegram or the CLI to exercise a real conversation against Sparky on the new provider chain; if you later add `XAI_API_KEY`, convert the Grok fallback from OpenRouter-backed to direct xAI-backed routing.
+
+---
+
+## 2026-03-29 21:10 — Phase 0F: XAI readiness + Windows node / Cursor access verification
+
+### Goal
+
+Prepare the canonical gateway restart path for direct xAI-backed Grok fallback, verify whether an actual Grok/xAI Bitwarden secret is available on the active path, and make sure Sparky again has working access to the Windows node and local Cursor CLI surface.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/scripts/openclaw_gateway_required_env.py`
+- `AI-Project-Manager/scripts/restart-openclaw-gateway.ps1`
+- `AI-Project-Manager/docs/ai/operations/openclaw-gateway-restart.md`
+- `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1`
+- Live Bitwarden secret visibility
+- Live node host state for `Windows Desktop`
+
+### Commands / Tool Calls
+
+- `user-Context7-query-docs` — OpenClaw OpenAI/xAI/OpenRouter/nodes docs
+- `Shell` — `bws secret list f14a97bb-5183-4b11-a6eb-b3fe0015fedf | Select-String ...`
+- `Shell` — `bws secret list | ConvertFrom-Json | Where-Object { $_.key -match 'XAI|GROK' } ...`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw nodes status && printf '\n---\n' && pnpm openclaw models status"`
+- `ReadFile` — `AI-Project-Manager/scripts/restart-openclaw-gateway.ps1`
+- `ReadFile` — `AI-Project-Manager/scripts/openclaw_gateway_required_env.py`
+- `ReadFile` — `AI-Project-Manager/docs/ai/operations/openclaw-gateway-restart.md`
+- `ReadFile` — `C:\Users\ynotf\.openclaw\node.cmd`
+- `ReadFile` — `C:\Users\ynotf\.openclaw\exec-approvals.json`
+- `ReadFile` — `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1`
+- `Shell` — relaunch `C:\Users\ynotf\.openclaw\node.cmd`, then `pnpm openclaw nodes status`
+- `Shell` — `pnpm openclaw nodes run --agent main --node 'Windows Desktop' --raw 'hostname'`
+- `Shell` — `pnpm openclaw nodes run --agent main --node 'Windows Desktop' --raw 'C:\Windows\System32\where.exe cursor'`
+
+### Changes
+
+| File | Change |
+|---|---|
+| `AI-Project-Manager/scripts/openclaw_gateway_required_env.py` | Added `xai/` detection so `XAI_API_KEY` becomes a required env var whenever the live config references direct xAI models. |
+| `AI-Project-Manager/scripts/restart-openclaw-gateway.ps1` | Added `XAI_API_KEY` to `WSLENV` export and `.gateway-env` writing path. |
+| `AI-Project-Manager/docs/ai/operations/openclaw-gateway-restart.md` | Documented that `XAI_API_KEY` is part of the canonical restart path when `xai/*` is configured. |
+| `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1` | Added `XAI_API_KEY` to optional startup env checks so launcher output reflects Grok/xAI readiness. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Updated runtime truth and unresolved issue wording for xAI readiness and Windows-node availability. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| OpenAI "thinking" support | PARTIAL | OpenClaw docs do not expose a `gpt-4.5 thinking` ID. They do show `openai/gpt-5.4` as the current direct API-key model path, and provider docs note `fastMode` lowers reasoning effort, which implies normal mode is the closest supported "thinking" path on direct OpenAI. |
+| xAI reasoning-capable models in docs | PASS | Context7 docs list explicit reasoning-capable xAI IDs including `grok-4-fast-reasoning`, `grok-4-1-fast-reasoning`, and `grok-4.20-reasoning`. |
+| OpenRouter Grok fallback | PASS | Existing `openrouter/x-ai/grok-4` fallback remains valid and reasoning-capable by model family. |
+| Active Bitwarden project contains xAI secret | FAIL | Project secret listing showed `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, and `OPENROUTER_API_KEY`, but no xAI/Grok secret entry. |
+| Accessible Bitwarden vault contains xAI/Grok secret by name | FAIL | Global secret-name search under the current Bitwarden account returned no secret with `XAI` or `GROK` in the key name. |
+| Canonical restart path xAI readiness | PASS | Repo helper + restart script now support `XAI_API_KEY` whenever `~/.openclaw/openclaw.json` references `xai/*`. |
+| Windows node launcher configuration | PASS | `node.cmd` already includes `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1` and targets the current WSL gateway host/port. |
+| Windows node connectivity after relaunch | PASS | `nodes status` moved from `Connected: 0` to `Connected: 1`. |
+| Sparky execution on Windows node | PASS | `pnpm openclaw nodes run --agent main --node 'Windows Desktop' --raw 'hostname'` returned `ChaosCentral`. |
+| Cursor CLI visible from Windows node | PASS | `pnpm openclaw nodes run --agent main --node 'Windows Desktop' --raw 'C:\Windows\System32\where.exe cursor'` returned the installed Cursor CLI paths. |
+
+### Verdict
+
+PARTIAL — Sparky now has working Windows-node access again and the canonical gateway restart path is ready for direct xAI fallback, but the requested direct `xai/*` backup cannot be activated yet because no xAI/Grok secret is currently exposed through the active Bitwarden path.
+
+### Blockers
+
+- No accessible `XAI_API_KEY` / Grok secret is available under the active Bitwarden project/injected environment.
+- OpenClaw docs still do not expose a direct `gpt-4.5 thinking` model ID on the OpenAI API-key path; `openai/gpt-5.4` remains the closest supported choice.
+- WhatsApp remains logged out and independent of the model/node work.
+
+### Fallbacks Used
+
+- Kept the currently working chain `openai/gpt-5.4` -> `openrouter/x-ai/grok-4` -> `anthropic/claude-sonnet-4-20250514` instead of switching to a broken direct-xAI path without credentials.
+
+### Cross-Repo Impact
+
+- Repo restart tooling now supports future direct xAI enablement.
+- Local launcher / local node host state on the Windows machine was updated outside the repo.
+
+### Decisions Captured
+
+- There is no separate "Cursor node" architecture required here: the Windows node host is the mechanism that gives Sparky access to Windows tools, and Cursor is reachable through that node's executable path/CLI surface.
+- Direct xAI fallback should not be enabled until the key is actually available on the active Bitwarden project/injected path.
+
+### Pending Actions
+
+1. Add or expose the actual xAI/Grok secret to the active Bitwarden project used by `bws run`, or provide its exact secret UUID/name so it can be injected as `XAI_API_KEY`.
+2. After the key is available, switch the fallback order to direct `xai/*` first, then OpenRouter, then Anthropic.
+3. If desired, tune the Anthropic fallback from Sonnet to Opus for a more reasoning-heavy final fallback.
+
+### What Remains Unverified
+
+- The exact secret key name / UUID of the user's Grok API key in Bitwarden.
+- Whether the user wants `xai/grok-4.20-reasoning` or a faster `xai/grok-4-fast-reasoning` variant once the key is available.
+
+### What's Next
+
+Once the Grok/xAI secret is available on the active Bitwarden path, switch the chain to a direct xAI reasoning fallback, then OpenRouter Grok, then Anthropic, and re-test `main` plus one worker route.
+
+---
+
+## 2026-03-29 21:18 — Phase 0G: Strengthen final Anthropic fallback
+
+### Goal
+
+Align the final fallback more closely with the user's "everything should be thinking" request by upgrading the Anthropic fallback from Sonnet to Opus while preserving the working OpenAI-first chain.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- Live host config: `~/.openclaw/openclaw.json`
+- Host gateway runtime
+
+### Commands / Tool Calls
+
+- `user-Context7-query-docs` — Anthropic model examples in OpenClaw docs
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw models fallbacks remove anthropic/claude-sonnet-4-20250514 && pnpm openclaw models fallbacks add anthropic/claude-opus-4-6 && pnpm openclaw models status"`
+- `Shell` — `bws run --project-id f14a97bb-5183-4b11-a6eb-b3fe0015fedf -- pwsh -NoProfile -File "D:\github\AI-Project-Manager\scripts\restart-openclaw-gateway.ps1"`
+- `Shell` — `wsl bash -lc "source ~/.nvm/nvm.sh && cd ~/openclaw-build && pnpm openclaw agent --agent main --message 'Reply with exactly: final chain ok.' --timeout 90"`
+- `Shell` — `wsl bash -lc "journalctl --user -u openclaw-gateway.service -n 60 --no-pager"`
+
+### Changes
+
+| File | Change |
+|---|---|
+| `~/.openclaw/openclaw.json` | Replaced final Anthropic fallback `anthropic/claude-sonnet-4-20250514` with `anthropic/claude-opus-4-6`. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Updated runtime truth to reflect the stronger final Anthropic fallback. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Anthropic reasoning-heavy fallback candidate | PASS | Current OpenClaw docs expose `anthropic/claude-opus-4-6` as a current Anthropic model example and suitable high-end fallback choice. |
+| Updated fallback order | PASS | `models status` now shows `openrouter/x-ai/grok-4, anthropic/claude-opus-4-6`. |
+| Gateway restart after fallback update | PASS | Canonical Bitwarden-backed restart completed successfully. |
+| Direct `main` reply after fallback update | PASS | `pnpm openclaw agent --agent main ...` returned `final chain ok.` |
+| Runtime after fallback update | PASS | Journal shows the gateway came back cleanly with `agent model: openai/gpt-5.4` and hot-reloaded the Opus fallback. |
+
+### Verdict
+
+PASS — the working chain remains healthy and the final Anthropic fallback is now the more reasoning-oriented `claude-opus-4-6`.
+
+### Blockers
+
+- Direct xAI fallback still cannot be enabled until `XAI_API_KEY` is available on the active Bitwarden path.
+- WhatsApp remains logged out and unrelated to the model-chain change.
+
+### Pending Actions
+
+1. Surface the actual `XAI_API_KEY` on the active Bitwarden project/injected env.
+2. After that, switch the fallback order to direct xAI first, OpenRouter second, Anthropic Opus third.
+
+### What's Next
+
+Keep the current chain in service: `openai/gpt-5.4` -> `openrouter/x-ai/grok-4` -> `anthropic/claude-opus-4-6`, then cut over to direct xAI once the secret path is available.
+
+---
+
+## 2026-03-30 00:05 — Phase 0H: Manual dashboard activation for `api-integration-specialist`
+
+### Goal
+
+Follow CrewClaw's local monitor setup instructions for the existing `api-integration-specialist` worker, verify that it receives a monitor key, and confirm that heartbeat pings are now succeeding from the local worker project folder.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `open--claw/open-claw/employees/deployed/api-integration-specialist/.env`
+- `open--claw/open-claw/employees/deployed/api-integration-specialist/heartbeat.sh`
+- Runtime heartbeat process for `api-integration-specialist`
+
+### Commands / Tool Calls
+
+- `ReadFile` — `C:\Users\ynotf\Downloads\Screenshot 2026-03-29 195649.png`
+- `ReadFile` — `open--claw/open-claw/employees/deployed/api-integration-specialist/README.md`
+- `WebFetch` / `Shell` — `https://www.crewclaw.com/monitor.sh`
+- `ReadFile` — `open--claw/open-claw/employees/deployed/api-integration-specialist/agents/api-integration-specialist/SOUL.md`
+- `Shell` — POST `https://www.crewclaw.com/api/monitor/register`
+- `Shell` — write local `.env` with `CREWCLAW_MONITOR_KEY`
+- `Shell` — POST first ping to `https://www.crewclaw.com/api/ping/<agent_key>`
+- `Shell` — start `heartbeat.sh` as a managed background process
+- `ReadFile` — background terminal output for the heartbeat process
+
+### Changes
+
+| File | Change |
+|---|---|
+| `open--claw/open-claw/employees/deployed/api-integration-specialist/.env` | Created local monitor env containing `CREWCLAW_MONITOR_KEY`. |
+| Runtime | Started `api-integration-specialist` `heartbeat.sh` as a background process from the worker project folder. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Updated dashboard truth to reflect one manually activated worker heartbeat. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| CrewClaw setup instruction captured | PASS | Screenshot showed the required local command pattern `curl -fsSL https://www.crewclaw.com/monitor.sh | bash`. |
+| Monitor script behavior | PASS | Script inspects `SOUL.md`, registers via `https://www.crewclaw.com/api/monitor/register`, writes `CREWCLAW_MONITOR_KEY`, creates/uses `heartbeat.sh`, and sends a first ping. |
+| Target worker folder | PASS | `api-integration-specialist` deploy folder already contained `README.md`, `heartbeat.sh`, and the nested `SOUL.md` identity file expected by the setup flow. |
+| Registration API | PASS | Manual registration succeeded and returned monitor key `ak_834pjuk0up83`. |
+| Local monitor env | PASS | `.env` now contains `CREWCLAW_MONITOR_KEY=ak_834pjuk0up83`. |
+| Background heartbeat process | PASS | Managed background run of `bash heartbeat.sh` started successfully from the worker project folder. |
+| Heartbeat ping status | PASS | Live process output showed `[heartbeat] ping ok` after startup. |
+
+### Verdict
+
+PASS — `api-integration-specialist` is now manually activated for CrewClaw dashboard monitoring and is sending successful heartbeat pings from its local project folder.
+
+### Blockers
+
+- This is still a manual/local activation path, not the desired Bitwarden-native shared-compose path.
+- The remaining workers still do not have monitor keys or heartbeat processes wired.
+
+### Decisions Captured
+
+- Manual per-worker dashboard activation is viable immediately when a worker already exists in the CrewClaw portal, even before the shared compose heartbeat contract is restored.
+- The local worker folder can carry a monitor-only `.env` containing `CREWCLAW_MONITOR_KEY` without changing the current shared Docker runtime truth.
+
+### Pending Actions
+
+1. Repeat this registration + heartbeat setup for the remaining prepared workers if desired.
+2. Later, decide whether to keep per-worker local heartbeat loops or move to a shared Bitwarden-native heartbeat design.
+
+### What's Next
+
+If the goal is to light up the other prepared workers tonight, repeat the same local registration flow for each worker folder under `open-claw/employees/deployed/`.
+
+---
+
+## 2026-03-30 00:22 — Phase 0I: CrewClaw employee install runbook + activation/deactivation strategy
+
+### Goal
+
+Create a durable repo-tracked runbook for installing CrewClaw employees, capturing both the real CrewClaw monitor setup flow and the operating strategy of proving employees work, then leaving only currently needed employees active.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `ReadFile` — `C:\Users\ynotf\Downloads\Screenshot 2026-03-29 200715.png`
+- `ReadFile` — `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md`
+- `ReadFile` — `open--claw/open-claw/employees/deployed/start-employees.ps1`
+- `Shell` — inventory listing for `open--claw/open-claw/employees`
+- `ApplyPatch` — create `crewclaw-employee-install.md`
+- `ApplyPatch` — append this STATE entry
+
+### Changes
+
+| File | Change |
+|---|---|
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md` | Added a new runbook covering inventory, install flow, CrewClaw monitor activation, proof checklist, deactivation steps, and the strategy of keeping most employees ready-but-off. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Real CrewClaw setup flow captured | PASS | Screenshot showed both the automatic install command `curl -fsSL https://www.crewclaw.com/monitor.sh | bash` and the advanced manual path exposing local `.env` plus direct ping pattern. |
+| Current package inventory captured | PASS | Local listing confirmed five shared deployed workers plus six additional prepared ZIP packages relevant to the current 11-worker plan. |
+| Shared runtime limitation documented | PASS | `start-employees.ps1` still hardcodes only the five current shared workers, so newly unpacked employees are not automatically part of runtime until explicitly added. |
+| Activation strategy documented | PASS | New runbook now defines the intended lifecycle: prepare -> portal add -> activate -> prove -> deactivate unless currently needed. |
+| Secret hygiene preserved | PASS | New doc explicitly avoids storing raw monitor keys or other secret values in the repo. |
+
+### Verdict
+
+PASS — the repo now contains a concrete CrewClaw employee install runbook that matches the observed portal flow and documents the intended "prove then turn off unless needed" operating model.
+
+### Blockers
+
+- The six additional prepared ZIP packages are not yet unpacked and wired into shared runtime.
+- `CREWCLAW_MONITOR_KEY` is still not tracked as a Bitwarden-backed shared runtime secret for the whole fleet.
+- Full runtime enablement for new employees still requires compose and startup-script expansion beyond the current five-worker set.
+
+### Pending Actions
+
+1. Use the new runbook to unpack and dashboard-activate the next prepared employees.
+2. Decide which of the six additional prepared workers should be promoted from dashboard-ready to fully runtime-active.
+3. Later, extend the shared deployment if the user wants those workers always available instead of on-demand.
+
+### What's Next
+
+Follow the runbook worker-by-worker: add in CrewClaw, activate heartbeat, verify first ping, record proof, then stop anything not actively needed in the current workflow.
+
+---
+
+## 2026-03-30 00:57 — Phase 0J: Batch-expand CrewClaw runtime to 10 Telegram workers
+
+### Goal
+
+Stop treating CrewClaw employee preparation as a one-by-one runtime task, codify the approved local monitor-key exception, and bring the five additional token-backed Telegram workers into the shared deployment so they are ready for portal add and heartbeat activation.
+
+### Scope
+
+- `open--claw/open-claw/employees/deployed/personal-crm/*`
+- `open--claw/open-claw/employees/deployed/script-builder/*`
+- `open--claw/open-claw/employees/deployed/seo-specialist/*`
+- `open--claw/open-claw/employees/deployed/software-engineer/*`
+- `open--claw/open-claw/employees/deployed/ux-designer/*`
+- `open--claw/open-claw/employees/deployed/docker-compose.yml`
+- `open--claw/open-claw/employees/deployed/start-employees.ps1`
+- `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md`
+- `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `Shell` — list deployed folders and inspect ZIP contents
+- `Shell` — unpack `personal-crm`, `script-builder`, `seo-specialist`, `software-engineer`, `ux-designer`
+- `ReadFile` — shared compose, shared launcher, new worker package files
+- `ApplyPatch` — extend shared compose and launcher with the five new Bitwarden token UUIDs
+- `ApplyPatch` — fix generated Dockerfile mismatch in the five new worker folders (`bot.js` -> `bot-telegram.js`)
+- `Shell` — `docker compose config`
+- `Shell` — `pwsh -NoProfile -File start-employees.ps1`
+- `Shell` — `docker ps`
+- `Shell` — `docker logs --tail 40 crewclaw-personal-crm`
+- `Shell` — `docker logs --tail 40 crewclaw-software-engineer`
+
+### Changes
+
+| File | Change |
+|---|---|
+| `open--claw/open-claw/employees/deployed/personal-crm/*` | Unpacked package into deployed runtime and fixed generated Dockerfile copy target. |
+| `open--claw/open-claw/employees/deployed/script-builder/*` | Unpacked package into deployed runtime and fixed generated Dockerfile copy target. |
+| `open--claw/open-claw/employees/deployed/seo-specialist/*` | Unpacked package into deployed runtime and fixed generated Dockerfile copy target. |
+| `open--claw/open-claw/employees/deployed/software-engineer/*` | Unpacked package into deployed runtime and fixed generated Dockerfile copy target. |
+| `open--claw/open-claw/employees/deployed/ux-designer/*` | Unpacked package into deployed runtime and fixed generated Dockerfile copy target. |
+| `open--claw/open-claw/employees/deployed/docker-compose.yml` | Added five new services and persistent volumes for the new Telegram workers. |
+| `open--claw/open-claw/employees/deployed/start-employees.ps1` | Added the five new Bitwarden token UUIDs and updated comments/output to allow CrewClaw monitor-key local `.env` files only. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md` | Added the CrewClaw-only `.env` exception and documented batch runtime prep vs per-worker portal add. |
+| `AI-Project-Manager/docs/ai/operations/CREWCLAW_BITWARDEN_SECRET_INVENTORY.md` | Added the five new worker token UUIDs and documented the monitor-key exception. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Updated operational truth from 5 to 10 workers and removed the old Bitwarden-native monitor-key assumption. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Five new worker packages identified | PASS | `personal-crm`, `script-builder`, `seo-specialist`, `software-engineer`, and `ux-designer` matched the new Bitwarden token UUIDs provided by the user. |
+| "Sixth" extra package classification | PASS | `crewclaw-anthony-bundle.zip` is a multi-agent bundle archive, not one additional single Telegram worker in the current 10-token set. |
+| New folders unpacked | PASS | All five new worker folders now exist under `open-claw/employees/deployed/`. |
+| Shared launcher updated | PASS | `start-employees.ps1` now fetches all 10 Telegram worker tokens from Bitwarden. |
+| Shared compose updated | PASS | `docker compose config` rendered all 10 worker services successfully. |
+| Generated package defect found | PASS | First batch deploy failed because the five new generated `Dockerfile`s referenced missing `bot.js` files. |
+| Generated package defect fixed | PASS | Patched the five new `Dockerfile`s to copy `bot-telegram.js`, matching the actual package contents. |
+| Shared batch deploy | PASS | `start-employees.ps1` rebuilt and started all 10 worker containers successfully. |
+| Running container count | PASS | `docker ps` showed all 10 `crewclaw-*` containers up. |
+| New worker runtime sanity | PASS | `docker logs` for `crewclaw-personal-crm` and `crewclaw-software-engineer` both reported `Bot is running...`. |
+| Monitor-key local `.env` rule | PASS | Governance docs now explicitly allow per-worker local `.env` storage for `CREWCLAW_MONITOR_KEY` only. |
+
+### Verdict
+
+PASS — the shared CrewClaw runtime is now expanded from 5 to 10 Telegram workers, and the approved setup contract is now: runtime secrets in Bitwarden, monitor keys in untracked per-worker local `.env` files for CrewClaw only.
+
+### Ready For Portal Add
+
+- `personal-crm`
+- `script-builder`
+- `seo-specialist`
+- `software-engineer`
+- `ux-designer`
+
+### Blockers
+
+- CrewClaw portal add / first-ping activation is still manual per worker.
+- The new workers have been deployed and are running, but their dashboard heartbeat still depends on portal add plus monitor-key activation.
+- `crewclaw-anthony-bundle.zip` remains outside the current 10-worker Telegram runtime set and needs a separate design decision if it should be adopted.
+
+### Pending Actions
+
+1. User adds the five new workers in the CrewClaw portal.
+2. After each is added, use the approved local `.env` monitor-key path to confirm heartbeat.
+3. Later, decide whether `crewclaw-anthony-bundle.zip` should become a separate deployment track or remain excluded.
+
+### What's Next
+
+The next five names to add in the CrewClaw portal are: `personal-crm`, `script-builder`, `seo-specialist`, `software-engineer`, and `ux-designer`.
+
+---
+
+## 2026-03-30 01:38 — Phase 0K: Restore named worker heartbeats from portal screenshots
+
+### Goal
+
+Use the user's CrewClaw portal screenshots to restore dashboard heartbeat for the named shared workers that had valid monitor keys visible in the UI but were still showing offline.
+
+### Scope
+
+- `open--claw/open-claw/employees/deployed/code-reviewer/.env`
+- `open--claw/open-claw/employees/deployed/financial-analyst/.env`
+- `open--claw/open-claw/employees/deployed/frontend-developer/.env`
+- `open--claw/open-claw/employees/deployed/overnight-coder/.env`
+- `open--claw/open-claw/employees/deployed/code-reviewer/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/financial-analyst/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/frontend-developer/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/overnight-coder/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/api-integration-specialist/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/personal-crm/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/script-builder/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/seo-specialist/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/software-engineer/heartbeat.sh`
+- `open--claw/open-claw/employees/deployed/ux-designer/heartbeat.sh`
+- `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `ReadFile` — CrewClaw screenshots for `code-reviewer`, `financial-analyst`, `frontend-developer`, `overnight-coder`
+- `Shell` — write local monitor `.env` files for the four workers
+- `Shell` — start heartbeat loops for all four workers
+- `ReadFile` — terminal outputs showing initial ping failure
+- `Shell` — direct `curl` probe proving one screenshot key worked via GET
+- `ApplyPatch` — change heartbeat implementation from POST payload ping to simple GET ping
+- `ApplyPatch` — trim `\r` from `CREWCLAW_MONITOR_KEY` when `.env` is written from Windows
+- `Shell` — restart the four heartbeat loops
+- `ReadFile` — terminal outputs showing `ping ok`
+
+### Changes
+
+| File | Change |
+|---|---|
+| `open--claw/open-claw/employees/deployed/code-reviewer/.env` | Wrote local `CREWCLAW_MONITOR_KEY` from portal screenshot. |
+| `open--claw/open-claw/employees/deployed/financial-analyst/.env` | Wrote local `CREWCLAW_MONITOR_KEY` from portal screenshot. |
+| `open--claw/open-claw/employees/deployed/frontend-developer/.env` | Wrote local `CREWCLAW_MONITOR_KEY` from portal screenshot. |
+| `open--claw/open-claw/employees/deployed/overnight-coder/.env` | Wrote local `CREWCLAW_MONITOR_KEY` from portal screenshot. |
+| `open--claw/open-claw/employees/deployed/*/heartbeat.sh` | Standardized heartbeat loader to trim CRLF and standardized ping call to the simple CrewClaw GET endpoint. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md` | Documented the Windows `.env` / CRLF tolerance requirement for CrewClaw monitor keys. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Portal screenshots captured valid named worker keys | PASS | Screenshots exposed monitor keys for `code-reviewer`, `financial-analyst`, `frontend-developer`, and `overnight-coder`. |
+| Initial scripted heartbeat attempt | FAIL | The generated `heartbeat.sh` scripts reported `ping failed` for all four workers. |
+| Direct endpoint probe | PASS | Manual `curl https://www.crewclaw.com/api/ping/<key>` returned `{"ok":true}` for a screenshot key, proving the key itself was valid. |
+| Root cause 1 | PASS | Generated scripts were using POST, while the CrewClaw portal advanced/manual path clearly matched a simple GET ping. |
+| Root cause 2 | PASS | Windows-written `.env` files introduced CRLF line endings, so bash read `CREWCLAW_MONITOR_KEY` with a trailing `\r`. |
+| Script remediation | PASS | Heartbeat scripts now trim trailing `\r` and use the simple GET ping call. |
+| Restarted named worker loops | PASS | New background heartbeat loops for all four named workers started successfully after the script fix. |
+| Named worker first ping after fix | PASS | Live terminal output for all four workers showed `[heartbeat] ping ok`. |
+
+### Verdict
+
+PASS — the named worker heartbeat failure was caused by a generated-script mismatch plus Windows CRLF handling, not by bad monitor keys. The four screenshot-backed workers are now restored to successful heartbeat ping status.
+
+### Blockers
+
+- The five `My Agent` rows still need either monitor-key screenshots or a fresh mapping from the CrewClaw portal before they can be wired.
+- The separate `Api Integration Specialist - Custom Role` portal entry is still distinct from the original `Api Integration Specialist` row and may need cleanup later.
+
+### Pending Actions
+
+1. Refresh the CrewClaw portal to confirm the four named workers have moved back to green.
+2. Capture or map the five `My Agent` monitor keys if those five new workers should also be brought online.
+
+### What's Next
+
+The next user-visible task is on the CrewClaw side: provide the five unnamed `My Agent` monitor keys, or rename those portal entries so each can be matched to `personal-crm`, `script-builder`, `seo-specialist`, `software-engineer`, and `ux-designer`.
+
+---
+
+## 2026-03-30 02:10 — Phase 0L: Audit CrewClaw employees for Next.js website workflow readiness
+
+### Goal
+
+Audit the current CrewClaw employee fleet, generic downloads, and local tooling surface to determine which workers are actually usable for a Next.js website clone/rebrand workflow, then create durable per-employee docs that describe capabilities and missing pieces.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/operations/CREWCLAW_WEBSITE_AGENT_AUDIT.md`
+- `AI-Project-Manager/docs/ai/operations/crewclaw-employees/README.md`
+- `AI-Project-Manager/docs/ai/operations/crewclaw-employees/*.md`
+- `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+- local Cursor extension inventory
+- `open--claw/open-claw/employees/*.zip`
+- `open--claw/open-claw/employees/generic/*.zip`
+- representative deployed worker files under `open--claw/open-claw/employees/deployed/*`
+
+### Commands / Tool Calls
+
+- `ReadFile` — CrewClaw portal screenshots for current roster and generic-agent edit pages
+- `Shell` — list generic ZIPs, main employee ZIPs, local skills, plugin caches, and installed Cursor extensions
+- `Shell` — inspect ZIP manifests and compare generic package hashes
+- `Shell` — inspect Dockerfile `COPY` references inside ZIPs
+- `ReadFile` / `Shell` — inspect representative `SOUL.md`, `TOOLS.md`, `SKILLS.md`, and `bot-telegram.js` files
+- `user-Context7-resolve-library-id` / `user-Context7-query-docs` — current Next.js App Router guidance for rebrand workflow assumptions
+- `Shell` — install `ms-playwright.playwright`
+- `Shell` — attempt to install Copilot extensions via Cursor CLI
+- `user-serena-create_text_file` — create audit summary and per-employee markdown files
+- `ApplyPatch` — update install runbook, HANDOFF, and append this STATE block
+
+### Changes
+
+| File | Change |
+|---|---|
+| `AI-Project-Manager/docs/ai/operations/CREWCLAW_WEBSITE_AGENT_AUDIT.md` | Added the main website-agent audit summary with PASS/FAIL findings, tooling audit, routing analysis, and recommended Next.js squad. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/README.md` | Added index of the per-employee audit files. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/api-integration-specialist.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/code-reviewer.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/financial-analyst.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/frontend-developer.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/overnight-coder.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/personal-crm.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/script-builder.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/seo-specialist.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/software-engineer.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/ux-designer.md` | Added capability and missing-pieces audit for this worker. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/agent-template-12.md` | Added audit doc for generic download `(12)`. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/agent-template-13.md` | Added audit doc for generic download `(13)`. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/agent-template-14.md` | Added audit doc for generic download `(14)`. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/agent-template-15.md` | Added audit doc for generic download `(15)`. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/agent-template-16.md` | Added audit doc for generic download `(16)`. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employees/crewclaw-anthony-bundle.md` | Added audit doc for the multi-agent bundle archive. |
+| `AI-Project-Manager/docs/ai/operations/crewclaw-employee-install.md` | Added known package issues and cross-links to the audit docs. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Updated operational truth and unresolved issues with the website-agent audit findings. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Current portal roster captured | PASS | Screenshot showed 5 named workers plus 5 generic `My Agent` rows and one duplicate `Api Integration Specialist - Custom Role` entry. |
+| Generic edit screens captured | PASS | The five generic agent edit screenshots all showed blank `Agent`/`Agent` fields with no personality, skills, or rules. |
+| Generic ZIP identity | PASS | Hash comparison showed `crewclaw-agent-deploy (12)` through `(16)` are identical `My Agent` template packages. |
+| Named ZIP structural completeness | PASS | Named employee ZIPs include the expected core files and the full agent-doc set. |
+| ZIP packaging defect | FAIL | Every audited CrewClaw ZIP uses a `Dockerfile` that copies missing `bot.js` instead of `bot-telegram.js`. |
+| Named role specificity | FAIL | 9 of the 10 named employees still use mostly generic role docs, tools, and skills despite specialist names. |
+| Strongest current implementation worker | PASS | `software-engineer` is the only current package that clearly declares code-generation behavior and direct agent routing. |
+| Runtime routing split | PASS | Older shared workers still route to `main`; newer workers route to their own agent IDs. |
+| Cursor extension baseline | PASS | Existing extension set already covered ESLint, Prettier, Tailwind, Docker, GitLens, markdown, YAML, and other useful workflow tools. |
+| Playwright extension install | PASS | `ms-playwright.playwright` installed successfully through Cursor CLI. |
+| Copilot extension install | FAIL | Standard Copilot IDs were not found through the current Cursor CLI marketplace path. |
+| Next.js framework guidance | PASS | Current Next.js docs confirmed App Router metadata, metadata-file conventions, global CSS handling, and `NEXT_PUBLIC_` env naming expectations. |
+
+### Verdict
+
+PARTIAL PASS — the local machine tooling is good enough to support a Next.js clone/rebrand workflow, but the CrewClaw employee definitions themselves are not yet strong enough for broad autonomous website work. The practical current lead is `software-engineer`; most of the remaining named employees require re-specialization before they should be trusted.
+
+### Recommended Website Squad
+
+- `software-engineer` — primary builder
+- `frontend-developer` — secondary UI worker after re-specialization
+- `ux-designer` — design review after re-specialization
+- `code-reviewer` — review gate after re-specialization
+- `seo-specialist` — later-stage metadata/copy/SEO pass
+- `api-integration-specialist` — later-stage forms/integrations
+
+### Blockers
+
+- Most named employees are still generic templates behind specialist names.
+- The original five shared workers still route to `main`, limiting true per-employee specialization.
+- All CrewClaw ZIP downloads currently need manual Dockerfile repair before clean deploy.
+- Copilot could not be added through the current Cursor CLI marketplace path.
+
+### Pending Actions
+
+1. Re-specialize the website-relevant employees, starting with `frontend-developer`, `ux-designer`, `code-reviewer`, and `seo-specialist`.
+2. Decide whether to regenerate the five generic CrewClaw portal agents or discard them as duplicates.
+3. Fix the ZIP packaging defect at the source or document a standard repair step for all future downloads.
+4. If Copilot is still desired, resolve the correct marketplace/manual installation path and complete sign-in.
+
+### What's Next
+
+The most effective next move is not adding more agents; it is upgrading the existing website squad definitions so `software-engineer`, `frontend-developer`, `ux-designer`, `code-reviewer`, and `seo-specialist` actually contain the right workflow, tools, and acceptance criteria for a Next.js clone-and-rebrand project.
+
+---
+
+## 2026-03-30 00:55 — Phase 0M: Build curated AI employee standard from imported repo sources
+
+### Goal
+
+Turn the imported `Agents-Bulk` repo collection into a durable, repo-tracked AI employee standard with a real leadership hierarchy, a 10-15 person development team, copied high-value source assets, portable employee packets, and missing software-delivery skills.
+
+### Scope
+
+- `open--claw/.gitignore`
+- `open--claw/open-claw/scripts/generate_ai_employee_knowledgebase.py`
+- `open--claw/open-claw/AI_Employee_knowledgebase/**`
+- `open--claw/open-claw/skills/nextjs-app-router/SKILL.md`
+- `open--claw/open-claw/skills/design-token-theming/SKILL.md`
+- `open--claw/open-claw/skills/playwright-e2e/SKILL.md`
+- `open--claw/open-claw/skills/visual-qa-evidence/SKILL.md`
+- `open--claw/open-claw/skills/architecture-adr/SKILL.md`
+- `open--claw/open-claw/skills/code-review-gate/SKILL.md`
+- `open--claw/open-claw/skills/release-readiness/SKILL.md`
+- `open--claw/open-claw/skills/repo-clone-rebrand/SKILL.md`
+- `open--claw/open-claw/skills/mcp-integration/SKILL.md`
+- `open--claw/open-claw/skills/handoff-state/SKILL.md`
+- `AI-Project-Manager/docs/ai/operations/CREWCLAW_WEBSITE_AGENT_AUDIT.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `Shell` — inventory `Agents-Bulk`, `AI_Employee_knowledgebase`, and git state across touched repos
+- `Subagent` — parallel read-only audits of `agency-agents`, `agent-factory`, `awesome-openclaw-agents`, `Startup-Agents`, `PraisonAI`, `autogen`, `cursor-starter`, `openlabor`, `openclaw-android`, `calfkit-sdk`, and related sources
+- `ReadFile` — representative source role definitions, current employee packet files, current skill files, and governance docs
+- `user-Context7-resolve-library-id` / `user-Context7-query-docs` — current Next.js App Router and Playwright best-practice guidance
+- `user-serena-create_text_file` — add generator script
+- `ApplyPatch` — update `.gitignore`, website audit doc, HANDOFF, and append this STATE block
+- `Shell` — run the generator and inspect the resulting folders and zip archives
+
+### Changes
+
+| File | Change |
+|---|---|
+| `open--claw/.gitignore` | Added local-source ignores for `open-claw/Agents-Bulk/`, `open-claw/AI_Employee_knowledgebase/source_repos/`, and `open-claw/employees/` so purchased zips and extracted research stay local while curated assets remain trackable. |
+| `open--claw/open-claw/scripts/generate_ai_employee_knowledgebase.py` | Added a reproducible generator that builds the curated knowledgebase, copied reference assets, employee packets, zip bundles, and development skills. |
+| `open--claw/open-claw/AI_Employee_knowledgebase/README.md` | Added top-level knowledgebase map and source-of-truth explanation. |
+| `open--claw/open-claw/AI_Employee_knowledgebase/AUTHORITATIVE_STANDARD.md` | Added the local authoritative employee standard and required release discipline. |
+| `open--claw/open-claw/AI_Employee_knowledgebase/TEAM_ROSTER.md` | Added the 15-person dream team roster and reporting hierarchy. |
+| `open--claw/open-claw/AI_Employee_knowledgebase/PROVENANCE_MATRIX.md` | Added employee-to-source mapping plus copied reference asset inventory. |
+| `open--claw/open-claw/AI_Employee_knowledgebase/SKILLS_AUDIT.md` | Added the before/after skill inventory and the missing software-delivery skill layer. |
+| `open--claw/open-claw/AI_Employee_knowledgebase/reference_assets/**` | Copied the strongest reusable role files, runtime templates, CI patterns, and prompt docs into tracked reference folders. |
+| `open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/**` | Added 15 full employee packets plus zipped portable bundles. |
+| `open--claw/open-claw/skills/*/SKILL.md` | Added 10 development skills covering Next.js, Playwright, visual QA, ADRs, code review, release readiness, clone/rebrand, MCP integration, and handoff state. |
+| `AI-Project-Manager/docs/ai/operations/CREWCLAW_WEBSITE_AGENT_AUDIT.md` | Appended the follow-on buildout summary and pointed future work to the curated knowledgebase. |
+| `AI-Project-Manager/docs/ai/HANDOFF.md` | Updated operational truth, unresolved issues, and current focus to reflect the new authoritative standard and the remaining live-runtime gap. |
+| `AI-Project-Manager/docs/ai/STATE.md` | Appended this execution block. |
+
+### Evidence
+
+| Check | Result | Detail |
+|---|---|---|
+| Bulk source repo audit completed | PASS | Parallel source audits identified `agency-agents` as the strongest specialist-role source, `awesome-openclaw-agents` as the cleanest OpenClaw-native role source, `agent-factory` as the strongest operational-pattern source, and the proactive-agent pack as the best full employee file layout. |
+| Current repo gap identified | PASS | The tracked `open-claw/skills` directory contained mostly communication/utilities skills and lacked a software-delivery skill layer. |
+| Authoritative standard chosen | PASS | Local authority was explicitly set to `open--claw/open-claw/AI_Employee_knowledgebase`, not any single upstream repo. |
+| Leadership hierarchy built | PASS | The curated roster includes `sparky-chief-product-quality-officer` as boss plus `delivery-director` beneath Sparky, followed by product, architecture, design, QA, release, SEO, and MCP roles. |
+| Team size target met | PASS | 15 repo-tracked employee packets were generated and zipped successfully. |
+| Development skill layer added | PASS | 10 new tracked skill docs were created for Next.js, Playwright, visual QA, architecture, release gating, MCP integration, and handoffs. |
+| Reference assets copied | PASS | 24 high-value upstream files were copied into tracked reference folders with provenance. |
+| Generator validation | PASS | The generator script ran successfully and emitted a manifest showing `employee_count: 15`, `skill_count: 10`, and tracked copied assets. |
+| Portable employee bundles created | PASS | `_zips/` contains zipped packets for all 15 curated employees. |
+| Framework guidance freshness | PASS | Next.js App Router and Playwright CI/test guidance were refreshed through Context7 and folded into the new standard. |
+
+### Verdict
+
+PASS — the project now has a durable, repo-tracked AI employee standard with a real leadership spine, strong provenance, reusable source assets, and a missing software-delivery skill layer that did not previously exist.
+
+### Blockers
+
+- The live deployed CrewClaw workers still use the older downloaded employee definitions; the curated `AI_Employee_knowledgebase` library has not yet been synced back into the runtime packages.
+- Copilot availability through the current Cursor CLI marketplace path remains unresolved.
+- The raw CrewClaw ZIP packaging defect still exists upstream and still requires manual repair if future downloads are adopted directly.
+
+### Pending Actions
+
+1. Decide whether to replace or regenerate the currently deployed CrewClaw worker packets from the new curated standard.
+2. Choose the first live pilot squad from the 15-person standard and wire those packets into the runtime deployment path.
+3. Resolve the Copilot installation path only if Copilot remains strategically important after the stronger local team standard is in use.
+
+### What's Next
+
+The highest-leverage next move is to promote the curated standard into the live runtime by selecting a first pilot squad and replacing the current role-thin deployed worker definitions with the stronger `AI_Employee_knowledgebase` packets.
