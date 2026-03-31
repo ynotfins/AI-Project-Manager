@@ -7,6 +7,7 @@
 ## Overview
 
 AI-Project-Manager is a Cursor workspace that serves as the control plane for the OpenClaw mobile project and related tooling. It contains:
+
 - MCP server configuration (global `~/.cursor/mcp.json`)
 - Cursor workflow rules (`.cursor/rules/`)
 - AI state and planning docs (`docs/ai/`)
@@ -16,7 +17,7 @@ The repo is a documentation and configuration hub, not an application codebase. 
 
 ## Architecture
 
-```
+```text
 AI-Project-Manager/
 ├── .cursor/rules/          # Cursor agent behavior rules (always-apply)
 ├── docs/
@@ -54,18 +55,19 @@ Local scripts (not in git):
 ## Components
 
 | Component | Location | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | Global MCP Config | `~/.cursor/mcp.json` | Defines all 14 MCP servers for Cursor globally |
 | Cursor Rules | `.cursor/rules/` | Always-apply agent behavior rules |
 | STATE.md | `docs/ai/STATE.md` | Execution log updated after every task block |
 | PLAN.md | `docs/ai/PLAN.md` | Active plan with phases and exit criteria |
+| Tri-Workspace Context Brief | `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md` | Fast routing layer for deciding which repo and entry points to inspect first |
 | MCP_HEALTH.md | `docs/tooling/MCP_HEALTH.md` | MCP server health history and fixes |
 | MCP_CANONICAL_CONFIG.md | `docs/tooling/MCP_CANONICAL_CONFIG.md` | Reference MCP config for reproducing setup |
 
 ## Active MCP Servers (14 total)
 
 | Server | Type | Status |
-|---|---|---|
+| --- | --- | --- |
 | openmemory | HTTP hosted | PASS — authenticated, tools working |
 | Context7 | HTTP Smithery | PASS — unauthenticated public |
 | Exa Search | HTTP | PASS — unauthenticated |
@@ -86,6 +88,7 @@ Local scripts (not in git):
 - **Secret management**: No secrets in source, git, or `mcp.json`. Secrets are injected at runtime (Bitwarden Secrets Manager via `bws run`).
 - **MCP health**: After any `mcp.json` change, validate with `ConvertFrom-Json` before saving.
 - **State tracking**: Every task block updates `docs/ai/STATE.md` with PASS/FAIL evidence.
+- **Bootstrap routing**: `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md` is the fastest cross-repo orientation doc; use it to route work before dropping into downstream code.
 - **Serena**: Uses `--project-from-cwd`; must open the target project folder to activate.
 - **Async ingestion**: `add-memory` may not be immediately searchable; retry `search-memory` after a short wait (2–4s).
 

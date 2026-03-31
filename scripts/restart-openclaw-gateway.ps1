@@ -10,7 +10,7 @@
 
 .NOTES
   ANTHROPIC_API_KEY is always required for this path.
-  OPENAI_API_KEY / OPENROUTER_API_KEY are required when ~/.openclaw/openclaw.json references those providers.
+  OPENAI_API_KEY / OPENROUTER_API_KEY / XAI_API_KEY are required when ~/.openclaw/openclaw.json references those providers.
 
   Avoid ad-hoc `pnpm openclaw gateway restart` from shells without injected env.
 #>
@@ -66,9 +66,9 @@ Or run this script from an injected shell.
 "@
 }
 
-$env:WSLENV = "ANTHROPIC_API_KEY/u:OPENAI_API_KEY/u:OPENROUTER_API_KEY/u"
+$env:WSLENV = "ANTHROPIC_API_KEY/u:OPENAI_API_KEY/u:OPENROUTER_API_KEY/u:XAI_API_KEY/u"
 # Single-line bash avoids CRLF/heredoc breakage; vars come from WSLENV-inherited env inside WSL.
-$bashLc = 'set -e; { printf "ANTHROPIC_API_KEY=%s\n" "$ANTHROPIC_API_KEY"; printf "OPENAI_API_KEY=%s\n" "$OPENAI_API_KEY"; printf "OPENROUTER_API_KEY=%s\n" "$OPENROUTER_API_KEY"; } > ~/.openclaw/.gateway-env; chmod 600 ~/.openclaw/.gateway-env; systemctl --user daemon-reload; systemctl --user restart openclaw-gateway.service; sleep 8; echo GATEWAY_STARTED'
+$bashLc = 'set -e; { printf "ANTHROPIC_API_KEY=%s\n" "$ANTHROPIC_API_KEY"; printf "OPENAI_API_KEY=%s\n" "$OPENAI_API_KEY"; printf "OPENROUTER_API_KEY=%s\n" "$OPENROUTER_API_KEY"; printf "XAI_API_KEY=%s\n" "$XAI_API_KEY"; } > ~/.openclaw/.gateway-env; chmod 600 ~/.openclaw/.gateway-env; systemctl --user daemon-reload; systemctl --user restart openclaw-gateway.service; sleep 8; echo GATEWAY_STARTED'
 $gwResult = wsl bash -lc $bashLc
 $env:WSLENV = ""
 

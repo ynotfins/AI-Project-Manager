@@ -2,6 +2,22 @@
 
 This repo uses a five-tab Cursor workflow: PLAN / AGENT / DEBUG / ASK / ARCHIVE.
 
+## Authority Hierarchy (read this first)
+
+The governing product charter for this tri-workspace is:
+
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — **supreme authority**; no agent, prompt, rule, or doc in any repo may weaken or override it
+2. Tony's explicit permission to change `FINAL_OUTPUT_PRODUCT.md`
+3. `AUTHORITATIVE_STANDARD.md` and `TEAM_ROSTER.md` in the knowledgebase — subordinate translations of the charter
+4. Repo-local rules and workflow docs — valid only when they do not conflict with the above
+5. `docs/ai/STATE.md` and `docs/ai/HANDOFF.md` — **operational evidence only**; never product law
+
+**Layer roles:**
+
+- `AI-Project-Manager` — workflow and process layer: tab contracts, execution discipline, state tracking, tool policy, cross-repo orchestration. It is not the product authority.
+- `open--claw` — strict enforcement center: product charter, AI employee knowledgebase, quality standards, Sparky's mandate.
+- `droidrun` — actuator layer: phone automation, MCP phone tools, Android/Portal runtime bridge.
+
 ## Authoritative rules
 
 - `.cursor/rules/00-global-core.md` — non-negotiable behaviors
@@ -12,7 +28,7 @@ This repo uses a five-tab Cursor workflow: PLAN / AGENT / DEBUG / ASK / ARCHIVE.
 
 ## State tracking
 
-- `docs/ai/STATE.md` — **primary operational log**; PLAN reads this first to understand current state, blockers, fallbacks, and cross-repo effects. AGENT updates it after every execution block using the enforced template in `10-project-workflow.md`.
+- `docs/ai/STATE.md` — **operational evidence log** (not product law); PLAN reads this first to understand current state, blockers, fallbacks, and cross-repo effects. AGENT updates it after every execution block using the enforced template in `10-project-workflow.md`.
 - `docs/ai/PLAN.md` — active plan with phases and exit criteria
 - `docs/ai/context/` — non-canonical artifact storage: session transcripts, bulk dumps, and ephemeral context files. Informative only; never authoritative.
 - `docs/ai/archive/` — superseded docs. **Never consulted** by PLAN. Historical reference only.
@@ -21,12 +37,13 @@ This repo uses a five-tab Cursor workflow: PLAN / AGENT / DEBUG / ASK / ARCHIVE.
 
 PLAN must reconstruct current system state from repo-tracked sources before consulting artifacts or chat history. If repo sources and chat context disagree, repo sources win unless current execution evidence proves otherwise. Full rule: `10-project-workflow.md § PLAN source-of-truth priority`.
 
-1. `docs/ai/STATE.md` — primary operational source of truth
-2. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
-3. `docs/ai/memory/PATTERNS.md` — reusable patterns
-4. `docs/ai/HANDOFF.md` — session handoff context
-5. `docs/ai/context/` — transcript-derived artifacts and session dumps
-6. Chat history / `@Past Chats` — **last resort only**; use only if the above sources are insufficient
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — product charter (supreme)
+2. `docs/ai/STATE.md` — operational source of truth
+3. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
+4. `docs/ai/memory/PATTERNS.md` — reusable patterns
+5. `docs/ai/HANDOFF.md` — session handoff context
+6. `docs/ai/context/` — transcript-derived artifacts and session dumps
+7. Chat history / `@Past Chats` — **last resort only**; use only if the above sources are insufficient
 
 ## MCP policy
 
@@ -37,6 +54,7 @@ Configuration lives outside the repo. Rules enforce behavior, not plumbing.
 ## Agent contract
 
 AGENT must:
+
 - Follow PLAN prompts exactly
 - Update `docs/ai/STATE.md` after each execution block
 - Provide PASS/FAIL evidence for every tool call and command

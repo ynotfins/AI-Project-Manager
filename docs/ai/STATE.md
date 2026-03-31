@@ -1,9 +1,11 @@
 # Execution State
 <!-- markdownlint-disable MD024 MD040 MD046 MD052 MD037 MD034 -->
 
-`docs/ai/STATE.md` is the **primary operational source of truth** for PLAN.
+`docs/ai/STATE.md` is the **operational evidence log** for PLAN.
 PLAN reads this before reasoning about blockers, fallbacks, next actions, and cross-repo effects.
 `@Past Chats` is a last resort - consult only after this file, `DECISIONS.md`, `PATTERNS.md`, and `docs/ai/context/` are insufficient.
+
+> **Authority note**: This file is operational evidence only. It is not product law. The supreme governing charter is `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`. If this file or any operational log conflicts with the charter, the charter wins.
 
 ---
 
@@ -1803,3 +1805,245 @@ PASS — the project now has a durable, repo-tracked AI employee standard with a
 ### What's Next
 
 The highest-leverage next move is to promote the curated standard into the live runtime by selecting a first pilot squad and replacing the current role-thin deployed worker definitions with the stronger `AI_Employee_knowledgebase` packets.
+
+---
+
+## 2026-03-30 21:34 - Tri-workspace context bootstrap
+
+### Goal
+
+Create a durable, repo-tracked context brief that lets future sessions route work to the correct repo and entry points without re-discovering the tri-workspace architecture.
+
+### Scope
+
+- Inspected: `README.md`, `AGENTS.md`, `.cursor/rules/00-global-core.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/10-project-workflow.md`, `.cursor/rules/20-project-quality.md`, `docs/ai/STATE.md`, `docs/ai/HANDOFF.md`, `docs/ai/PLAN.md`, `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, `docs/ai/architecture/CODEBASE_ORIENTATION.md`, `openmemory.md`
+- Cross-repo inspection: `../open--claw/README.md`, `../open--claw/.cursor/rules/00-global-core.md`, `../open--claw/docs/ai/HANDOFF.md`, `../droidrun/.cursor/rules/00-global-core.md`, `../droidrun/docs/ai-handoff-summary.md`, `../droidrun/docs/project-context.json`
+- Touched: `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md`, `openmemory.md`, `docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `TodoWrite`
+- `user-serena-activate_project`
+- `user-serena-check_onboarding_performed`
+- `user-serena-read_memory`
+- `user-serena-list_dir`
+- `ReadFile`
+- `rg`
+- `Subagent`
+- `user-openmemory-add-memory`
+- `user-openmemory-search-memory`
+- `user-Clear_Thought_1_5-clear_thought`
+- `ApplyPatch`
+- `ReadLints`
+- `Shell`:
+  - `ls`
+  - `Get-Date -Format "yyyy-MM-dd HH:mm"`
+  - `git rev-parse --abbrev-ref HEAD`
+  - `git rev-parse HEAD`
+  - `git remote get-url origin`
+  - `git status --short`
+  - duplicate file casing scan via `Get-ChildItem -Recurse -File | Group-Object { $_.ToLowerInvariant() }`
+  - referenced path existence scan via `Test-Path`
+
+### Changes
+
+- Added `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md` with repo responsibilities, canonical source order, task-routing guidance, first-code-file entry points, and a current cross-repo operational snapshot.
+- Updated `openmemory.md` to register the new brief as a reusable routing component/pattern.
+- Appended this STATE block.
+
+### Evidence
+
+| Check | Result | Detail |
+| --- | --- | --- |
+| Governance source sweep | PASS | Authoritative docs and rules agree that `AI-Project-Manager` is governance/control plane, not runtime code. |
+| Cross-repo boundary check | PASS | `open--claw` and `droidrun` both explicitly defer workflow/state governance to `AI-Project-Manager`. |
+| Runtime entry point identification | PASS | OpenClaw runtime boot path and DroidRun actuator entry points were confirmed and recorded in the new brief. |
+| OpenMemory project search | PASS | Searches ran successfully but returned zero relevant stored bootstrap memories, so repo docs remained canonical. |
+| OpenMemory writeback | PASS | `user-openmemory-add-memory` accepted the new tri-workspace bootstrap brief as async ingestion. |
+| OpenMemory recall verification | PASS | Follow-up `user-openmemory-search-memory` returned the stored tri-workspace bootstrap memory after the async ingestion delay. |
+| Clear Thought reasoning gate | PASS | `user-Clear_Thought_1_5-clear_thought` was invoked for the tri-workspace mental model before finalizing the plan/brief. |
+| Malformed `rg` call | FAIL | One `rg` invocation was sent with invalid JSON parameters and returned a parsing error; reran the search with corrected arguments and continued with evidence. |
+| New brief path verification | PASS | `Test-Path` checks passed for all files referenced from the brief, including downstream repo entry points. |
+| Duplicate file casing check | PASS | Case-insensitive scan returned `PASS: no case-insensitive duplicate file paths`. |
+| Secret scan on changed docs | PASS | `rg` found no token-like secrets in `openmemory.md`, `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md`, or this file. |
+| Markdown diagnostics | PASS | `ReadLints` showed the edited files introduced no new blocking issues; remaining warnings are longstanding markdown-style warnings concentrated in `docs/ai/STATE.md`. |
+| Handoff update needed | PASS | No verified operational drift required `docs/ai/HANDOFF.md` changes in this block. |
+
+### Verdict
+
+READY - the tri-workspace context brief now exists in-repo and is sufficient to route future governance, OpenClaw runtime, and DroidRun work without re-mapping the architecture.
+
+### Blockers
+
+None.
+
+### Fallbacks Used
+
+- `user-openmemory-search-memory` returned no relevant bootstrap memories; fallback was the repo-tracked source-of-truth docs.
+- `user-openmemory-add-memory` ingested asynchronously; fallback for immediate confirmation was to wait briefly, then re-run `user-openmemory-search-memory` until the memory became searchable.
+- One malformed `rg` call failed before execution; fallback was an immediate corrected `rg` query.
+
+### Cross-Repo Impact
+
+None - this block only added a governance-side context brief and did not edit `open--claw` or `droidrun`.
+
+### Decisions Captured
+
+- `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md` is the preferred fast-routing document for new tri-workspace sessions.
+- `openmemory.md` now points to that brief as a reusable bootstrap component.
+
+### Pending Actions
+
+- Use the new brief as the first routing document when the next task moves from governance into either `vendor/openclaw` or `droidrun`.
+
+### What Remains Unverified
+
+- The cross-repo runtime snapshot in the brief is doc-backed, not freshly re-verified against live services in this block.
+
+### What's Next
+
+Use `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md` to route the next implementation or debugging task directly to the correct repo and entry points.
+
+## 2026-03-31 14:00 — tri-workspace authority surface rewrite
+
+### Goal
+
+Rewrite all tri-workspace authority surfaces to enforce a strict charter hierarchy with FINAL_OUTPUT_PRODUCT.md as supreme, remove all claims that AI-Project-Manager is the supreme authority, and establish the correct layer model across all repos.
+
+### Scope
+
+18 files across three repos plus three STATE.md updates:
+- AI-Project-Manager: AGENTS.md, .cursor/rules/00-global-core.md, .cursor/rules/10-project-workflow.md, .cursor/rules/openmemory.mdc, docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md, docs/ai/CURSOR_WORKFLOW.md, docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md, docs/ai/STATE.md
+- open--claw: AGENTS.md, .cursor/rules/00-global-core.md, docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md, docs/ai/CURSOR_WORKFLOW.md, docs/ai/HANDOFF.md, docs/ai/operations/PROJECT_LONGTERM_AWARENESS.md, docs/ai/STATE.md
+- droidrun: AGENTS.md, .cursor/rules/00-global-core.md, .cursor/rules/openmemory.mdc, docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md, docs/ai/HANDOFF.md, docs/ai/STATE.md
+
+### Commands / Tool Calls
+
+- Read: FINAL_OUTPUT_PRODUCT.md, AUTHORITATIVE_STANDARD.md, TEAM_ROSTER.md
+- Read: all 18 target files before editing
+- Write/StrReplace: all target files
+- Shell: markdownlint-cli2 validation on changed files across all three repos
+
+### Changes
+
+- All AGENTS.md files: added explicit authority hierarchy table; replaced AI-Project-Manager supremacy claim with correct layer model (AI-PM = workflow/process, open--claw = strict enforcement center, droidrun = actuator)
+- All 00-global-core.md files: added authority hierarchy section with layer model; replaced old first-line claims
+- AI-Project-Manager 10-project-workflow.md: added subordination note to charter
+- Both openmemory.mdc files: added charter subordination clause
+- All TAB_BOOTSTRAP_PROMPTS.md files: FINAL_OUTPUT_PRODUCT.md added as first item in every read list
+- All CURSOR_WORKFLOW.md files: added authority hierarchy section and layer model table
+- open--claw HANDOFF.md: rewritten §1 with durable authority model; FINAL_OUTPUT_PRODUCT.md added first to read order
+- open--claw PROJECT_LONGTERM_AWARENESS.md: rewritten with charter authority, correct mission statement, anti-drift rules
+- droidrun HANDOFF.md: rewritten §1 with durable authority model; read order updated
+- TRI_WORKSPACE_CONTEXT_BRIEF.md: completely rewritten with authority table, corrected layer model, FINAL_OUTPUT_PRODUCT.md first in canonical source order
+- All STATE.md files: added authority note clarifying operational evidence status
+
+### Evidence
+
+- PASS: markdownlint-cli2 — no MD032 errors in any changed file
+- PASS: MD013 line-length errors pre-existing throughout all repos (not introduced by this work)
+- PASS: All 18 target files written without errors
+- PASS: FINAL_OUTPUT_PRODUCT.md not modified (per task rules)
+
+### Verdict
+
+READY — all 18 target files updated; authority hierarchy enforced throughout tri-workspace.
+
+### Blockers
+
+None.
+
+### Fallbacks Used
+
+None.
+
+### Cross-Repo Impact
+
+open--claw and droidrun both updated with consistent authority model. All three repos now enforce identical hierarchy.
+
+### Decisions Captured
+
+- FINAL_OUTPUT_PRODUCT.md is supreme; AI-Project-Manager is the workflow/process layer only.
+- open--claw is the strict enforcement center.
+- droidrun is the actuator layer.
+- STATE.md and HANDOFF.md are operational evidence only, never product law.
+- All memory rules are explicitly subordinate to the charter.
+
+### Pending Actions
+
+None — task complete.
+
+### What Remains Unverified
+
+- Bootstrap prompts referencing @../open--claw/FINAL_OUTPUT_PRODUCT.md path work correctly in multi-root Cursor sessions (path may need adjustment per Cursor workspace resolution).
+
+### What's Next
+
+Verify bootstrap prompt paths resolve correctly in a live Cursor session using the updated TAB_BOOTSTRAP_PROMPTS.md files.
+
+## 2026-03-31 15:30 — autonomy model rewrite
+
+### Goal
+
+Rewrite the autonomy model across six files so routine software-delivery work no longer requires user approval, user-confirmed model switches, or human sequencing. Sparky becomes the internal approval authority; Tony-gates remain only for the four hard-reserved categories.
+
+### Scope
+
+- AI-Project-Manager: docs/ai/architecture/GOVERNANCE_MODEL.md, docs/ai/STATE.md
+- open--claw: .cursor/rules/05-global-mcp-usage.md, .cursor/rules/10-project-workflow.md, .cursor/rules/15-model-routing.md, open-claw/docs/VISION.md, open-claw/docs/REQUIREMENTS.md, docs/ai/STATE.md
+
+### Commands / Tool Calls
+
+- Read: GOVERNANCE_MODEL.md, 05-global-mcp-usage.md, 10-project-workflow.md, 15-model-routing.md, VISION.md, REQUIREMENTS.md
+- Write: all six target files
+- Shell: markdownlint-cli2 validation on all changed files
+
+### Changes
+
+- GOVERNANCE_MODEL.md: Full rewrite. Three-tier authority structure (auto-approve / Sparky-notified / Tony-gate). Routine delivery work — planning, refactoring, rule rewrites, model escalation, PRs, staging deploys, code changes — moved to auto-approve. Sparky introduced as internal approval authority. Tony-gate list narrowed to: FINAL_OUTPUT_PRODUCT.md changes, privileged credentials, financial transactions, external communications, irreversible external-world actions, product goal changes.
+- 05-global-mcp-usage.md: Disabled-tool policy rewritten. Routine delivery no longer pauses for user to enable a tool — Sparky routes to fallback or proceeds. firecrawl active-tools clause updated to same policy.
+- 10-project-workflow.md: AGENT stop/approval language replaced with internal routing to Sparky. Sparky mandatory file-change review section added. PLAN source-of-truth priority updated to put FINAL_OUTPUT_PRODUCT.md first. Subordination note added.
+- 15-model-routing.md: Rule A hard-stop replaced with internal escalation — AGENT routes to Sparky or self-escalates to thinking-class model without waiting for user confirmation. Rule B updated to internal switch without user confirmation. Rule C updated to hand off to PLAN/Sparky. Sparky routing format added. Tony-gate section clarifies model routing is never a Tony-gate. "No Silent Escalation" renamed "No Silent Degradation" — recording requirement kept, user-stop requirement removed.
+- VISION.md: Fully rewritten. Removed "orchestrates, not generates" framing. Added autonomous AI employee organization model, Sparky leadership, Tony-reserved authority scope.
+- REQUIREMENTS.md: Removed "Autonomous long-running agents (all actions are human-triggered)" from out-of-scope. Added autonomous delivery, Sparky review, and self-improving as core requirements. Tony-reserved actions listed explicitly.
+
+### Evidence
+
+- PASS: markdownlint-cli2 — no MD032/MD025/MD001 structural errors in any changed file
+- PASS: All six target files written without errors
+
+### Verdict
+
+READY — all six files updated; autonomy model enforced; Tony-gates narrowed to four categories.
+
+### Blockers
+
+None.
+
+### Fallbacks Used
+
+None.
+
+### Cross-Repo Impact
+
+open--claw: five files updated. AI-Project-Manager: GOVERNANCE_MODEL.md updated.
+
+### Decisions Captured
+
+- Sparky is the internal approval/reject/refactor authority for all routine delivery work.
+- Tony-gate actions: FINAL_OUTPUT_PRODUCT.md changes, privileged credentials, financial transactions, external communications to real people, irreversible external-world actions, product goal redefinition.
+- AGENT may escalate model or route to Sparky without user confirmation.
+- Autonomous long-running agents are in scope; they are the primary delivery mechanism.
+
+### Pending Actions
+
+None — task complete.
+
+### What Remains Unverified
+
+- The Sparky routing format in 15-model-routing.md requires live testing in a multi-agent session to confirm routing plumbing works.
+- Governance overlay enforcement (wiring into Gateway) is still Phase 6B (blocked on ANTHROPIC_API_KEY).
+
+### What's Next
+
+Verify bootstrap prompt paths and Sparky routing in a live multi-agent session.

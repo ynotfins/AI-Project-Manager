@@ -1,18 +1,31 @@
 # open--claw Governance Model
 
-**Last updated:** 2026-02-23
-**Author:** Agent (Phase 6A)
+**Last updated:** 2026-03-31
+**Supersedes:** 2026-02-23 draft (Phase 6A architecture-only)
 
 ---
 
 ## Purpose
 
-The Governance Model defines **what open--claw may do autonomously, what requires human
-approval, and what is permanently blocked**. It is the safety layer between autonomous
-operation and real-world consequences.
+The Governance Model defines **what the AI employee team may do autonomously, what requires Sparky's internal approval, and what is exclusively reserved for Tony**. It is the safety layer between autonomous delivery operation and real-world consequences.
 
-AI-Project-Manager owns this document. open--claw reads it at Gateway startup and enforces
-it via the Governance overlay applied by the Executor before every High/Medium action.
+This model is aligned with `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`, which states:
+
+> Day-to-day software delivery work must not depend on human interpretation, manual sequencing, or constant approval. Human involvement is reserved only for governance boundaries that must remain under Tony's control.
+
+AI-Project-Manager owns this document. open--claw reads it at Gateway startup and enforces it via the Governance overlay applied before every action.
+
+---
+
+## Authority Structure
+
+| Authority | Scope |
+|---|---|
+| **Tony** (human) | Changing `FINAL_OUTPUT_PRODUCT.md`; issuing or revoking privileged credentials; approving irreversible real-world external actions; redefining the product goal |
+| **Sparky** (`sparky-chief-product-quality-officer`) | Internal approval, rejection, or refactor authority for all normal software-delivery work; quality signoff; release go/no-go; file-change review |
+| **AI employee team** | Autonomous execution of all delivery phases under Sparky's supervision |
+
+Routine delivery work does not wait for user approval. Sparky is the approval layer for internal work.
 
 ---
 
@@ -22,72 +35,80 @@ Three risk levels determine the approval behavior for every action:
 
 | Level | Name | Approval behavior | Timeout |
 |---|---|---|---|
-| 🟢 Low | Auto-approve | Execute immediately without notification | None |
-| 🟡 Medium | Notify + auto-approve | Notify user via configured channel; proceed after timeout unless rejected | 30 minutes |
-| 🔴 High | Explicit approval required | Halt execution; wait for explicit user confirmation; do not auto-approve | Indefinite |
+| 🟢 Low | Auto-approve | Execute immediately; no notification required | None |
+| 🟡 Medium | Sparky-notified | Sparky is notified; execution proceeds unless Sparky stops it | None (Sparky acts immediately if needed) |
+| 🔴 Tony-gate | Tony explicit approval required | Halt execution; wait for Tony's explicit confirmation; do not auto-approve or route to Sparky | Indefinite |
 
 ---
 
 ## Action Classification
 
-### 🟢 Low — Auto-Approve
+### 🟢 Low — Auto-Approve (no human interaction)
 
-| Action | Module | Rationale |
-|---|---|---|
-| Read any file in allowed scoped paths | Tool Router | Read-only, no side effect |
-| Web search / SERP lookup | Tool Router | No mutation |
-| Crawl public URL | SEO Engine | Read-only |
-| Write to staging environment | Deployment Engine | Easily reversible |
-| Generate code (not yet deployed) | Code Generator | No external effect until deployed |
-| Add / search memory | Memory Engine | Non-destructive |
-| Write report to Google Sheets (read-only tab) | Finance Engine | Append-only, no mutation |
-| Health check / status query | All | Read-only probe |
-| Shell command in scoped path (read) | Tool Router | No mutation |
+| Action | Rationale |
+|---|---|
+| Read any file in allowed scoped paths | Read-only, no side effect |
+| Web search / SERP lookup | No mutation |
+| Crawl public URL | Read-only |
+| Write to staging environment | Easily reversible |
+| Generate or refactor code (not yet deployed) | No external effect until deployed |
+| Open a GitHub PR | Reversible; internal delivery step |
+| Add / search memory | Non-destructive |
+| Health check / status query | Read-only probe |
+| Shell command in scoped path (read or scoped write) | Limited scope, reversible |
+| Trigger CI/CD pipeline (staging) | Reversible; internal delivery step |
+| Planning, re-planning, and phase sequencing | Internal delivery coordination |
+| Rule rewrites and governance doc updates | Internal delivery coordination |
+| Model escalation decisions | Internal to the agent team |
+| Internal task delegation between AI employees | Internal coordination |
+| Refactoring any amount of code in a focused area | Normal delivery work |
+| Writing, editing, or deleting files in scoped paths | Normal delivery work |
+| Merge PR to a non-main branch | Internal delivery step |
+| Delete memory entry | Permanent but recoverable from docs |
+| Add new MCP server configuration | Infrastructure change within approved scope |
+| Send notification via internal messaging channel | Internal communication |
+| SEO meta tag / structured data changes | Reversible; live ranking impact is monitored |
+| Content changes on staging | Staging-only; no production effect |
 
-### 🟡 Medium — Notify + Auto-Approve (30 min)
+### 🟡 Medium — Sparky-Notified (Sparky reviews; execution proceeds)
 
-| Action | Module | Rationale |
-|---|---|---|
-| Modify SEO meta tags / structured data | SEO Engine | Live ranking impact, reversible |
-| Modify content on staging | Code Generator | Affects staging users if any |
-| Open GitHub PR | Code Generator / Deployment Engine | Requires human awareness |
-| Delete memory entry | Memory Engine | Permanent but recoverable from docs |
-| Shell command with write operations in scoped path | Tool Router | Limited scope, reversible |
-| Trigger CI/CD pipeline (staging) | Deployment Engine | Build cost; staging impact |
-| Categorize financial transaction (auto-assign) | Finance Engine | Reversible via re-categorization |
-| Send notification via messaging channel | All | User-visible communication |
-| Add new MCP server configuration | Tool Router | Infrastructure change |
+| Action | Rationale |
+|---|---|
+| Merge PR to main/master | Permanent code change; Sparky must confirm readiness |
+| Modify > 1000 LOC in a single PR | Broad change; Sparky reviews before merge |
+| Deploy to production | Immediate live impact; Sparky signoff required (not Tony unless external real-world risk) |
+| Change authentication configuration | Security boundary; Sparky review |
+| Rotate or regenerate API keys (internal services only) | Disrupts dependent services; Sparky review |
+| Disable any Gateway service | Service disruption; Sparky review |
+| SEO changes touching > 50 pages | Broad ranking risk; Sparky review |
+| Any action outside defined scoped paths | Sandbox boundary; Sparky review before proceeding |
 
-### 🔴 High — Explicit Approval Required
+### 🔴 Tony-gate — Tony's Explicit Approval Required
 
-| Action | Module | Rationale |
-|---|---|---|
-| Deploy to **production** | Deployment Engine | Immediate live impact |
-| Modify > 500 LOC in a single PR | Code Generator | Broad change, high review burden |
-| Merge PR to main/master | Deployment Engine | Permanent code change |
-| Financial transaction of any kind | Finance Engine | Real money at stake |
-| Access financial account data | Finance Engine | Sensitive data exposure risk |
-| Delete files in any environment | All | Potentially irreversible |
-| Change authentication configuration | All | Security boundary |
-| Rotate or regenerate API keys | All | Disrupts dependent services |
-| Add/remove Bitwarden secrets | Tool Router | Secrets management |
-| Disable any Gateway service | All | Service disruption |
-| Send external communication (email, SMS, WhatsApp to contacts) | All | User-impersonation risk |
-| SEO changes touching > 20 pages | SEO Engine | Broad ranking risk |
-| Any action outside defined scoped paths | Tool Router | Sandbox escape risk |
+| Action | Rationale |
+|---|---|
+| Change `FINAL_OUTPUT_PRODUCT.md` | Supreme product charter; only Tony may amend |
+| Redefine the product goal | Reserved human authority per the charter |
+| Issue, rotate, or revoke privileged credentials (Bitwarden secrets, API keys for external services) | Secrets management; Tony's exclusive domain |
+| Add / remove Bitwarden secrets | Tony's exclusive secrets authority |
+| Financial transaction of any kind | Real money; zero autonomy |
+| Access financial account data | Sensitive data exposure risk |
+| Send external communication to real people (email, SMS, WhatsApp to Tony's contacts) | User-impersonation risk |
+| Deploy to production in a way that creates irreversible external-world consequences | Real-world permanent effect |
+| Any action outside designated filesystem scopes | Sandbox escape risk |
 
 ---
 
 ## Safety Constraints (Hard Rules — Never Auto-Approved)
 
-These constraints are **permanently blocked** and may not be overridden by any approval:
+These constraints are **permanently blocked** and may not be overridden by any internal authority, including Sparky:
 
 ```
 FINANCIAL:
   - Direct access to savings accounts: BLOCKED
   - Direct access to operating accounts: BLOCKED
   - Only the funded bill-pay sandbox is accessible for financial operations
-  - Maximum transaction size: $0 (zero — all transactions require explicit approval)
+  - Maximum transaction size: $0 (zero — all transactions require Tony's explicit approval)
 
 INFRASTRUCTURE:
   - Only one active Gateway at a time (ChaosCentral is primary)
@@ -96,7 +117,8 @@ INFRASTRUCTURE:
 
 DEPLOYMENT:
   - Default target: staging
-  - Production requires explicit approval — ALWAYS (no exceptions for "simple" changes)
+  - Production deployments with irreversible external-world consequences require Tony approval
+  - Standard production deployments with rollback paths require Sparky signoff only
   - No force-push to main/master under any circumstances
 
 SECRETS:
@@ -112,38 +134,51 @@ SCOPE:
 
 IDENTITY:
   - No impersonation of Tony in external communications
-  - All AI-generated messages must be clearly labeled or reviewed before send
+  - All AI-generated messages to real external contacts must be reviewed before send
 ```
 
 ---
 
-## Escalation Path
+## Sparky's Internal Authority
 
-When open--claw encounters uncertainty, it follows this escalation path:
+Sparky (`sparky-chief-product-quality-officer`) is the internal approval and quality authority for all routine software-delivery work. This means:
+
+- Sparky may approve, reject, or require refactor of any code change, architecture decision, or delivery step without waiting for Tony.
+- Sparky may escalate any task back to the responsible employee with correction requirements.
+- Sparky must review every file-change during delivery per the mandatory review rule in `FINAL_OUTPUT_PRODUCT.md`.
+- Sparky's go/no-go decision is required before merging to main or deploying to production.
+- Sparky may not override the Tony-gate list or the hard safety constraints above.
+
+Sparky does **not** require user confirmation to exercise these authorities. They are internal to the team.
+
+---
+
+## Internal Escalation Path
+
+When the team encounters uncertainty during delivery, the escalation path is:
 
 ```
-1. PAUSE — Stop the current action immediately.
+1. PAUSE — Stop the current action.
 2. CLASSIFY — Determine whether the uncertainty is:
-   a. Ambiguous input (ask Planner to re-plan with constraints)
-   b. Missing information (request from user via configured channel)
-   c. Risk boundary (treat as High-risk, require explicit approval)
-   d. Tool failure (follow fallback policy in 05-global-mcp-usage.md)
-3. NOTIFY — Inform user via configured channel with:
-   - What was being attempted
-   - Why execution paused
-   - What is needed to proceed
-   - Proposed safe fallback (if any)
-4. WAIT — Do not proceed until the appropriate signal is received.
-5. AUDIT — Log the escalation event regardless of resolution.
+   a. Technical ambiguity → route to Sparky for internal resolution
+   b. Missing information resolvable from docs/memory → resolve internally
+   c. Tony-gate action → halt and notify Tony via configured channel
+   d. Tool failure → follow fallback policy in 05-global-mcp-usage.md
+3. RESOLVE:
+   - For (a) and (b): Sparky decides; resume without Tony involvement
+   - For (c): Notify Tony with what was attempted, why paused, what is needed, and safe fallback
+   - For (d): Use fallback; record FAIL in STATE.md
+4. AUDIT — Log the escalation event regardless of resolution.
 ```
 
-**Never:** Guess and proceed. Uncertainty always escalates upward.
+**Never:** Pause normal delivery work waiting for Tony input on internal decisions.
+**Always:** Escalate Tony-gate actions to Tony; resolve everything else internally.
 
 ---
 
 ## Audit Requirements
 
-Every action that is Medium or High risk must produce an audit record:
+Every action that is Sparky-notified or Tony-gate must produce an audit record:
 
 | Field | Required | Source |
 |---|---|---|
@@ -152,54 +187,39 @@ Every action that is Medium or High risk must produce an audit record:
 | Risk level | Yes | Governance Model classification |
 | Inputs | Yes | Sanitized (no secrets) |
 | Output | Yes | Sanitized result or error |
-| Approval signal | Yes (Medium/High) | User response or timeout |
+| Approval signal | Yes (Sparky/Tony gates) | Sparky decision or Tony response |
 | Module | Yes | Which module triggered |
-| Task graph ID | Yes | From Planner |
 | Outcome | Yes | PASS / FAIL / ROLLBACK |
 
 **Storage:** `docs/ai/audit/` in AI-Project-Manager repo (append-only log per date).
 **Retention:** 90 days minimum; 1 year for financial actions.
-**Secret handling:** Audit logs must never contain raw secret values. Use `[REDACTED]` for any
-field that could expose credentials, PII, or financial account data.
+**Secret handling:** Audit logs must never contain raw secret values. Use `[REDACTED]` for any field that could expose credentials, PII, or financial account data.
 
 ---
 
 ## Least-Privilege Rules
 
-1. **Filesystem:** open--claw reads/writes only within the three approved paths.
-   It does not enumerate files outside these paths, even for audit purposes.
-2. **GitHub:** open--claw uses `GITHUB_PERSONAL_ACCESS_TOKEN` scoped to specific repos.
-   It does not create repos, manage org settings, or access other users' repos.
-3. **Financial:** open--claw reads bill-pay sandbox exports only. No write access to any
-   financial account. No stored financial account credentials.
-4. **Shell:** open--claw runs shell commands only in scoped working directories.
-   No `sudo`, no system path mutation, no process management outside own PIDs.
-5. **MCP tools:** open--claw uses only configured MCP servers. It does not install new MCP
-   servers at runtime without a Governance Model update approved by AI-Project-Manager.
-6. **Memory:** open--claw stores memories scoped to `ynotfins/AI-Project-Manager` or
-   `ynotfins/open--claw`. It does not write to other project namespaces.
+1. **Filesystem:** open--claw reads/writes only within the three approved paths. It does not enumerate files outside these paths.
+2. **GitHub:** open--claw uses `GITHUB_PERSONAL_ACCESS_TOKEN` scoped to specific repos. It does not create repos, manage org settings, or access other users' repos.
+3. **Financial:** open--claw reads bill-pay sandbox exports only. No write access to any financial account. No stored financial account credentials.
+4. **Shell:** open--claw runs shell commands only in scoped working directories. No `sudo`, no system path mutation, no process management outside own PIDs.
+5. **MCP tools:** open--claw uses only configured MCP servers. It does not install new MCP servers at runtime without a Governance Model update.
+6. **Memory:** open--claw stores memories scoped to `ynotfins/AI-Project-Manager` or `ynotfins/open--claw`. It does not write to other project namespaces.
 
 ---
 
-## Approval Channel
+## Approval Channel (Tony-gate only)
 
-Current configured approval channel: **WhatsApp / Telegram** (via open--claw Gateway inbox).
+Current configured channel for Tony-gate actions: **WhatsApp / Telegram** (via open--claw Gateway inbox).
 
 Fallback: Direct Cursor chat in AI-Project-Manager AGENT tab.
 
-Approval format required:
+Tony approval format:
+
 ```
-APPROVE <task-id>     — approves the pending action
-REJECT <task-id>      — rejects and halts; Planner re-plans
-APPROVE ALL           — approves all pending Medium actions in current session
+APPROVE <task-id>     — approves the pending Tony-gate action
+REJECT <task-id>      — rejects and halts; team re-plans
+APPROVE ALL           — approves all pending Tony-gate actions in current session
 ```
 
----
-
-## Phase Status
-
-| Phase | Governance component | Status |
-|---|---|---|
-| 6A | This document — governance model defined | COMPLETE (architecture only) |
-| 6B | Gateway boot — enforcement wired into Gateway | BLOCKED (waiting: ANTHROPIC_API_KEY) |
-| 6C | Approval channel — WhatsApp/Telegram wired | BLOCKED (depends on 6B) |
+Sparky approval is recorded in `docs/ai/STATE.md` and the audit log; it does not require a channel message.

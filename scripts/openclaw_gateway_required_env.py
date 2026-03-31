@@ -20,6 +20,8 @@ def main() -> int:
         required.add("OPENAI_API_KEY")
     if re.search(r"openrouter/", blob):
         required.add("OPENROUTER_API_KEY")
+    if re.search(r"xai/", blob):
+        required.add("XAI_API_KEY")
     if re.search(r"anthropic/", blob):
         required.add("ANTHROPIC_API_KEY")
     for name in sorted(required):

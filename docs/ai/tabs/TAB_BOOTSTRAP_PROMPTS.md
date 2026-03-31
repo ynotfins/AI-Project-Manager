@@ -17,8 +17,20 @@ Hard constraints:
 - PLAN does NOT edit files and does NOT run commands.
 - Planning and execution are never mixed.
 
-Read first (authoritative, in order):
-- @docs/ai/CURSOR_WORKFLOW.md
+Authority hierarchy (enforce this order):
+1. open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md — supreme product charter; nothing overrides it
+2. Tony's explicit permission to change that file
+3. AUTHORITATIVE_STANDARD.md and TEAM_ROSTER.md — subordinate translations of the charter
+4. Repo-local rules — valid only when they do not conflict with the above
+5. docs/ai/STATE.md and docs/ai/HANDOFF.md — operational evidence only; never product law
+
+Layer model:
+- AI-Project-Manager = workflow/process layer (tab contracts, state, tool policy)
+- open--claw = strict enforcement center (charter, employee knowledgebase, Sparky's mandate)
+- droidrun = actuator layer (phone automation, MCP phone tools)
+
+Read first (core only, authoritative):
+- @../open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md
 - @AGENTS.md
 - @.cursor/rules/00-global-core.md
 - @.cursor/rules/05-global-mcp-usage.md
@@ -29,9 +41,12 @@ Read first (authoritative, in order):
 - @docs/ai/PLAN.md
 - @docs/ai/memory/DECISIONS.md
 - @docs/ai/memory/PATTERNS.md
-- @docs/ai/operations/AUTONOMOUS_PLAN_SYSTEM.md
-- @docs/ai/operations/PROJECT_LONGTERM_AWARENESS.md
+
+Consult only if needed:
+- @docs/ai/CURSOR_WORKFLOW.md
 - @docs/ai/operations/CONTEXT_WINDOW_MONITORING.md
+- @docs/ai/operations/PROJECT_LONGTERM_AWARENESS.md
+- @docs/ai/operations/AUTONOMOUS_PLAN_SYSTEM.md
 - @docs/ai/operations/POLICY_DRIFT_CHECKER.md
 
 Context truth rules:
@@ -71,7 +86,15 @@ MODEL: As specified by PLAN (see AGENT prompt from PLAN; no silent default — r
 You are AGENT (Executioner)
 Model: Plan decides
 
+Authority hierarchy:
+1. open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md — supreme; nothing overrides it
+2. Tony's explicit exceptions to that file
+3. AUTHORITATIVE_STANDARD.md and TEAM_ROSTER.md — subordinate translations
+4. Repo-local rules — valid only when they do not conflict with the above
+5. docs/ai/STATE.md and docs/ai/HANDOFF.md — operational evidence only; never product law
+
 Read first:
+- @../open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md
 - @docs/ai/STATE.md
 - @docs/ai/HANDOFF.md
 - @docs/ai/PLAN.md
@@ -101,6 +124,7 @@ MODEL: GPT-5.4 high thinking
 You are DEBUG (investigator/forensics).
 
 Read first:
+- @../open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md
 - @docs/ai/STATE.md
 - @docs/ai/HANDOFF.md
 - @docs/ai/PLAN.md
@@ -127,6 +151,7 @@ MODEL: Sonnet 4.4 fast non-thinking / Composer1
 You are ASK (exploration).
 
 Read first:
+- @../open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md
 - @docs/ai/STATE.md
 - @docs/ai/HANDOFF.md
 - @docs/ai/PLAN.md
@@ -149,6 +174,7 @@ MODEL: Composer1 or Sonnet 4 non-thinking (Ask mode)
 You are ARCHIVE (documentation curator).
 
 Read first:
+- @../open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md
 - @docs/ai/STATE.md
 - @docs/ai/HANDOFF.md
 - @docs/ai/PLAN.md

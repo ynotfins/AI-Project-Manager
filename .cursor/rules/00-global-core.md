@@ -1,6 +1,16 @@
 # 00 — Global Core (non-negotiables)
 
-AI-Project-Manager is the canonical governance authority for workflow, tool policy, planning contracts, and state discipline across the tri-workspace.
+## Authority Hierarchy
+
+The supreme governing document for this tri-workspace is `FINAL_OUTPUT_PRODUCT.md` in `open--claw/open-claw/AI_Employee_knowledgebase/`. No rule, prompt, plan, or convenience pattern in any repo may override or weaken it.
+
+**Workspace layer model:**
+
+- `AI-Project-Manager` is the **workflow and process layer**: tab discipline, execution contracts, state tracking, tool policy, and cross-repo orchestration. It is not the product authority.
+- `open--claw` is the **strict enforcement center**: product charter, AI employee knowledgebase, Sparky's mandate, and quality standards live here.
+- `droidrun` is the **actuator layer**: phone automation, MCP phone tools, and the Portal/APK runtime bridge.
+
+`docs/ai/STATE.md` and `docs/ai/HANDOFF.md` are **operational evidence** — they record what happened. They are never product law and cannot override the charter.
 
 ## Tab separation
 
@@ -29,7 +39,7 @@ Planning and execution are never mixed in the same tab.
 
 ## State updates
 
-`docs/ai/STATE.md` is the **primary operational source of truth** for PLAN. PLAN must read it before reasoning about blockers, fallbacks, next actions, and cross-repo effects. `@Past Chats` is a last resort only — consult it only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md`, and `docs/ai/context/` are insufficient.
+`docs/ai/STATE.md` is the **primary operational evidence log** for PLAN. PLAN must read it before reasoning about blockers, fallbacks, next actions, and cross-repo effects. `@Past Chats` is a last resort only — consult it only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md`, and `docs/ai/context/` are insufficient.
 
 AGENT must update `docs/ai/STATE.md` after every execution block using the enforced section template defined in `10-project-workflow.md`. Every section is required; write `None` or `N/A` if a section has nothing to report. Do not omit sections.
 

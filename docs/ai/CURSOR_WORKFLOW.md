@@ -2,6 +2,24 @@
 
 This document is the human-readable guide to the Cursor workflow used in this project.
 
+## Authority Hierarchy
+
+Before using this workflow, understand the governing authority order:
+
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — **supreme product charter**; no rule, prompt, or doc in any repo overrides it
+2. Tony's explicit permission to change that file
+3. `AUTHORITATIVE_STANDARD.md` and `TEAM_ROSTER.md` — subordinate translations of the charter
+4. Repo-local rules and workflow docs (this file, `.cursor/rules/*`) — valid only when they do not conflict with the above
+5. `docs/ai/STATE.md` and `docs/ai/HANDOFF.md` — **operational evidence only**; never product law
+
+**Workspace layer model:**
+
+| Workspace | Role |
+| --- | --- |
+| `AI-Project-Manager` | Workflow and process layer — tab discipline, execution contracts, state tracking, tool policy, cross-repo orchestration |
+| `open--claw` | Strict enforcement center — product charter, AI employee knowledgebase, Sparky's mandate, quality standards |
+| `droidrun` | Actuator layer — phone automation, MCP phone tools, Portal/APK runtime bridge |
+
 ## Five-Tab Model
 
 We use exactly five Cursor chat tabs, each with a distinct role:
@@ -42,8 +60,8 @@ Developer-local (optional):
 
 ## State and Planning
 
-- `docs/ai/STATE.md` — **primary operational source of truth**; PLAN reads this first before reasoning about blockers, next actions, and cross-repo effects. Every AGENT block must append an entry using the enforced template in `.cursor/rules/10-project-workflow.md`.
-- `docs/ai/HANDOFF.md` — concise operator snapshot; AGENT keeps this accurate after meaningful state changes
+- `docs/ai/STATE.md` — **operational evidence log**; PLAN reads this to understand current state, blockers, and cross-repo effects. Every AGENT block must append an entry using the enforced template in `.cursor/rules/10-project-workflow.md`. **This is evidence, not product law.**
+- `docs/ai/HANDOFF.md` — concise operator snapshot; AGENT keeps this accurate after meaningful state changes. **Operational evidence only.**
 - `docs/ai/PLAN.md` — active plan with phases and exit criteria
 - `docs/ai/ARCHIVE.md` — compressed decisions and knowledge from past sessions
 - `docs/ai/operations/AUTONOMOUS_PLAN_SYSTEM.md` — autonomous control loop and escalation policy
@@ -57,12 +75,13 @@ Developer-local (optional):
 
 When PLAN or DEBUG needs to understand current state, consult sources in this order:
 
-1. `docs/ai/STATE.md` — primary operational source of truth
-2. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
-3. `docs/ai/memory/PATTERNS.md` — reusable patterns
-4. `docs/ai/HANDOFF.md` — session handoff context
-5. `docs/ai/context/` — transcript-derived artifacts and session dumps
-6. Chat history / `@Past Chats` — **last resort only**; use only if the above sources are insufficient
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — supreme product charter
+2. `docs/ai/STATE.md` — operational evidence
+3. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
+4. `docs/ai/memory/PATTERNS.md` — reusable patterns
+5. `docs/ai/HANDOFF.md` — session handoff context
+6. `docs/ai/context/` — transcript-derived artifacts and session dumps
+7. Chat history / `@Past Chats` — **last resort only**; use only if the above sources are insufficient
 
 Supporting planning references (consult as needed; not part of the authoritative priority order):
 
@@ -75,4 +94,4 @@ Supporting planning references (consult as needed; not part of the authoritative
 - `docs/ai/memory/DECISIONS.md` — log of key decisions with rationale
 - `docs/ai/memory/PATTERNS.md` — reusable patterns discovered during development
 
-Memory MCP tools supplement these docs for cross-session and cross-project recall.
+Memory MCP tools supplement these docs for cross-session and cross-project recall. All stored memory is subordinate to the product charter.

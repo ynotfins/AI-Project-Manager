@@ -5,7 +5,7 @@
 - **Do not** run `pnpm openclaw gateway restart` / `openclaw gateway --force` from arbitrary shells without Bitwarden-injected API keys.
 - **Do** use one of:
   1. **`$HOME\.openclaw\start-cursor-with-secrets.ps1`** (launched via `bws run …`) — calls the canonical script after Cursor starts.
-  2. **`AI-Project-Manager\scripts\restart-openclaw-gateway.ps1`** from a shell that already has `ANTHROPIC_API_KEY` (+ `OPENAI_*` / `OPENROUTER_*` when required by `~/.openclaw/openclaw.json`).
+  2. **`AI-Project-Manager\scripts\restart-openclaw-gateway.ps1`** from a shell that already has `ANTHROPIC_API_KEY` (+ `OPENAI_*` / `OPENROUTER_*` / `XAI_API_KEY` when required by `~/.openclaw/openclaw.json`).
 
 ## What the script does
 

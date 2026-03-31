@@ -2,6 +2,9 @@
 
 > Extends: `00-global-core.md` (tab separation, evidence, state discipline)
 > Extends: `05-global-mcp-usage.md` (tool-first behavior)
+> Subordinate to: `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` (supreme authority)
+
+This file governs the **workflow and process layer** of the tri-workspace. It does not supersede the product charter.
 
 ## PLAN output contract
 
