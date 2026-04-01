@@ -32,6 +32,201 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ---
 
+## 2026-03-31 — Install AGENT Execution Ledger System
+
+### Goal
+
+Install a non-canonical execution-ledger system so AGENT records the exact execution prompt and final AGENT response after each completed prompt block, without bloating default PLAN/DEBUG bootstrap context. Make the ledger mandatory for AGENT and strictly non-default for PLAN/DEBUG.
+
+### Scope
+
+AI-Project-Manager only. Files: `docs/ai/context/AGENT_EXECUTION_LEDGER.md` (new), `docs/ai/context/archive/.gitkeep` (new), `AGENTS.md`, `.cursor/rules/00-global-core.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/CURSOR_WORKFLOW.md`, `docs/ai/HANDOFF.md`, `docs/ai/memory/MEMORY_CONTRACT.md`, `docs/ai/STATE.md`.
+
+### Commands / Tool Calls
+
+- Read: `AGENTS.md`, `00-global-core.md`, `10-project-workflow.md`, `CURSOR_WORKFLOW.md`, `HANDOFF.md`, `MEMORY_CONTRACT.md`, `STATE.md` — PASS
+- Write: `docs/ai/context/AGENT_EXECUTION_LEDGER.md` — PASS
+- Write: `docs/ai/context/archive/.gitkeep` — PASS
+- StrReplace: `AGENTS.md` — PASS
+- StrReplace: `.cursor/rules/00-global-core.md` — PASS
+- StrReplace: `.cursor/rules/10-project-workflow.md` (×2) — PASS
+- StrReplace: `docs/ai/CURSOR_WORKFLOW.md` — PASS
+- StrReplace: `docs/ai/HANDOFF.md` — PASS
+- StrReplace: `docs/ai/memory/MEMORY_CONTRACT.md` — PASS
+
+### Changes
+
+- **Created** `docs/ai/context/AGENT_EXECUTION_LEDGER.md` — active ledger with full policy (non-canonical declaration, PLAN/DEBUG consultation gate, size management, entry format, AGENT append requirement) and initial entry LEDGER-001.
+- **Created** `docs/ai/context/archive/.gitkeep` — establishes archive directory.
+- **Updated** `AGENTS.md` — added ledger append to Agent contract; added Execution Ledger section.
+- **Updated** `.cursor/rules/00-global-core.md` — added ledger append requirement in State updates section; added Execution Ledger non-canonical policy block.
+- **Updated** `.cursor/rules/10-project-workflow.md` — added ledger append to AGENT execution contract; added dedicated `AGENT Execution Ledger` section with mandatory append, strict PLAN/DEBUG consultation gate, and size management rules.
+- **Updated** `docs/ai/CURSOR_WORKFLOW.md` — added ledger reference with non-canonical policy in State and Planning section.
+- **Updated** `docs/ai/HANDOFF.md` — added Section 7: Durable Operator Behaviors with ledger operator rules.
+- **Updated** `docs/ai/memory/MEMORY_CONTRACT.md` — added ledger entry to non-canonical source list with consultation gate.
+
+### Evidence
+
+- PASS: `AGENT_EXECUTION_LEDGER.md` created with non-canonical declaration, PLAN/DEBUG gate (3 conditions required before consultation), size management (3–5 entries active, archive at >5 or ~300 lines), mandatory append requirement, entry format, and LEDGER-001 initial entry.
+- PASS: `archive/` directory established with `.gitkeep`.
+- PASS: `AGENTS.md` updated — ledger append is now listed alongside STATE.md update as equally mandatory in Agent contract.
+- PASS: `00-global-core.md` updated — ledger policy added with explicit PLAN/DEBUG consultation gate and archive policy.
+- PASS: `10-project-workflow.md` updated — `AGENT Execution Ledger` section added after `docs/ai/context/` section; AGENT execution contract includes ledger append bullet.
+- PASS: `CURSOR_WORKFLOW.md` updated — ledger entry added to State and Planning section with non-canonical and consultation-gate wording.
+- PASS: `HANDOFF.md` updated — Section 7 added with durable operator behaviors for the ledger system.
+- PASS: `MEMORY_CONTRACT.md` updated — ledger listed as non-canonical source with consultation gate.
+- PASS: `TAB_BOOTSTRAP_PROMPTS.md` deliberately NOT updated — ledger must not appear in default tab reads.
+- PASS: `FINAL_OUTPUT_PRODUCT.md` not modified.
+- PASS: STATE.md, HANDOFF.md requirements not weakened.
+
+### Verdict
+
+PASS — Ledger system installed. Non-canonical policy enforced. AGENT append requirement is durable across all binding docs (AGENTS.md, 00-global-core.md, 10-project-workflow.md). PLAN/DEBUG consultation is strictly gated in all three rule/workflow docs.
+
+### Blockers
+
+None.
+
+### Fallbacks Used
+
+None.
+
+### Cross-Repo Impact
+
+None — ledger system is AI-Project-Manager only. No open--claw or droidrun files modified.
+
+### Decisions Captured
+
+- Ledger is non-canonical: it records verbatim facts but does not govern behavior. Canonical sources (STATE.md, DECISIONS.md, PATTERNS.md, HANDOFF.md, rules) always win.
+- PLAN/DEBUG consultation requires 3 conditions: canonical sources insufficient + exact text specifically needed + only minimum blocks read.
+- Archive threshold: 5 entries or ~300 lines; archived entries must be moved verbatim, never summarized.
+- TAB_BOOTSTRAP_PROMPTS.md must never reference the ledger.
+
+### Pending Actions
+
+None — system is operational. First real ledger append test will be the next AGENT block.
+
+### What Remains Unverified
+
+- Ledger append discipline in practice — rule is installed, but first live test by a new AGENT session will confirm adherence.
+
+### What's Next
+
+AGENT or PLAN to proceed with next task. Ledger will be appended after that block per the installed requirement.
+
+---
+
+## 2026-03-31 — Sparky Enforcement Gate + Non-Overlapping Delegation Chain
+
+### Goal
+Rewrite open--claw leadership and quality packets so Sparky is the mandatory post-edit enforcement gate, the delegation chain has no overlap, and every role has a single clear authority boundary.
+
+### Scope
+open--claw repo only. Files: `TEAM_ROSTER.md`, Sparky `AGENTS.md`, Sparky `WORKFLOWS.md`, `delivery-director/AGENTS.md`, `product-manager/AGENTS.md`, `code-reviewer/AGENTS.md`, `qa-evidence-collector/AGENTS.md`, `reality-checker/AGENTS.md`, `software-architect/AGENTS.md`, `backend-architect/AGENTS.md`, `open--claw/docs/ai/STATE.md`.
+
+### Commands / Tool Calls
+- Read: `FINAL_OUTPUT_PRODUCT.md`, `TEAM_ROSTER.md`, Sparky `AGENTS.md`, Sparky `WORKFLOWS.md`, all 8 target `AGENTS.md` files — PASS
+- Write: 10 files in `open-claw/AI_Employee_knowledgebase/` — PASS (all)
+- StrReplace: `open--claw/docs/ai/STATE.md` — PASS
+- StrReplace: `AI-Project-Manager/docs/ai/STATE.md` (this file) — PASS
+- Append: `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` — PASS
+
+### Changes
+See `open--claw/docs/ai/STATE.md` entry `2026-03-31 — Sparky Enforcement Gate` for full change detail. Summary:
+- `TEAM_ROSTER.md` — Role Boundaries table + Deterministic Handoff Chain (6-step).
+- Sparky `AGENTS.md` — Mandatory Post-Edit Review Gate section; ACCEPT/REFACTOR/REJECT vocabulary; exclusive authority declared.
+- Sparky `WORKFLOWS.md` — Handoff chain diagram; post-edit review procedure; pre-release checklist; ongoing cadence.
+- `delivery-director/AGENTS.md` — Sequencing/routing only; explicit "does not accept or reject" boundary.
+- `product-manager/AGENTS.md` — Briefs/scope/acceptance criteria only; explicit "does not make quality decisions" boundary.
+- `code-reviewer/AGENTS.md` — Evidence provider and advisor; explicit "no final authority" boundary.
+- `qa-evidence-collector/AGENTS.md` — Evidence provider; explicit "does not make final quality decisions" boundary.
+- `reality-checker/AGENTS.md` — Go/no-go recommender to Sparky only; removed parallel delivery-director routing.
+- `software-architect/AGENTS.md` — Technical advisor; explicit "does not accept or reject independently" boundary.
+- `backend-architect/AGENTS.md` — Technical advisor; explicit "does not accept or reject independently" boundary.
+
+### Evidence
+- PASS: All 10 target files written without error.
+- PASS: Sparky is the only entity with ACCEPT/REFACTOR/REJECT authority in all updated files.
+- PASS: Reality Checker no longer routes decisions to Delivery Director — recommender to Sparky only.
+- PASS: `FINAL_OUTPUT_PRODUCT.md` not modified.
+- PASS: Role language is non-overlapping across all 10 files.
+- PASS: `open--claw/docs/ai/STATE.md` updated with full evidence block.
+
+### Verdict
+PASS — Enforcement gate installed. Delegation chain is deterministic and non-overlapping.
+
+### Blockers
+None.
+
+### Fallbacks Used
+None.
+
+### Cross-Repo Impact
+open--claw: 10 files + STATE.md updated. droidrun: not affected. AI-Project-Manager: this STATE.md entry + AGENT_EXECUTION_LEDGER.md entry.
+
+### Decisions Captured
+- Sparky is the exclusive ACCEPT/REFACTOR/REJECT authority for all file changes and release decisions.
+- Canonical handoff chain: brief → routing → implement → evidence collection (parallel) → Sparky gate → release → post-release verification.
+- Reality Checker = go/no-go recommender, not a parallel decision-maker.
+- Delivery Director = sequencing and routing only; no quality authority.
+- Product Manager = briefs and acceptance criteria only; no quality authority.
+
+### Pending Actions
+Commit and push both open--claw and AI-Project-Manager changes to origin.
+
+### What Remains Unverified
+Deployed CrewClaw workers still use older packets; curated knowledgebase standard applies until workers are re-synced.
+
+### What's Next
+Commit open--claw and AI-Project-Manager changes. Optionally extend role-boundary language into BOOTSTRAP.md/SOUL.md/IDENTITY.md files per Sparky's judgment.
+
+---
+
+## 2026-03-31 17:00 — Charter Enforcement Kernel Installed (Reconciliation Pass)
+### Goal
+Install enforcement kernel across all three repos so charter violations are blocked by rules, not merely described in docs.
+### Scope
+All three repos: AI-Project-Manager, open--claw, droidrun.
+### Commands / Tool Calls
+- Created `.cursor/rules/01-charter-enforcement.md` in all three repos — PASS
+- Updated `AGENTS.md` in all three repos to reference enforcement kernel — PASS
+- Updated `.cursor/rules/00-global-core.md` in all three repos to load enforcement kernel — PASS
+- Updated `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` in all three repos to include enforcement kernel in every tab read list — PASS
+- Updated `docs/ai/STATE.md` in all three repos — PASS
+### Changes
+- New: `AI-Project-Manager/.cursor/rules/01-charter-enforcement.md`
+- New: `open--claw/.cursor/rules/01-charter-enforcement.md`
+- New: `droidrun/.cursor/rules/01-charter-enforcement.md`
+- Modified: AGENTS.md in all three repos (added enforcement kernel to authoritative rules)
+- Modified: 00-global-core.md in all three repos (added Enforcement Kernel section at top)
+- Modified: TAB_BOOTSTRAP_PROMPTS.md in all three repos (added `01-charter-enforcement.md` to every tab's read list)
+### Evidence
+- PASS: All three `01-charter-enforcement.md` files written with fail-fast rule, forbidden platform list (macOS/iOS/Swift/Xcode/CocoaPods), Sparky routing, and authority ceiling.
+- PASS: All three `00-global-core.md` files updated with Enforcement Kernel section directing load of `01-charter-enforcement.md` after 00.
+- PASS: All five tabs in each repo's `TAB_BOOTSTRAP_PROMPTS.md` updated to include `01-charter-enforcement.md` as second item in read list after `FINAL_OUTPUT_PRODUCT.md`.
+- PASS: `AGENTS.md` in all three repos updated with enforcement kernel bullet in authoritative rules section.
+- PASS: `FINAL_OUTPUT_PRODUCT.md` not modified.
+### Verdict
+PASS — Enforcement kernel installed. Charter violations are now blocked at the rule layer.
+### Blockers
+None.
+### Fallbacks Used
+None.
+### Cross-Repo Impact
+All three repos updated. Changes are additive and non-destructive. Authority hierarchy from Prompts 1 and 2 preserved.
+### Decisions Captured
+- `01-charter-enforcement.md` is the enforcement kernel; loads after `00-global-core.md` in every bootstrap.
+- Forbidden platforms for tri-workspace: macOS, iOS, Swift, Xcode, CocoaPods.
+- Violations route to Sparky before any continuation is allowed.
+### Pending Actions
+None. Kernel is installed.
+### What Remains Unverified
+Cursor's rule-loading order cannot be tested in this session; runtime confirmation requires a new tab bootstrap.
+### What's Next
+Next PLAN session should verify enforcement kernel is loaded correctly in an active tab.
+
+---
+
 ## Current State Summary
 
 > Last updated: 2026-03-29 (Phase 0B: CrewClaw Bitwarden activation ? shared deploy fixed, secret inventory added, all five workers running + paired, gateway route still blocked, dashboard heartbeat still absent)
