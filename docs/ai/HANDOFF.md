@@ -107,3 +107,20 @@ Structural limits that affect all planning. Not resolvable in a single task bloc
 5. `docs/tooling/MCP_CANONICAL_CONFIG.md`
 
 Use archived docs only for historical evidence, not operational truth.
+
+---
+
+## 7. Durable Operator Behaviors (installed 2026-03-31)
+
+### AGENT Execution Ledger
+
+A non-canonical verbatim execution log is now active at `docs/ai/context/AGENT_EXECUTION_LEDGER.md`.
+
+**Operator rules:**
+- AGENT must append one entry after every completed prompt block (exact prompt + exact response + files changed + verdict). This is mandatory, as required as the STATE.md update.
+- PLAN and DEBUG must NOT load this ledger by default or include it in bootstrap reads.
+- PLAN/DEBUG may consult it only when STATE.md, DECISIONS.md, PATTERNS.md, and HANDOFF.md are insufficient — and only the specific block(s) needed, one block at a time.
+- **Ledger archival is now hook-enforced and automatic.** `.cursor/hooks.json` registers an `afterFileEdit` hook that runs `.cursor/hooks/rotate_ledger.py` after every AI edit to the ledger file. The hook moves oldest entries verbatim to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md` when the active ledger exceeds 5 entries or ~300 lines. AGENT does NOT manage archival manually.
+- If the hook fails or is unavailable: AGENT must archive manually before the next non-trivial block.
+- Archived files are non-canonical and historical only.
+- This ledger does not replace STATE.md — both must be maintained independently.

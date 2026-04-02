@@ -69,6 +69,7 @@ Developer-local (optional):
 - `docs/ai/operations/CONTEXT_WINDOW_MONITORING.md` — context budget and file-size guardrails
 - `docs/ai/operations/POLICY_DRIFT_CHECKER.md` — canonical-vs-mirror rule parity audit runbook
 - `docs/ai/context/` — non-canonical artifact storage: transcript-derived files, bulk session dumps, ephemeral context. Informative only; never authoritative.
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md` — **non-canonical** verbatim execution record: exact prompt + exact AGENT response + files changed + verdict, per completed prompt block. AGENT must append after every block. PLAN/DEBUG must NOT load by default — consult only when canonical sources are insufficient, and only the specific needed block(s), one block at a time. **Ledger archival is hook-enforced** (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`): the hook automatically moves oldest entries to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md` when the active ledger exceeds 5 entries or ~300 lines. AGENT appends; the hook archives.
 - `docs/ai/archive/` — superseded docs. **Never consulted** by PLAN. Historical reference only.
 
 ## Context source priority

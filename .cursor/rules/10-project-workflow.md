@@ -36,6 +36,7 @@ AGENT must:
   - type/compile/build checks
   - tests required by the phase
 - Update `docs/ai/STATE.md` after each execution block
+- Append one entry to `docs/ai/context/AGENT_EXECUTION_LEDGER.md` after each completed prompt block (exact prompt text + exact final response + files changed + verdict). This is mandatory and equally required as the STATE.md update.
 - Keep `docs/ai/HANDOFF.md` accurate after meaningful project-state changes; if no handoff change was needed, state that explicitly in `docs/ai/STATE.md`
 - Promote unresolved execution turbulence to `docs/ai/HANDOFF.md § Recent Unresolved Issues` when it remains operationally relevant after a task block. Turbulence includes: failed attempts that changed implementation direction, errors not yet resolved, fallback paths that became the new reality, and assumptions that remain unverified. Do not bury active turbulence in STATE.md alone.
 - Produce PASS/FAIL evidence for every tool call and command
@@ -139,18 +140,38 @@ PLAN must reconstruct current system state from repository-tracked sources befor
 
 Priority order:
 
-1. `docs/ai/STATE.md`
-2. `docs/ai/memory/DECISIONS.md`
-3. `docs/ai/memory/PATTERNS.md`
-4. `docs/ai/HANDOFF.md`
-5. `docs/ai/context/`
-6. Chat history / `@Past Chats` — last resort only
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — supreme product charter (governs what the system must become)
+2. `docs/ai/STATE.md` — operational evidence (what happened)
+3. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
+4. `docs/ai/memory/PATTERNS.md` — reusable patterns
+5. `docs/ai/HANDOFF.md` — session handoff context
+6. `docs/ai/context/` — non-canonical artifacts (on-demand only)
+7. Chat history / `@Past Chats` — last resort only
 
 If repository-tracked sources and chat context disagree, repository-tracked sources win unless current execution evidence proves otherwise.
 
 ## docs/ai/context/ — non-canonical artifact storage
 
 `docs/ai/context/` stores transcript-derived artifacts, bulk session dumps, and ephemeral context files. It is **informative only** — never authoritative. PLAN should consult it only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md` are insufficient. Do not promote content from `docs/ai/context/` into rules or architecture docs without explicit review.
+
+## AGENT Execution Ledger — non-canonical verbatim record
+
+`docs/ai/context/AGENT_EXECUTION_LEDGER.md` is a durable, non-canonical log. It records the verbatim execution prompt and verbatim final AGENT response for every completed prompt block, plus files changed and verdict.
+
+**AGENT append requirement (mandatory):** After every completed prompt block, AGENT must append one entry using the format defined in the ledger file itself. This is as required as the STATE.md update. If a block produces no artifacts (pure investigation), record that explicitly.
+
+**PLAN/DEBUG consultation gate (strict):** PLAN and DEBUG must NOT load this ledger by default or attach it to standard bootstrap reads. They may read it only when:
+1. STATE.md, DECISIONS.md, PATTERNS.md, and HANDOFF.md are insufficient to answer the question.
+2. The exact prompt text or exact response text from a prior AGENT block is specifically needed.
+3. Read **one block at a time**. Stop reading as soon as sufficient context is recovered. Do not preload multiple entries unless one block proves insufficient.
+
+**Size management (hook-enforced — automatic):**
+- Active ledger: keep the 3–5 most recent entries.
+- Archive threshold: when entries exceed 5 or file exceeds ~300 lines, the `afterFileEdit` Cursor hook (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`) automatically moves the oldest entries verbatim to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md`.
+- AGENT must still append the new entry. Archival of old entries is automatic after each ledger edit — AGENT does NOT manage archival manually.
+- Archived files are non-canonical and historical only. PLAN and DEBUG must not include them in default reads.
+- Exact prompt and response text must never be summarized or paraphrased when archiving — the hook moves them verbatim.
+- If the hook is unavailable or fails, AGENT must archive manually following the same policy before proceeding to the next non-trivial block.
 
 ## docs/ai/archive/ — never consulted
 

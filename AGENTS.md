@@ -21,6 +21,7 @@ The governing product charter for this tri-workspace is:
 ## Authoritative rules
 
 - `.cursor/rules/00-global-core.md` — non-negotiable behaviors
+- `.cursor/rules/01-charter-enforcement.md` — **enforcement kernel** (read immediately after 00; charter violations are blocked here, not merely described)
 - `.cursor/rules/05-global-mcp-usage.md` — MCP tool usage policy
 - `.cursor/rules/10-project-workflow.md` — tab contracts and execution protocol
 - `.cursor/rules/20-project-quality.md` — engineering standards
@@ -57,6 +58,19 @@ AGENT must:
 
 - Follow PLAN prompts exactly
 - Update `docs/ai/STATE.md` after each execution block
+- Append one entry to `docs/ai/context/AGENT_EXECUTION_LEDGER.md` after each completed prompt block (exact prompt text + exact final response + files changed + verdict). This is mandatory and equally required as the STATE.md update.
 - Provide PASS/FAIL evidence for every tool call and command
 - Use MCP tools before falling back to manual approaches
 - Promote unresolved execution turbulence to `docs/ai/HANDOFF.md § Recent Unresolved Issues` when it remains operationally relevant after a task block. Turbulence includes: failed attempts that changed implementation direction, errors not yet resolved, fallback paths that became the new reality, and assumptions that remain unverified.
+
+## Execution Ledger (non-canonical)
+
+`docs/ai/context/AGENT_EXECUTION_LEDGER.md` records verbatim AGENT execution events. It is **non-canonical** — informative only, never authoritative. It must never be part of default bootstrap reads for any tab. PLAN and DEBUG may consult it only when STATE.md, DECISIONS.md, PATTERNS.md, and HANDOFF.md are insufficient, and only by reading the specific needed block(s).
+
+**Ledger auto-rotation is hook-enforced** (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`). After every AI edit to the ledger file, the hook script automatically:
+- Checks if entry count > 5 or file > ~300 lines.
+- Moves the oldest entries verbatim (no summarization) to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md`.
+- Keeps the 3–5 most recent entries in the active ledger.
+- Does NOT rotate below 3 active entries.
+
+**AGENT must still append the new entry manually.** Archival of old entries is automatic after each ledger edit. PLAN and DEBUG must NOT preload the ledger; they may consult only the minimum needed block(s), one block at a time.

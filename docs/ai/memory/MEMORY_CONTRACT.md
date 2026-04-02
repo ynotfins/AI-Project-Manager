@@ -9,6 +9,7 @@ Repo docs win. Always.
 - Memory MCP tools provide **recall support only** — they do not override repo docs.
 - If memory conflicts with repo docs, **repo docs win**. Update or discard the conflicting memory entry.
 - `docs/ai/context/` is non-canonical artifact storage (session dumps, transcript extracts). Informative only.
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md` is a **non-canonical** verbatim execution record. It is informative only. PLAN/DEBUG must NOT load it by default. Consult only when STATE.md, DECISIONS.md, PATTERNS.md, and HANDOFF.md are insufficient — and only the specific block(s) needed. AGENT must append one entry after every completed prompt block.
 - `@Past Chats` is a **last resort** — consult only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md`, and `docs/ai/context/` are insufficient.
 
 ### Context source priority

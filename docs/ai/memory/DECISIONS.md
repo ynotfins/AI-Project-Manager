@@ -524,6 +524,73 @@ BLOCKER 1 is resolved (Docker exists). STATE.md updated accordingly.
 
 ---
 
+## Decision: mem0-bridge ≠ OpenMemory proxy — two separate systems (2026-03-29)
+
+**Date:** 2026-03-29
+**Status:** DOCUMENTED — critical design constraint for Phase 1B
+
+### Context
+Phase 0 verification (2026-03-29 09:30) revealed that the `mem0-bridge` skill and the OpenMemory proxy are two completely unrelated systems with different ports, protocols, and destinations.
+
+### Decision
+- `mem0-bridge` skill (`open-claw/skills/mem0-bridge/SKILL.md`) is designed for a **mem0 MCP server at `localhost:8080`** — not OpenMemory.
+- **OpenMemory proxy** runs at `localhost:8766` (Cursor-side MCP path).
+- There is currently **no bridge from OpenClaw (Sparky) to OpenMemory**. The two memory systems are siloed.
+- Any Phase 1B "OpenClaw ↔ OpenMemory bridge" must be designed from scratch — the existing `mem0-bridge` skill cannot be repurposed without significant rework.
+
+### Alternatives Rejected
+- Enabling mem0-bridge to talk to OpenMemory (rejected: different protocol/port; the skill is not designed for OpenMemory's REST API).
+- Calling OpenMemory directly from Sparky without a bridge (rejected: no auth injection path; gateway does not have `OPENMEMORY_API_KEY` in env).
+
+### Rationale
+Prevents wasted effort in Phase 1B by making the gap explicit before design begins. The embeddings provider is also unavailable (no OpenAI/Voyage/Google key in `auth-profiles.json`), so vector search is also broken — FTS-only memory is the current runtime truth.
+
+---
+
+## Decision: Live model chain for Sparky — openai/gpt-5.4 → grok-4 (OpenRouter) → claude-opus-4-6 (2026-03-29)
+
+**Date:** 2026-03-29
+**Status:** IMPLEMENTED — live as of Phase 0G (2026-03-29 21:18)
+
+### Context
+Anthropic account hit usage limits on 2026-03-29. User requested a thinking-capable model chain with OpenAI primary, Grok backup, Anthropic final fallback.
+
+### Decision
+- **Primary:** `openai/gpt-5.4` (via direct OpenAI API key)
+- **Fallback 1:** `openrouter/x-ai/grok-4` (via OpenRouter API key — direct xAI not yet available)
+- **Fallback 2:** `anthropic/claude-opus-4-6` (Opus preferred over Sonnet for reasoning depth)
+- Auth profiles: `openai:default = ref(env:OPENAI_API_KEY)`, `openrouter:default = ref(env:OPENROUTER_API_KEY)`, `anthropic:default = ref(env:ANTHROPIC_API_KEY)` — all three wired.
+- Direct `xai/*` fallback is NOT configured — `XAI_API_KEY` not in active Bitwarden project.
+
+### Pending Enhancement
+If `XAI_API_KEY` is added to Bitwarden, switch Grok from `openrouter/x-ai/grok-4` to direct `xai/grok-4-fast-reasoning`.
+
+### Rationale
+`openai/gpt-5.4` is the closest supported "thinking-capable" OpenAI model ID per OpenClaw docs. Grok via OpenRouter avoids blocking on the missing xAI secret. Opus is the stronger Anthropic final fallback compared to Sonnet.
+
+---
+
+## Decision: Sparky identity lives in model system prompt only — no on-disk SOUL.md (2026-03-29)
+
+**Date:** 2026-03-29
+**Status:** DOCUMENTED — drift risk noted
+
+### Context
+Phase 0 verification (2026-03-29 09:30) investigated where "Sparky" name and personality are stored. No `SOUL.md` or identity file was found at `~/.openclaw/agents/main/agent/`.
+
+### Decision
+- Sparky's name and personality come from the **model's system prompt**, not any config file or on-disk `SOUL.md`.
+- Runtime agent ID is `main`. Display name "Sparky" is established via conversation/context.
+- There is no persistent file at `~/.openclaw/agents/main/agent/SOUL.md` guarding the identity.
+
+### Consequence
+If the gateway is reset or re-onboarded (full wipe), Sparky's name/personality must be re-established via conversation — there is no file-based backstop. This is a known drift risk.
+
+### No Action Required
+This is accepted behavior for a personal system. Future hardening (e.g., creating a SOUL.md at `~/.openclaw/agents/main/agent/SOUL.md`) would lock the identity across resets but is not currently prioritized.
+
+---
+
 ## Decision: Canonical OpenClaw gateway restart + build tag alignment (2026-03-21)
 
 **Context:** Operational drift between OpenClaw CLI checkout and systemd gateway runtime; inconsistent secret injection when restarting from non-injected shells.

@@ -1,5 +1,9 @@
 # 00 — Global Core (non-negotiables)
 
+## Enforcement Kernel
+
+Read `.cursor/rules/01-charter-enforcement.md` immediately after this file. It is the active enforcement layer: charter violations are blocked there, not merely described. Loading it is not optional.
+
 ## Authority Hierarchy
 
 The supreme governing document for this tri-workspace is `FINAL_OUTPUT_PRODUCT.md` in `open--claw/open-claw/AI_Employee_knowledgebase/`. No rule, prompt, plan, or convenience pattern in any repo may override or weaken it.
@@ -42,6 +46,16 @@ Planning and execution are never mixed in the same tab.
 `docs/ai/STATE.md` is the **primary operational evidence log** for PLAN. PLAN must read it before reasoning about blockers, fallbacks, next actions, and cross-repo effects. `@Past Chats` is a last resort only — consult it only after `STATE.md`, `DECISIONS.md`, `PATTERNS.md`, and `docs/ai/context/` are insufficient.
 
 AGENT must update `docs/ai/STATE.md` after every execution block using the enforced section template defined in `10-project-workflow.md`. Every section is required; write `None` or `N/A` if a section has nothing to report. Do not omit sections.
+
+AGENT must also append one entry to `docs/ai/context/AGENT_EXECUTION_LEDGER.md` after every completed prompt block. This is equally mandatory. See ledger policy below.
+
+## Execution Ledger (non-canonical)
+
+`docs/ai/context/AGENT_EXECUTION_LEDGER.md` is a **non-canonical** verbatim record of AGENT execution events (exact prompt + exact response + files changed + verdict). It is informative only — never authoritative. It must **never** be loaded as part of default bootstrap context for any tab.
+
+**PLAN and DEBUG consultation rule**: Read the ledger only when STATE.md, DECISIONS.md, PATTERNS.md, and HANDOFF.md are insufficient — and only the specific block(s) needed. Do not pre-load or attach the full ledger.
+
+Archive older entries to `docs/ai/context/archive/` when the active ledger exceeds 5 entries or ~300 lines. Archived files remain non-canonical and must not be consulted by default.
 
 ## No unauthorized refactors
 

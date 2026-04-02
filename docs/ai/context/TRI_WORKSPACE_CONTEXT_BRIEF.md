@@ -115,6 +115,22 @@ flowchart TD
 - The curated 15-worker runtime exists, but first live startup is still blocked by missing Telegram token mappings for 3 workers.
 - `droidrun` is the phone control layer, not the orchestrator. Its high-risk areas are the Portal/APK contract, ADB/Tailscale assumptions, and the DroidAgent loop.
 
+## Non-Routable Quarantine
+
+The following paths are **NON-ROUTABLE — OUT OF SCOPE** across the entire tri-workspace. Do not read, search, cite, summarize, route through, store to memory, or use for task design.
+
+| Repo | Quarantined Path | Reason |
+|------|-----------------|--------|
+| `open--claw` | `open-claw/AI_Employee_knowledgebase/candidate_employees/**` | 2,608 raw imported role packets — not curated, not production-ready |
+| `droidrun` | `src/droidrun/tools/driver/ios.py` | iOS out of scope for Android actuator |
+| `droidrun` | `src/droidrun/tools/ui/ios_provider.py` | iOS out of scope for Android actuator |
+| `droidrun` | `src/droidrun/tools/ios/**` | iOS module out of scope for Android actuator |
+
+**Canonical registry and promotion gate:** `../open--claw/open-claw/AI_Employee_knowledgebase/NON_ROUTABLE_QUARANTINE.md`
+**Enforcement rules:** `.cursor/rules/02-non-routable-exclusions.md` in each repo
+
+Files marked with `<!-- NON-ROUTABLE — OUT OF SCOPE -->` (Markdown) or `# NON-ROUTABLE — OUT OF SCOPE` (Python) are quarantined. Treat them as non-existent for all normal agent operations.
+
 ## Common Misunderstandings To Avoid
 
 - Do not treat `AI-Project-Manager` as the product authority or the supreme governance source. It is the workflow/process layer only.
@@ -122,3 +138,4 @@ flowchart TD
 - Do not start OpenClaw runtime debugging in `open--claw` docs alone; move into `vendor/openclaw` once the task is implementation-level.
 - Do not treat `droidrun` as a general mobile app repo; it is an AI-driven Android control system with MCP tooling and a Portal/APK transport boundary.
 - Do not use archived docs or past chat history before the canonical repo-tracked sources above.
+- Do not read or reference quarantined paths (`candidate_employees/**`, `droidrun/tools/ios/**`, `driver/ios.py`, `ios_provider.py`). See quarantine table above.
