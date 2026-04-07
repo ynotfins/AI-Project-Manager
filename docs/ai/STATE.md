@@ -458,3 +458,314 @@ Same as Current State Summary — live ledger hook in Cursor session, quarantine
 ### What's Next
 
 Append LEDGER-007. Proceed to Prompt 6.
+---
+
+## 2026-04-06 23:25 — Serena Project Normalization
+
+### Goal
+
+Normalize Serena usage across the tri-workspace so project activation is path-based, repo-local `project.yml` files exist where Serena should operate, and docs-only roots explicitly fall back to targeted search/read tools instead of pretending Serena is active.
+
+### Scope
+
+- `AI-Project-Manager/.serena/project.yml`
+- `AI-Project-Manager/.gitignore`
+- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
+- `AI-Project-Manager/AGENTS.md`
+- `AI-Project-Manager/docs/ai/CURSOR_WORKFLOW.md`
+- `AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `AI-Project-Manager/docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- Cross-repo mirrors: `open--claw/.gitignore`, `open--claw/open-claw/.serena/project.yml`, `open--claw/AGENTS.md`, `open--claw/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `open--claw/docs/ai/HANDOFF.md`, `droidrun/.gitignore`, `droidrun/.serena/project.yml`, `droidrun/AGENTS.md`, `droidrun/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `droidrun/docs/ai/HANDOFF.md`
+
+### Commands / Tool Calls
+
+- Shell: `Get-Location`
+- Shell: `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- Tools: `ReadFile`, `Glob`, `rg`, `WebFetch`, `TodoWrite`, `Delete`, `ApplyPatch`
+- MCP `user-serena`: `activate_project`, `get_current_config`, `read_file`, `create_text_file`, `replace_content`
+
+### Changes
+
+- Replaced the AI-PM `.gitignore` Serena rule so `.serena/project.yml` is commitable while local Serena artifacts remain ignored.
+- Rewrote `AI-Project-Manager/.serena/project.yml` to define the workflow-layer Serena project and point cross-repo code work to exact-path activation.
+- Added Serena path-activation policy and docs-only fallback language to AI-PM governance surfaces (`05-global-mcp-usage.md`, `AGENTS.md`, `CURSOR_WORKFLOW.md`, `TAB_BOOTSTRAP_PROMPTS.md`, `TRI_WORKSPACE_CONTEXT_BRIEF.md`, `HANDOFF.md`).
+- Added the repo-local Serena project files and minimal local scope guidance for `open--claw` and `droidrun`.
+- Verified the created project files exist and removed the temporary write probe after confirming writes were restored.
+
+### Evidence
+
+- PASS: write probe succeeded after the user fixed Windows Controlled Folder Access.
+- PASS: `AI-Project-Manager/.serena/project.yml` updated and readable.
+- PASS: `open--claw/open-claw/.serena/project.yml` created and readable.
+- PASS: `droidrun/.serena/project.yml` created and readable.
+- PASS: AI-PM rules/docs now explicitly require exact-path Serena activation and explicit FAIL + fallback for docs-only or unsupported roots.
+- PASS: mirror guidance landed in `open--claw` and `droidrun`.
+
+### Verdict
+
+READY — Serena project normalization is installed across the tri-workspace and new sessions no longer need to depend on dashboard labels to pick the correct code project.
+
+### Blockers
+
+None.
+
+### Fallbacks Used
+
+None.
+
+### Cross-Repo Impact
+
+- `open--claw` now has a dedicated runtime Serena project at `D:/github/open--claw/open-claw` plus local guidance that repo-root docs are not the default Serena code project.
+- `droidrun` now has a dedicated repo-local Serena project and local guidance that upstream governance docs are not part of the DroidRun Serena scope.
+
+### Decisions Captured
+
+- Serena activation is exact-path and project-local across the tri-workspace.
+- `D:/github/open--claw/open-claw` is the only default Serena code project for OpenClaw runtime work.
+- Clear Thought, Context7, OpenMemory, and other MCPs remain repo-scoped by rules and task framing rather than Serena dashboard state.
+
+### Pending Actions
+
+- Live-test one fresh Cursor session that switches AI-PM -> OpenClaw runtime -> DroidRun and confirm Serena activation by path behaves as documented.
+
+### What Remains Unverified
+
+- The newly documented Serena activation flow has not yet been manually exercised end-to-end in a fresh Cursor session after this normalization.
+
+### What's Next
+
+Use the new exact-path Serena project map for the next cross-repo task and verify the first live repo switch behaves as documented.
+---
+
+## 2026-04-07 00:12 — MCP Tool Governance Audit And Compartmentalization
+
+### Goal
+
+Tighten the tri-workspace tool policy so repo docs remain authoritative, high-value tools are used only when relevant, disabled required tools stop and notify the user, and context-heavy MCP servers are split between smaller global config and repo-local project config.
+
+### Scope
+
+- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
+- `AI-Project-Manager/docs/global-rules.md`
+- `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`
+- `AI-Project-Manager/docs/ai/operations/POLICY_DRIFT_CHECKER.md`
+- `AI-Project-Manager/docs/ai/architecture/OPENCLAW_MODULES.md`
+- `AI-Project-Manager/openmemory.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- Local config: `AI-Project-Manager/.cursor/mcp.json`
+- Local config outside repo: `C:/Users/ynotf/.cursor/mcp.json`
+- Mirror rules: `open--claw/.cursor/rules/05-global-mcp-usage.md`, `droidrun/.cursor/rules/05-global-mcp-usage.md`
+- Local config: `open--claw/.cursor/mcp.json`, `droidrun/.cursor/mcp.json`
+
+### Commands / Tool Calls
+
+- Tools: `ReadFile`, `Glob`, `rg`, `WebSearch`, `ReadLints`, `TodoWrite`, `ApplyPatch`
+- Shell: `Get-Date -Format "yyyy-MM-dd HH:mm"`
+
+### Changes
+
+- Rewrote active MCP policy rules so `Context7` is explicitly external-doc only, repo docs remain authoritative, and `Exa Search`, `playwright`, `firecrawl-mcp`, and `Magic MCP` are required only for the task types that truly need them.
+- Removed `sequential-thinking`, `shell-mcp`, and GitKraken MCP from the supported toolchain in active rule/docs surfaces.
+- Changed the unavailable-tool policy to stop and notify the user when a required high-value tool is disabled, unavailable, or failing.
+- Trimmed the global Cursor MCP config and created repo-local `.cursor/mcp.json` files to compartmentalize heavier/context-expensive servers by project.
+- Updated active governance docs to reflect the new toolchain and project-local MCP split.
+
+### Evidence
+
+- PASS: `C:/Users/ynotf/.cursor/mcp.json` no longer contains `sequential-thinking`, `serena`, `playwright`, `Exa Search`, `firecrawl-mcp`, or `Magic MCP`.
+- PASS: `AI-Project-Manager/.cursor/mcp.json` created with `serena`, `Exa Search`, `firecrawl-mcp`.
+- PASS: `open--claw/.cursor/mcp.json` created with `serena`, `Exa Search`, `playwright`, `firecrawl-mcp`, `Magic MCP`.
+- PASS: `droidrun/.cursor/mcp.json` created with `serena`, `Exa Search`.
+- PASS: active rule files in AI-PM, open--claw, and droidrun now define repo-first docs + stop-notify high-value tool policy.
+- PASS: `ReadLints` returned no linter errors on edited governance files.
+- PASS: web research confirmed Cursor currently supports project-level `.cursor/mcp.json` precedence but does not provide native automatic on-demand tool enabling from config.
+
+### Verdict
+
+READY — the supported toolchain is cleaner, the repo/tool separation is sharper, and context-heavy MCP servers are now more compartmentalized by project.
+
+### Blockers
+
+None.
+
+### Fallbacks Used
+
+None.
+
+### Cross-Repo Impact
+
+- `open--claw` and `droidrun` now mirror the same high-value tool policy in their active MCP rule file.
+- Both repos now also have local `.cursor/mcp.json` files so heavier servers can be scoped per workspace instead of being globally present everywhere.
+
+### Decisions Captured
+
+- `Context7` remains query-scoped, not project-registered, but must be constrained to external technologies relevant to the active repo.
+- There is no good native Cursor automation today for “auto-enable this MCP only when the task needs it.”
+- The best available practical system is smaller global MCP config plus repo-local `.cursor/mcp.json` plus strict stop-notify rules when a required tool is unavailable.
+- `sequential-thinking`, `shell-mcp`, and GitKraken MCP are no longer part of the supported tri-workspace toolchain.
+
+### Pending Actions
+
+- Restart Cursor or refresh MCP servers so the new global and repo-local MCP config split is fully reloaded.
+- If you want GitKraken MCP gone IDE-wide rather than merely unsupported in the tri-workspace, disable or uninstall the GitLens/GitKraken extension in Cursor Plugins.
+
+### What Remains Unverified
+
+- The freshly split global vs repo-local MCP config has not yet been live-smoke-tested in a brand-new chat after Cursor reload.
+
+### What's Next
+
+Reload Cursor, open one chat in each of the three repos, and verify the available MCP set now matches the intended per-project tool surface.
+
+## 2026-04-07 00:24 — MCP Dedupe Cleanup And Shared Workspace Workflow
+
+### Goal
+
+Remove duplicated MCP server entries in the shared tri-workspace, retire unwanted MCP servers from active config, and document the final end-to-end tool workflow in one place.
+
+### Scope
+
+- `C:/Users/ynotf/.cursor/mcp.json`
+- `AI-Project-Manager/.cursor/mcp.json`
+- deleted local workspace files: `open--claw/.cursor/mcp.json`, `droidrun/.cursor/mcp.json`
+- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
+- `open--claw/.cursor/rules/05-global-mcp-usage.md`
+- `droidrun/.cursor/rules/05-global-mcp-usage.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`
+- `AI-Project-Manager/docs/tooling/MCP_HEALTH.md`
+- `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
+- `AI-Project-Manager/openmemory.md`
+- `AI-Project-Manager/docs/ai/architecture/OPENCLAW_MODULES.md`
+- `AI-Project-Manager/docs/ai/architecture/AUTONOMY_LOOPS.md`
+- `AI-Project-Manager/docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md`
+
+### Changes
+
+- Removed `googlesheets-tvi8pq-94` and `firestore-mcp` from the global Cursor MCP config.
+- Uninstalled the `eamodio.gitlens` extension so GitKraken MCP no longer appears from that extension path.
+- Deleted duplicate sibling repo `.cursor/mcp.json` files in `open--claw` and `droidrun` because the shared multi-root workspace was loading all of them at once.
+- Kept one shared tri-workspace `AI-Project-Manager/.cursor/mcp.json` and expanded it to hold the heavy servers that should exist only once: `serena`, `Exa Search`, `firecrawl-mcp`, `playwright`, and `Magic MCP`.
+- Updated active rules/docs to describe the single shared workspace-local MCP config model instead of the earlier per-sibling-repo local config model.
+- Added `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md` to document repo authority, tool routing, Serena path activation, stop-notify behavior, and project handoff flow in one connected document.
+
+### Evidence
+
+- PASS: `C:/Users/ynotf/.cursor/mcp.json` no longer contains `googlesheets-tvi8pq-94` or `firestore-mcp`.
+- PASS: `open--claw/.cursor/mcp.json` and `droidrun/.cursor/mcp.json` were removed from the shared tri-workspace to eliminate duplicate `serena`/`Exa Search`/`firecrawl-mcp` loading.
+- PASS: `AI-Project-Manager/.cursor/mcp.json` now contains the single shared copies of `serena`, `Exa Search`, `firecrawl-mcp`, `playwright`, and `Magic MCP`.
+- PASS: `cursor --uninstall-extension eamodio.gitlens` completed successfully.
+- PASS: active workflow docs now describe the shared tri-workspace MCP model and retired toolchain accurately.
+
+### Verdict
+
+READY — the shared workspace now has one authoritative heavy-tool MCP surface instead of sibling duplicates, and the workflow is documented in one connected operations document.
+
+### Decisions Captured
+
+- In the managed tri-workspace, one shared `AI-Project-Manager/.cursor/mcp.json` is cleaner than sibling repo-local MCP files because Cursor loads all sibling roots in the same multi-root workspace.
+- Standalone repo `.cursor/mcp.json` files are still allowed later, but only when those repos are opened outside the shared tri-workspace workspace.
+- GitKraken MCP should be removed at the extension source, not merely marked unsupported in docs.
+
+### Pending Actions
+
+- Reload Cursor so the removed extension and MCP config changes are fully reflected in the visible tool list.
+- Confirm the tool list now shows one copy each of `serena`, `Exa Search`, `firecrawl-mcp`, `playwright`, and `Magic MCP`.
+
+### What Remains Unverified
+
+- Live post-reload verification of the visible MCP list in a fresh chat has not yet been performed in this session.
+
+## 2026-04-07 00:39 — No-Loss Memory Architecture Draft
+
+### Goal
+
+Define a machine-wide no-loss memory architecture that covers all projects on this PC, keeps each project isolated like its own LosslessClaw-style ecosystem, and adds a global governance layer that enforces containment and context discipline.
+
+### Scope
+
+- `AI-Project-Manager/docs/ai/architecture/NO_LOSS.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+
+### Changes
+
+- Added `docs/ai/architecture/NO_LOSS.md` as the architecture-level design for a machine-wide no-loss memory system.
+- Defined four layers: governance, project memory, session/task memory, and active-context assembly.
+- Specified that `openmemory` should be the durable long-horizon substrate, with namespace, promotion, and retrieval rules above it.
+- Defined strict project containment so each repo behaves like its own isolated memory ecosystem by default.
+- Added context-budget rules that protect PLAN most aggressively, keep AGENT mostly fresh-chat based, and make DEBUG retrieve summaries before raw evidence.
+- Embedded a ready-to-run DEBUG critique prompt at the end of `NO_LOSS.md`.
+
+### Evidence
+
+- PASS: `NO_LOSS.md` now exists and documents the target no-loss architecture, containment rules, MCP integration role, and critique targets.
+- PASS: the design explicitly names the seven primary MCP servers plus `openmemory` and ties them to the memory/control model.
+- PASS: the design records the requirement that governance memory is global while project memories stay isolated unless a task is explicitly cross-project.
+
+### Verdict
+
+READY FOR DEBUG CRITIQUE — the no-loss architecture is documented and can now be challenged before implementation.
+
+### Decisions Captured
+
+- The system should be machine-wide, not repo-only.
+- Each project must have its own isolated memory ecosystem by default.
+- A governance layer above project memory must enforce containment and context discipline.
+- `openmemory` is the preferred durable substrate, but not the full architecture by itself.
+- PLAN context efficiency is a first-class design constraint.
+
+### Pending Actions
+
+- Run DEBUG against `docs/ai/architecture/NO_LOSS.md`.
+- Decide whether implementation should be governance-first, openmemory-first, or hybrid.
+
+### What Remains Unverified
+
+- Whether `openmemory` alone can support the required namespace isolation and retrieval discipline without an additional local index/summarization layer.
+
+
+---
+
+## 2026-04-07 — Sparky Full Exec Access (PowerShell + WSL2 + Linux gateway + Elevated)
+
+### Goal
+Give Sparky operational exec access to Linux gateway, Windows PowerShell, WSL2, and elevated execution across both sides. Sparky previously failed on `openclaw security audit --deep` because exec defaulted to the Windows Desktop node (`host=node`), which cannot find the Linux `openclaw` binary.
+
+### Root Cause
+`tools.exec.host = "node"` in the Linux `openclaw.json` routed ALL exec to the Windows Desktop node. Commands like `openclaw security audit --deep` went to Windows `cmd.exe`, which could not find the Linux-only binary. Additionally, `agents.main.allowlist` in the Linux exec-approvals was empty, and no elevated exec config existed on either side.
+
+### Scope
+`AI-Project-Manager`, `open--claw` (Sparky TOOLS.md only). No `droidrun` changes.
+
+### Changes Made
+
+| File | Change |
+|------|--------|
+| Linux `~/.openclaw/openclaw.json` | Changed `tools.exec.host` from `node` to `gateway`; kept `tools.exec.node = "Windows Desktop"` for explicit Windows routing; added `tools.elevated.enabled = true` with Tony's Telegram ID |
+| Linux `~/.openclaw/exec-approvals.json` | Added `*` wildcard to `agents.main.allowlist`; added `elevated.enabled/allowed/defaultLevel = on` |
+| Windows `~/.openclaw/exec-approvals.json` | Added `elevated.enabled/allowed/defaultLevel = on` to `agents.main` |
+| `open--claw/.../sparky.../TOOLS.md` | Documented exec routing (gateway=Linux, node=Windows), PowerShell patterns, WSL2 patterns, elevated patterns |
+
+### Evidence
+
+- PASS: Linux `openclaw.json` updated — `tools.exec.host = gateway`, `tools.elevated.enabled = true`
+- PASS: Linux `exec-approvals.json` updated — `agents.main.allowlist = [{"pattern": "*"}]`, `elevated = {enabled, allowed, defaultLevel: on}`
+- PASS: Windows `exec-approvals.json` updated — `agents.main.elevated = {enabled, allowed, defaultLevel: on}`
+- PASS: `openclaw-gateway.service` restarted and confirmed `active` (new PID 11687)
+- PASS: `openclaw security audit --deep` now runs successfully from Linux gateway side (previously failed with "CLI exec path denied")
+- Audit results: 1 critical (`imap-smtp-email` skill contains env-harvesting pattern), 3 warn, 1 info — real findings for Sparky to action
+
+### Verdict
+
+COMPLETE. Sparky can now run Linux-local commands (default gateway), Windows PowerShell/WSL2 (explicit `--host node`), and elevated exec on both sides.
+
+### Pending Actions
+
+- Sparky should review and remove `imap-smtp-email` skill (critical env-harvesting finding from `--deep` audit)
+- For full elevated Windows exec (Admin-level), `node.cmd` must be run as Administrator — document in HANDOFF
+- Gateway probe `missing scope: operator.read` — separate issue, pre-existing
+
+### What Remains Unverified
+
+- Whether elevated gateway (`sudo`) exec works end-to-end when Tony sends `/elevated` via Telegram (not tested in this block — requires live Telegram session)
