@@ -1,0 +1,29 @@
+{
+  "blockers": [
+    {
+      "title": "Broader untouched docs may still contain stale tool inventory or older no-loss wording outside the Phase 1 file list",
+      "severity": "medium",
+      "status": "active-follow-up"
+    },
+    {
+      "title": "Historical STATE/archive/ledger entries still preserve older pre-normalization wording by design",
+      "severity": "low",
+      "status": "deferred"
+    },
+    {
+      "title": "Obsidian sidecar summary is pending flush",
+      "severity": "low",
+      "status": "pending-tool-recovery"
+    },
+    {
+      "title": "Memory bridge OpenClaw ↔ OpenMemory is still not built",
+      "severity": "high",
+      "status": "deferred"
+    },
+    {
+      "title": "WhatsApp 401 — session expired",
+      "severity": "medium",
+      "status": "pending-user-action"
+    }
+  ]
+}

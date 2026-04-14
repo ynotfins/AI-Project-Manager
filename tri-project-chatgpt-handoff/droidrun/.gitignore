@@ -1,0 +1,44 @@
+# Secrets and local config
+.env
+.env.*
+.env.local
+*.pem
+*.key
+
+# MCP config (lives outside repo)
+mcp.json
+.cursor/mcp.json
+mcp-config.json
+
+# Dependencies
+node_modules/
+vendor/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Serena project config
+.serena/*
+!.serena/project.yml
+
+# OpenMemory - IDE/Assistant specific rules
+.cursor\rules\openmemory.mdc
+AGENTS.md
+
+docs\local.env

@@ -1,0 +1,31 @@
+﻿{
+    "agents":  {
+                   "list":  [
+                                {
+                                    "workspace":  "D:\\github\\open--claw\\open-claw\\AI_Employee_knowledgebase\\AI_employees\\sparky-chief-product-quality-officer\\.openclaw-runtime\\workspace",
+                                    "default":  false,
+                                    "id":  "main",
+                                    "agentDir":  "D:\\github\\open--claw\\open-claw\\AI_Employee_knowledgebase\\AI_employees\\sparky-chief-product-quality-officer\\.openclaw-runtime\\agents\\main\\agent"
+                                },
+                                {
+                                    "workspace":  "D:\\github\\open--claw\\open-claw\\AI_Employee_knowledgebase\\AI_employees\\sparky-chief-product-quality-officer\\.openclaw-runtime\\workspace",
+                                    "default":  true,
+                                    "id":  "SPARKY_CEO_BOT",
+                                    "agentDir":  "D:\\github\\open--claw\\open-claw\\AI_Employee_knowledgebase\\AI_employees\\sparky-chief-product-quality-officer\\.openclaw-runtime\\agents\\SPARKY_CEO_BOT\\agent"
+                                }
+                            ],
+                   "defaults":  {
+                                    "heartbeat":  {
+                                                      "every":  "0m"
+                                                  },
+                                    "workspace":  "D:\\github\\open--claw\\open-claw\\AI_Employee_knowledgebase\\AI_employees\\sparky-chief-product-quality-officer\\.openclaw-runtime\\workspace"
+                                }
+               },
+    "gateway":  {
+                    "remote":  {
+                                   "token":  "5155d4d3725d5c90d696651660f388f13680ac56886713a3",
+                                   "url":  "ws://127.0.0.1:18789"
+                               },
+                    "mode":  "remote"
+                }
+}

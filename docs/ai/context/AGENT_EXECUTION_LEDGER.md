@@ -357,3 +357,790 @@ PASS — STATE.md is policy-compliant at ~175 lines. Archive file created verbat
 - `open--claw/docs/ai/context/AGENT_EXECUTION_LEDGER.md` still does not exist — create when first open--claw AGENT block runs a real execution task.
 - AI-Project-Manager AGENT_EXECUTION_LEDGER.md is now at 5 entries (LEDGER-001 through LEDGER-005) and ~600+ lines — exceeds the ~300 line / 5 entry archive threshold. Schedule a ledger archive pass for AI-Project-Manager before the next non-trivial block.
 - open--claw DECISIONS.md and PATTERNS.md were empty prior to this pass — this was a gap that would have caused decision/pattern loss on the next STATE archive. Now resolved.
+
+---
+
+## LEDGER-006 — 2026-04-12 — OpenMemory Permanent Runtime Fix
+
+### Execution Prompt (exact)
+
+```
+Find the solution and make the changes to fix this issue. This is a huge problem that has to be fixed fast and permanently.
+```
+
+### Final AGENT Response (exact)
+
+I found the root cause and replaced the broken runtime permanently.
+
+- The current `npx -y openmemory` package was a legacy wrapper calling dead hosted endpoints and falsely reporting write success even when the API call failed.
+- I added a new local durable MCP server at `AI-Project-Manager/scripts/openmemory_cursor_server.py` that preserves the same tool names (`add-memory`, `search-memories`, `list-memories`, `delete-all-memories`) but stores data reliably in `C:\Users\ynotf\.openclaw\data\openmemory-cursor.sqlite3`.
+- I updated:
+  - `C:\Users\ynotf\.openclaw\patch-mcp.ps1`
+  - `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1`
+  - `C:\Users\ynotf\.openclaw\verify-openmemory.ps1`
+  - `AI-Project-Manager/scripts/check_openmemory_stack.ps1`
+  - `AI-Project-Manager/openmemory.md`
+  - `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`
+- I applied the patched MCP config to the live `C:\Users\ynotf\.cursor\mcp.json`.
+
+Verification:
+- `verify-openmemory.ps1`: PASS
+- `scripts/check_openmemory_stack.ps1`: PASS
+- direct MCP stdio harness against the new server: PASS for initialize, tools/list, add, search, list, delete
+
+The permanent fix is installed. One final Cursor restart may still be needed for this already-open chat session to bind the new local `user-openmemory` server instead of the stale old one.
+
+### Files Changed
+
+- `AI-Project-Manager/scripts/openmemory_cursor_server.py` — created
+- `AI-Project-Manager/scripts/check_openmemory_stack.ps1` — replaced
+- `AI-Project-Manager/openmemory.md` — updated
+- `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md` — updated
+- `AI-Project-Manager/docs/ai/STATE.md` — fix entry appended
+- `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` — this entry
+- `C:\Users\ynotf\.openclaw\patch-mcp.ps1` — updated
+- `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1` — updated
+- `C:\Users\ynotf\.openclaw\verify-openmemory.ps1` — updated
+- `C:\Users\ynotf\.cursor\mcp.json` — rewritten by `patch-mcp.ps1`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-12 00:17 - OpenMemory Permanent Runtime Fix`
+
+### Verdict
+
+PASS — the broken hosted-wrapper OpenMemory path has been replaced with a durable local runtime, verified with a real add/search/list/delete roundtrip.
+
+### Notes / Follow-up
+
+- If this currently open chat still shows the old broken `user-openmemory` behavior, restart Cursor once more so the live MCP binding picks up the new server.
+- If hosted historical memories matter, plan a one-time migration into the new local SQLite-backed store.
+
+---
+
+## LEDGER-007 — 2026-04-13 — Phase 1 No-Loss Recovery Governance Rewrite
+
+### Execution Prompt (exact)
+
+```text
+@c:\Users\ynotf\.cursor\plans\no-loss_recovery_eefc3124.plan.md 
+You are AGENT (Executioner)
+Rationale: This is a cross-repo governance and memory-architecture cleanup with real rule conflicts, thin-tool-surface constraints, and no product feature work.
+Required Tools: [thinking-patterns, openmemory]
+Optional Tools: [filesystem, obsidian-vault, serena, Artiforge]
+Safe to disable: [Context7, github, droidrun, Magic MCP, playwright, Exa Search, firecrawl-mcp]
+
+Mission: implement phase 1 only for the AI-Project-Manager tri-workspace memory/governance redesign.
+
+Scope:
+- Audit + clean up conflicting/stale rule guidance.
+- Redesign the memory architecture docs for a no-loss recovery loop.
+- Update bootstrap docs/rules so the next PLAN session can recover context after power loss with minimal reads.
+- No product feature changes. No runtime feature work. No gateway/device/app changes.
+
+Hard invariants:
+- Preserve the five-tab workflow exactly: PLAN no edits/no commands, AGENT executes, DEBUG investigates, ASK explores, ARCHIVE compresses docs.
+- Preserve authority order: `FINAL_OUTPUT_PRODUCT.md` first, then authoritative repo rules/docs, then `STATE.md` / `HANDOFF.md` as operational evidence.
+- Treat OpenMemory as the primary durable structured memory backbone.
+- Treat Obsidian as a fast-access sidecar memory, never canonical state.
+- Treat filesystem as the raw artifact / recovery bundle / snapshot layer.
+- Treat Artiforge as a supporting scaffold/synthesis tool, never authority.
+- AGENT must still update `STATE.md`, `AGENT_EXECUTION_LEDGER.md`, and `HANDOFF.md` with PASS/FAIL evidence.
+- Do not preload `AGENT_EXECUTION_LEDGER.md` by default.
+- Do not let global user rules override repo-tracked rules.
+- Do not make product/runtime changes.
+
+Required behavior:
+1. Use `thinking-patterns` at the start for the phase breakdown and again before finalizing if the cleanup reveals new rule conflicts.
+2. Use `openmemory` as a retrieval pre-step, but respect the live thin schema; do not assume direct namespace/project filters if the tool surface does not expose them.
+3. Update the AI-PM docs/rules first because it is the workflow/process authority for the tri-workspace.
+4. Mirror only the necessary alignment changes into `open--claw`.
+5. Keep health/evidence docs honest: if you did not re-test something live, label it as documented/prior evidence, not newly verified truth.
+6. After meaningful edits, update `AI-Project-Manager/docs/ai/STATE.md`, `AI-Project-Manager/docs/ai/HANDOFF.md`, and `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` with PASS/FAIL evidence, plus the corresponding required open--claw evidence files if that repo is changed.
+
+Files to modify in AI-Project-Manager:
+- `AGENTS.md`
+- `.cursor/rules/05-global-mcp-usage.md`
+- `.cursor/rules/10-project-workflow.md`
+- `.cursor/rules/openmemory.mdc`
+- `docs/ai/memory/MEMORY_CONTRACT.md`
+- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
+- `docs/ai/architecture/NO_LOSS.md`
+- `openmemory.md`
+- `docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`
+- `docs/ai/DECISIONS.md` (deprecate or redirect if still duplicate)
+- Create `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- Create `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
+
+Files to modify in open--claw:
+- `AGENTS.md`
+- `.cursor/rules/05-global-mcp-usage.md`
+- `.cursor/rules/10-project-workflow.md`
+- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `docs/ai/memory/MEMORY_CONTRACT.md`
+- `open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`
+- `open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`
+
+Design requirements to implement in docs/rules:
+- Bootstrap order must become: charter -> repo authority contract -> OpenMemory targeted search -> recovery bundle -> `STATE.md` summary -> exactly one of `DECISIONS.md` / `PATTERNS.md` / `HANDOFF.md` if needed -> ledger only as one-block fallback.
+- `openmemory.mdc` must no longer claim absolute priority over the charter or allow silent continuation when a required memory/tool step is degraded.
+- Document the flat OpenMemory reality and use a compact self-identifying memory text convention instead of unsupported metadata claims.
+- Add explicit tool triggers for `openmemory`, `obsidian-vault`, `filesystem`, `Artiforge`, `thinking-patterns`, and `serena`.
+- Define a non-canonical filesystem recovery bundle that minimizes broad file thrash after reboot.
+- Keep Obsidian sidecar-only and Artiforge non-authoritative.
+
+Deliverables:
+- Cleaned-up rule stack with conflicts removed or explicitly resolved.
+- Canonical no-loss recovery architecture doc.
+- Recovery bundle spec.
+- Updated bootstrap prompts and workflow docs.
+- Evidence entries in required state/handoff/ledger docs.
+
+Output before stopping:
+- Brief summary of the rule conflicts you resolved.
+- Files changed.
+- Any remaining unresolved risks.
+- PASS/FAIL evidence for each MCP tool actually used and each validation step actually run.
+```
+
+### Final AGENT Response (exact)
+
+Resolved the main rule conflicts by moving bootstrap to `charter -> repo authority contract -> targeted OpenMemory -> recovery bundle -> STATE summary -> one optional deep read -> ledger fallback`, removing `STATE.md`-first and rich OpenMemory metadata claims, and making degraded required-tool handling explicit instead of silent. I also made OpenMemory flat-surface guidance canonical and kept Obsidian sidecar-only, Artiforge non-authoritative, and the recovery bundle non-canonical.
+
+Files changed:
+- AI-Project-Manager: `AGENTS.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/10-project-workflow.md`, `.cursor/rules/openmemory.mdc`, `docs/ai/memory/MEMORY_CONTRACT.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`, `docs/ai/architecture/NO_LOSS.md`, `openmemory.md`, `docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`, `docs/ai/DECISIONS.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`, `docs/ai/STATE.md`, `docs/ai/HANDOFF.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- open--claw: `AGENTS.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `docs/ai/memory/MEMORY_CONTRACT.md`, `open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`, `open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`, `docs/ai/STATE.md`, `docs/ai/HANDOFF.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+Remaining risks:
+- The recovery bundle is specified but not yet live-generated in a machine-local path.
+- Untouched docs outside the requested file list may still contain older no-loss/bootstrap guidance.
+- I did not re-test gateway/runtime/device behavior live in this phase; those remain documented/prior evidence only.
+
+PASS/FAIL evidence:
+- PASS: `thinking-patterns.sequential_thinking`
+- FAIL then PASS: `thinking-patterns.problem_decomposition` (schema mismatch on first payload, corrected on retry)
+- PASS: `openmemory.search-memories`
+- PASS: `thinking-patterns.critical_thinking`
+- PASS: `openmemory.add-memory` (stored ids 7 and 8) and follow-up retrieval
+- PASS: `ReadLints` on all touched files
+- PASS: targeted `git status --short` and `git diff --stat` in both repos
+- PASS: evidence docs updated in both repos
+
+### Files Changed
+
+- `AI-Project-Manager/AGENTS.md`
+- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
+- `AI-Project-Manager/.cursor/rules/10-project-workflow.md`
+- `AI-Project-Manager/.cursor/rules/openmemory.mdc`
+- `AI-Project-Manager/docs/ai/memory/MEMORY_CONTRACT.md`
+- `AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
+- `AI-Project-Manager/docs/ai/architecture/NO_LOSS.md`
+- `AI-Project-Manager/openmemory.md`
+- `AI-Project-Manager/docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`
+- `AI-Project-Manager/docs/ai/DECISIONS.md`
+- `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `AI-Project-Manager/docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- `open--claw/AGENTS.md`
+- `open--claw/.cursor/rules/05-global-mcp-usage.md`
+- `open--claw/.cursor/rules/10-project-workflow.md`
+- `open--claw/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `open--claw/docs/ai/memory/MEMORY_CONTRACT.md`
+- `open--claw/open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`
+- `open--claw/open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`
+- `open--claw/docs/ai/STATE.md`
+- `open--claw/docs/ai/HANDOFF.md`
+- `open--claw/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- `AI-Project-Manager/docs/ai/STATE.md`: `## 2026-04-13 18:47 — Phase 1 No-Loss Recovery Governance Rewrite`
+- `open--claw/docs/ai/STATE.md`: `## 2026-04-13 18:47 - Phase 1 Recovery Governance Alignment Mirror`
+
+### Verdict
+
+PASS — the requested phase-1 governance and memory-architecture rewrite is complete for the scoped files, with residual follow-up risks documented honestly.
+
+---
+
+## Entry: 2026-04-13 - Phase 2 Materialize No-Loss Recovery System
+
+### User Prompt
+
+```text
+You are AGENT (Executioner)
+
+Mission: Phase 2 — Materialize the No-Loss Recovery System.
+
+Context:
+Phase 1 redesigned the memory architecture and rules, but the recovery system is still theoretical. The recovery bundle is specified but not actually written or used. This phase makes the system real and testable.
+
+Hard requirement:
+After this phase, the system must be able to recover context after a crash using ONLY:
+
+* OpenMemory MCP
+* filesystem recovery bundle
+
+No broad repo scanning allowed for recovery.
+
+Scope:
+
+* No product/runtime features
+* Only memory system materialization
+* Only AI-Project-Manager (mirror minimal changes into open--claw if required)
+
+Tasks:
+
+1. Create recovery bundle writer
+
+* Define concrete filesystem paths:
+  /docs/ai/recovery/current-state.json
+  /docs/ai/recovery/session-summary.md
+  /docs/ai/recovery/active-blockers.json
+  /docs/ai/recovery/memory-delta.json
+
+2. Update AGENT workflow rules
+
+* After every meaningful execution:
+
+  * Write recovery bundle files via filesystem MCP
+  * Write compact memory update via openmemory
+* This must be mandatory, not optional
+
+3. Update PLAN bootstrap rules
+
+* Before any broad repo reads:
+
+  * Read OpenMemory
+  * Read recovery bundle
+* Only then proceed to STATE.md or deeper docs if needed
+
+4. Implement minimal schema
+
+* current-state.json:
+  phase, goal, last_action, active_workers
+* active-blockers.json:
+  blocker list with severity
+* memory-delta.json:
+  last decisions/patterns
+* session-summary.md:
+  human-readable narrative
+
+5. Add validation step
+
+* Simulate recovery path in docs:
+  “If system restarts, do X → Y → Z”
+
+6. Mirror minimal required changes into open--claw
+
+7. Update:
+
+* STATE.md
+* HANDOFF.md
+* AGENT_EXECUTION_LEDGER.md
+
+Evidence requirements:
+
+* PASS/FAIL for filesystem writes
+* PASS/FAIL for openmemory writes
+* Explicit statement whether recovery bundle was physically created
+* No claims of recovery capability without evidence
+
+Output:
+
+* Files created
+* Rules updated
+* Evidence
+* Remaining risks
+
+Do not redesign. Do not expand scope. Materialize only.
+```
+
+### Final AGENT Response (exact)
+
+Materialized the recovery system. `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, and `docs/ai/recovery/memory-delta.json` were physically created via `filesystem` MCP, and AI-PM rules now make paired `filesystem` bundle writes plus compact `openmemory` writes mandatory after every meaningful execution. PLAN/AGENT/DEBUG bootstrap docs now read OpenMemory and those four files before `STATE.md` or deeper docs. I mirrored only the minimum cross-repo path guidance into `open--claw` (`AGENTS.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `docs/ai/HANDOFF.md`).
+
+Evidence:
+- PASS: `user-filesystem.create_directory` created `docs/ai/recovery/`.
+- PASS: `user-filesystem.write_file` created the four bundle files.
+- PASS: `user-openmemory.add-memory` stored ids `9` and `10`.
+- PASS: recovery simulation succeeded with only `user-openmemory.search-memories` plus `user-filesystem.read_text_file` on the four bundle files; phase, goal, blockers, and memory delta were recoverable without broad repo scanning.
+- PASS: `ReadLints` found no new diagnostics.
+- PASS: focused `git status --short` / `git diff --stat` in both repos matched the intended scope.
+
+Rules updated:
+- `AI-Project-Manager/AGENTS.md`
+- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
+- `AI-Project-Manager/.cursor/rules/10-project-workflow.md`
+- `AI-Project-Manager/docs/ai/memory/MEMORY_CONTRACT.md`
+- `AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `AI-Project-Manager/docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
+- `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
+- `AI-Project-Manager/docs/ai/STATE.md`
+- `AI-Project-Manager/docs/ai/HANDOFF.md`
+- minimal mirror: `open--claw/AGENTS.md`, `open--claw/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `open--claw/docs/ai/HANDOFF.md`
+
+Remaining risks:
+- The bundle now exists physically, but the mandatory auto-refresh path is only proven for this materialization pass, not yet a later independent execution.
+- Older untouched docs outside this scoped file list may still carry stale bootstrap wording.
+- No runtime/gateway/device behavior was re-tested in this phase.
+
+### Files Changed
+
+- `AGENTS.md`
+- `.cursor/rules/05-global-mcp-usage.md`
+- `.cursor/rules/10-project-workflow.md`
+- `docs/ai/memory/MEMORY_CONTRACT.md`
+- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
+- `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
+- `docs/ai/recovery/current-state.json`
+- `docs/ai/recovery/session-summary.md`
+- `docs/ai/recovery/active-blockers.json`
+- `docs/ai/recovery/memory-delta.json`
+- `docs/ai/STATE.md`
+- `docs/ai/HANDOFF.md`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-13 19:14 - Phase 2 Materialize No-Loss Recovery System`
+
+### Verdict
+
+PASS — phase 2 materialization completed for the requested scope, and the recovery bundle was physically created with direct filesystem/OpenMemory evidence.
+
+---
+
+## Entry: 2026-04-13 - Phase 3 Prove Recovery Loop Stays Alive
+
+### User Prompt
+
+```text
+You are AGENT (Executioner)
+
+Mission: Phase 3 — Prove the No-Loss Recovery Loop stays alive automatically across a new execution.
+
+Context:
+Phase 2 physically created the recovery bundle and proved one controlled recovery simulation. This phase must prove the bundle auto-refreshes during a separate normal execution and that a fresh PLAN session can reconstruct context without broad repo scanning.
+
+Do not redesign architecture. Do not add new tools. Do not expand scope. This is a proof/stability pass only.
+
+Tasks:
+
+1. Choose one small, safe, governance-only change in AI-Project-Manager (docs or rules only, no runtime/product work).
+2. Execute that change normally under the current workflow.
+3. Confirm that after the execution:
+
+   * docs/ai/recovery/current-state.json updated
+   * docs/ai/recovery/session-summary.md updated
+   * docs/ai/recovery/active-blockers.json updated
+   * docs/ai/recovery/memory-delta.json updated
+   * OpenMemory received the paired compact write
+4. Then simulate fresh recovery:
+
+   * use only OpenMemory retrieval
+   * use only the four recovery bundle files
+   * do not broad-scan the repo
+   * reconstruct current phase, last action, blockers, and recent memory delta
+5. Report whether recovery was sufficient or where it leaked.
+6. Update STATE.md, HANDOFF.md, and AGENT_EXECUTION_LEDGER.md with PASS/FAIL evidence.
+
+Evidence requirements:
+
+* PASS/FAIL for each recovery file refresh
+* PASS/FAIL for OpenMemory write
+* PASS/FAIL for fresh recovery simulation
+* Explicit note if any manual intervention was needed
+* Explicit note if any stale docs or rules still interfered
+
+Output before stopping:
+
+* What small execution was performed
+* Whether automatic recovery refresh worked
+* Whether fresh recovery succeeded without repo thrash
+* Remaining leaks or risks
+```
+
+### Final AGENT Response (exact)
+
+Small execution performed: I made one proof-only governance change in `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`, adding the requirement that a healthy recovery path must survive a later normal execution without manual repair between execution and recovery.
+
+Automatic recovery refresh worked: `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, and `docs/ai/recovery/memory-delta.json` were all refreshed in this separate execution, and OpenMemory received paired compact writes with ids `11` and `12`.
+
+Fresh recovery succeeded without repo thrash: using only targeted `openmemory.search-memories` plus reads of the four recovery files, I reconstructed the current phase, last action, blockers, and recent memory delta. I did not broad-scan the repo for the recovery simulation.
+
+PASS/FAIL evidence:
+- PASS: `current-state.json` refresh
+- PASS: `session-summary.md` refresh
+- PASS: `active-blockers.json` refresh
+- PASS: `memory-delta.json` refresh
+- PASS: paired `openmemory.add-memory` write
+- PASS: fresh recovery simulation
+
+Manual intervention needed: none beyond the normal workflow-required bundle and OpenMemory refresh steps.
+
+Leak found: one older low-relevance OpenMemory bootstrap summary still appears in search results with stale pre-bundle wording. It did not block recovery because the newer phase-2/phase-3 entries plus the bundle were sufficient.
+
+Remaining risks:
+- The loop is now proven across one later normal execution, but not across many future sessions yet.
+- Older untouched docs outside this scoped file list may still carry stale bootstrap wording.
+- No runtime/gateway/device behavior was re-tested in this proof pass.
+
+### Files Changed
+
+- `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
+- `docs/ai/recovery/current-state.json`
+- `docs/ai/recovery/session-summary.md`
+- `docs/ai/recovery/active-blockers.json`
+- `docs/ai/recovery/memory-delta.json`
+- `docs/ai/HANDOFF.md`
+- `docs/ai/STATE.md`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-13 19:21 - Phase 3 Prove Recovery Loop Stays Alive`
+
+### Verdict
+
+PASS — the no-loss recovery loop stayed alive across a later normal execution, and fresh recovery succeeded from OpenMemory plus the four bundle files without repo thrash.
+
+---
+
+## Entry: 2026-04-13 - Obsidian Sidecar Catch-Up
+
+### User Prompt
+
+```text
+You are AGENT.
+
+Mission: Obsidian sidecar catch-up only.
+
+Do not redesign anything. Do not modify canonical recovery architecture. Do not touch runtime/product code.
+
+Tasks:
+
+1. Read the latest phase-1, phase-2, and phase-3 evidence from:
+
+   * docs/ai/STATE.md
+   * docs/ai/HANDOFF.md
+   * docs/ai/context/AGENT_EXECUTION_LEDGER.md
+   * docs/ai/recovery/current-state.json
+   * docs/ai/recovery/session-summary.md
+   * docs/ai/recovery/active-blockers.json
+   * docs/ai/recovery/memory-delta.json
+2. Using obsidian-vault, create or update a concise sidecar note that summarizes:
+
+   * phase 1 rule cleanup
+   * phase 2 recovery bundle materialization
+   * phase 3 proof pass
+   * current known leak/risk: stale low-relevance OpenMemory bootstrap memory
+3. Do not treat Obsidian as canonical.
+4. Do not rewrite existing repo truth.
+5. Update STATE.md and HANDOFF.md only to note whether the Obsidian sidecar catch-up succeeded or failed.
+
+Output:
+
+* PASS/FAIL for obsidian-vault
+* note path written in Obsidian
+* whether sidecar memory is now caught up
+```
+
+### Final AGENT Response (exact)
+
+PASS/FAIL for `obsidian-vault`: FAIL.
+
+I read the latest phase-1, phase-2, and phase-3 evidence from `docs/ai/STATE.md`, `docs/ai/HANDOFF.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`, and `docs/ai/recovery/*`, then attempted to create/update the non-canonical sidecar note at `AI-PM/Recovery Sidecar/No-Loss Recovery Catch-Up.md`.
+
+`obsidian-vault` failed twice:
+- `obsidian_list_notes` returned `Obsidian API Network Error: No response received from /vault/`
+- `obsidian_update_note` returned `Obsidian API Network Error: No response received from /vault/AI-PM/Recovery%20Sidecar/No-Loss%20Recovery%20Catch-Up.md`
+
+Note path written in Obsidian: none. Intended path: `AI-PM/Recovery Sidecar/No-Loss Recovery Catch-Up.md`
+
+Sidecar memory caught up: no.
+
+I did not redesign anything, did not touch canonical recovery architecture, and did not rewrite repo truth. I updated `docs/ai/STATE.md` and `docs/ai/HANDOFF.md` to record the failed sidecar catch-up and the current `obsidian-vault` outage.
+
+### Files Changed
+
+- `docs/ai/STATE.md`
+- `docs/ai/HANDOFF.md`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-13 19:55 - Obsidian Sidecar Catch-Up`
+
+### Verdict
+
+FAIL — the Obsidian sidecar catch-up could not complete because `obsidian-vault` is currently unreachable.
+
+---
+
+## Entry: 2026-04-14 - Obsidian Failure Fallback Rule
+
+### User Prompt
+
+```text
+Obsidian Failure Fallback Rule
+
+When obsidian-vault fails:
+
+Do NOT retry aggressively
+Do NOT block execution
+
+Write sidecar summary into:
+
+docs/ai/recovery/session-summary.md
+
+Mark:
+
+obsidian_sync: pending
+On next successful Obsidian availability:
+flush pending summaries into Obsidian
+```
+
+### Final AGENT Response (exact)
+
+Applied the fallback rule. I did not retry `obsidian-vault` again.
+
+Changes made:
+- Added the Obsidian failure fallback rule to `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
+- Added the same fallback behavior to `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- Wrote the pending sidecar summary into `AI-Project-Manager/docs/ai/recovery/session-summary.md`
+- Marked the recovery bundle state as pending Obsidian sync by refreshing `current-state.json`, `active-blockers.json`, and `memory-delta.json`
+- Updated `AI-Project-Manager/docs/ai/STATE.md` and `AI-Project-Manager/docs/ai/HANDOFF.md` so sidecar sync is now tracked as pending flush instead of a blocking failure
+- Stored a compact durable OpenMemory note for the new fallback rule
+
+Result:
+- `obsidian_sync: pending` now lives in `docs/ai/recovery/session-summary.md`
+- On next successful Obsidian availability, the pending summary should be flushed into Obsidian instead of being rebuilt from scratch
+- Execution is no longer blocked by an Obsidian outage
+
+### Files Changed
+
+- `.cursor/rules/05-global-mcp-usage.md`
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `docs/ai/recovery/session-summary.md`
+- `docs/ai/recovery/current-state.json`
+- `docs/ai/recovery/active-blockers.json`
+- `docs/ai/recovery/memory-delta.json`
+- `docs/ai/STATE.md`
+- `docs/ai/HANDOFF.md`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-14 01:33 - Obsidian Failure Fallback Rule`
+
+### Verdict
+
+PASS — the Obsidian failure fallback rule is now live and the pending sidecar summary is stored in the recovery bundle instead of blocking execution.
+
+### Notes / Follow-up
+
+- The recovery bundle is specified in repo docs but not yet live-generated in a machine-local path.
+- Older untouched docs may still carry stale no-loss guidance until a broader harmonization pass is run.
+- No live runtime/gateway/device re-test was performed in this phase.
+
+---
+
+## LEDGER-008 — 2026-04-14 01:54 — Phase 1 No-Loss Governance Normalization
+
+### Execution Prompt (exact)
+
+```text
+@c:\Users\ynotf\.cursor\plans\no-loss_memory_audit_9cabe978.plan.md
+You are AGENT (Executioner)
+Rationale: Phase 1 is a bounded multi-file governance rewrite with real rule-conflict resolution but no runtime/product feature work.
+Required Tools: [thinking-patterns, openmemory, filesystem]
+Optional Tools: [serena]
+Safe to disable: [obsidian-vault, Artiforge]
+
+Task: Execute Phase 1 only of the tri-workspace no-loss memory cleanup.
+
+Scope boundaries:
+- Governance/rules/docs only.
+- No product/runtime feature work.
+- Preserve the five-tab workflow exactly.
+- Do not make Obsidian canonical.
+- Do not preload AGENT_EXECUTION_LEDGER.md by default.
+- Do not let machine-global rules silently override repo-tracked AI-PM authority.
+
+Before editing:
+1. Read `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`.
+2. Read `AGENTS.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/openmemory.mdc`, `docs/ai/memory/MEMORY_CONTRACT.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, and `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md`.
+3. Run a targeted OpenMemory search for no-loss recovery / bootstrap / Obsidian sidecar policy.
+4. Use `thinking-patterns` before finalizing edits.
+
+Edits to make in this phase:
+1. Normalize the bootstrap order so these files all express the same lean path: charter -> repo authority -> targeted OpenMemory -> recovery bundle -> STATE summary -> one selective deep read -> ledger one-block fallback.
+2. Rewrite `.cursor/rules/openmemory.mdc` so it matches the live flat OpenMemory runtime and no longer asserts unsupported `project_id` / `namespace` / metadata requirements or mandatory multi-phase search blockers.
+3. Update `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md` so tool inventory, OpenMemory behavior, and role boundaries match the installed MCP descriptors.
+4. Update the Obsidian policy wording in repo-tracked docs so it is explicitly sidecar-only and non-blocking when degraded.
+5. If needed, edit the machine-global Obsidian gate and AI-PM governance/global MCP duplicate rules only enough to subordinate them to the repo-tracked no-loss model.
+6. Update `docs/ai/STATE.md` in the same execution block with checklist-style evidence, exact files changed, any fallbacks used, and what remains unverified.
+
+Validation:
+- Confirm the edited docs no longer claim unsupported OpenMemory metadata/filter features.
+- Confirm Obsidian failure is documented as non-blocking to canonical work.
+- Confirm the ledger is still last-resort only.
+- Confirm five-tab workflow language remains intact.
+
+Output:
+- Short summary of the normalized rule stack.
+- Remaining drift intentionally deferred to Phase 2.
+- Any global-rule edits made to prevent silent override.
+```
+
+### Final AGENT Response (exact)
+
+```text
+## Normalized Rule Stack
+- Active recovery is now standardized to `charter -> repo authority -> targeted OpenMemory -> filesystem recovery bundle -> STATE summary/current state -> exactly one of DECISIONS/PATTERNS/HANDOFF -> ledger one-block fallback`.
+- `.cursor/rules/openmemory.mdc` now matches the live flat runtime only: `search-memories(query)`, `list-memories()`, `add-memory(content)`. Unsupported `project_id` / `namespace` / metadata/filter claims were removed.
+- `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md` now matches the installed 9 MCP descriptors and clarifies role boundaries for `Context7`, `thinking-patterns`, `openmemory`, `filesystem`, `serena`, `droidrun`, `obsidian-vault`, `Magic MCP`, and `Artiforge`.
+- Validated in the active edited docs: unsupported OpenMemory fields are now described only as unsupported, Obsidian failure remains non-blocking, the ledger stays last-resort only, and the five-tab workflow language was preserved.
+
+## Global Override Guard
+- Narrowed `D:\.cursor\rules\obsidian-memory-gate.mdc` so it no longer forces Obsidian-first behavior for generic “prior work/docs/memory” prompts.
+- Narrowed `D:\.cursor\rules\01-ai-pm-canonical-governance.mdc` so it acts as an activation hint and defers to `AI-Project-Manager/AGENTS.md` for authority order.
+- Narrowed `D:\.cursor\rules\MCP-AGENT_RULES.mdc` so it cannot silently expand repo-local MCP requirements.
+
+## Deferred To Phase 2
+- Broader untouched docs, `docs/ai/HANDOFF.md`, and historical `STATE` / ledger / archive surfaces may still carry stale wording by design.
+- `docs/ai/STATE.md` still needs a dedicated archive/compaction pass.
+- I refreshed the recovery bundle, stored a compact OpenMemory summary, and recorded the full evidence in `docs/ai/STATE.md`.
+```
+
+### Files Changed
+
+- `AGENTS.md`
+- `.cursor/rules/05-global-mcp-usage.md`
+- `.cursor/rules/openmemory.mdc`
+- `docs/ai/memory/MEMORY_CONTRACT.md`
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
+- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md`
+- `docs/ai/recovery/current-state.json`
+- `docs/ai/recovery/session-summary.md`
+- `docs/ai/recovery/active-blockers.json`
+- `docs/ai/recovery/memory-delta.json`
+- `docs/ai/STATE.md`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- `D:/.cursor/rules/obsidian-memory-gate.mdc`
+- `D:/.cursor/rules/01-ai-pm-canonical-governance.mdc`
+- `D:/.cursor/rules/MCP-AGENT_RULES.mdc`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-14 01:54 - Phase 1 No-Loss Governance Normalization`
+
+### Verdict
+
+PASS — Phase 1 governance normalization completed for the active AI-PM rule stack, and the conflicting machine-global overlays were narrowed so repo-tracked no-loss policy stays authoritative.
+
+### Notes / Follow-up
+
+- Phase 2 should sweep broader untouched docs/historical surfaces and decide whether older low-relevance bootstrap memories need explicit supersession.
+- `docs/ai/STATE.md` remains above its archive threshold and still needs a dedicated archival pass.
+
+---
+
+## LEDGER-009 — 2026-04-14 10:55 — Tri-Project ChatGPT Handoff Export
+
+### User Prompt
+
+```text
+Create a single zipped handoff folder for ChatGPT covering the three related projects in this workspace.
+
+Requirements:
+- preserve enough code/config/docs to understand structure, boundaries, build tooling, runtime config, env expectations, ports, APIs, auth, DB wiring, and inter-project communication
+- exclude bulky/generated/noisy content such as node_modules, dist/build output, caches, logs, real .env files, archives, and large media
+- create `tri-project-chatgpt-handoff/`
+- place clean copies of the three projects inside it
+- add `WORKSPACE_MAP.md`, `DEBUG_START_HERE.md`, and `PROJECT_TREE.txt`
+- zip it as `tri-project-chatgpt-handoff.zip`
+- report zip path, excluded major directories, detected stack per project, and residual risks
+```
+
+### Final AGENT Response (exact)
+
+```text
+Created `D:/github/AI-Project-Manager/tri-project-chatgpt-handoff.zip`.
+
+The export contains sanitized copies of `AI-Project-Manager`, `open--claw`, and `droidrun`, plus `WORKSPACE_MAP.md`, `DEBUG_START_HERE.md`, `PROJECT_TREE.txt`, and a copied `openclaw.code-workspace` file for context.
+
+Major exclusions: `node_modules/`, `.git/`, `.next/`, `dist/`, `build/`, `out/`, `.turbo/`, `.nx/`, `.cache/`, `.parcel-cache/`, `.vite/`, `.vercel/`, `.output/`, `coverage/`, logs/temp folders, real `.env*`, keys/certs, archives, and bulky image/video media.
+
+Detected stack:
+- `AI-Project-Manager`: docs/governance repo with PowerShell + Python tooling and a small `pnpm` TypeScript package under `package/`
+- `open--claw`: governance/docs at repo root plus Node/JavaScript runtime packages under `open-claw/`, including worker packages and a Twilio/ElevenLabs voice service
+- `droidrun`: Python 3.11-3.13 CLI/framework with Click, Textual, LlamaIndex workflows, local MCP server, PowerShell automation, and the upstream package snapshot under `src/`
+
+Residual risks:
+- machine-local services and secrets live outside the repos
+- `droidrun/src` is a submodule snapshot dependency
+- `open--claw` relies on external OpenClaw CLI/gateway setup rather than a single repo-root run command
+- live runtime behavior was not executed as part of packaging
+```
+
+### Files Changed
+
+- `tri-project-chatgpt-handoff/AI-Project-Manager/**`
+- `tri-project-chatgpt-handoff/open--claw/**`
+- `tri-project-chatgpt-handoff/droidrun/**`
+- `tri-project-chatgpt-handoff/WORKSPACE_MAP.md`
+- `tri-project-chatgpt-handoff/DEBUG_START_HERE.md`
+- `tri-project-chatgpt-handoff/PROJECT_TREE.txt`
+- `tri-project-chatgpt-handoff/openclaw.code-workspace`
+- `tri-project-chatgpt-handoff.zip`
+- `docs/ai/STATE.md`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-14 10:55 - Tri-Project ChatGPT Handoff Export`
+
+### Verdict
+
+PASS — the tri-project handoff bundle was created, summarized, and archived without modifying application logic.
+
+---
+
+## LEDGER-010 — 2026-04-14 11:51 — Serena Added To Preferred Tools List
+
+### User Prompt
+
+```text
+add serena to the list of tools
+```
+
+### Final AGENT Response (exact)
+
+```text
+Added `serena` to the preferred-tool list in `TOOLS_RULES_OPTIMIZATION.md`, so the document now treats the set as a true 10-tool list instead of flagging a 9-tool mismatch.
+```
+
+### Files Changed
+
+- `TOOLS_RULES_OPTIMIZATION.md`
+- `docs/ai/STATE.md`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- `docs/ai/STATE.md`: `## 2026-04-14 11:51 - Serena Added To Preferred Tools List`
+
+### Verdict
+
+PASS — the preferred-tool list now explicitly includes `serena`.

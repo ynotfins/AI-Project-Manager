@@ -4,73 +4,111 @@ This repo uses a five-tab Cursor workflow: PLAN / AGENT / DEBUG / ASK / ARCHIVE.
 
 ## Authority Hierarchy (read this first)
 
-The governing product charter for this tri-workspace is:
+The tri-workspace authority order is:
 
-1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — **supreme authority**; no agent, prompt, rule, or doc in any repo may weaken or override it
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — supreme product authority
 2. Tony's explicit permission to change `FINAL_OUTPUT_PRODUCT.md`
 3. `AUTHORITATIVE_STANDARD.md` and `TEAM_ROSTER.md` in the knowledgebase — subordinate translations of the charter
-4. Repo-local rules and workflow docs — valid only when they do not conflict with the above
-5. `docs/ai/STATE.md` and `docs/ai/HANDOFF.md` — **operational evidence only**; never product law
+4. Repo-tracked workflow and governance docs — valid only when they do not conflict with the above
+5. `docs/ai/STATE.md` and `docs/ai/HANDOFF.md` — operational evidence only, never product law
+
+Machine-global overlays may inform behavior, but they never outrank the charter or repo-tracked governance in this repo.
 
 **Layer roles:**
 
-- `AI-Project-Manager` — workflow and process layer: tab contracts, execution discipline, state tracking, tool policy, cross-repo orchestration. It is not the product authority.
-- `open--claw` — strict enforcement center: product charter, AI employee knowledgebase, quality standards, Sparky's mandate.
-- `droidrun` — actuator layer: phone automation, MCP phone tools, Android/Portal runtime bridge.
+- `AI-Project-Manager` — workflow and process layer: tab contracts, execution discipline, state tracking, tool policy, and cross-repo orchestration
+- `open--claw` — strict enforcement center: product charter, AI employee knowledgebase, quality standards, and Sparky's mandate
+- `droidrun` — actuator layer: phone automation, MCP phone tools, and Android/Portal runtime bridge
 
-## Authoritative rules
+## Repo Authority Contract
 
-- `.cursor/rules/00-global-core.md` — non-negotiable behaviors
-- `.cursor/rules/01-charter-enforcement.md` — **enforcement kernel** (read immediately after 00; charter violations are blocked here, not merely described)
-- `.cursor/rules/05-global-mcp-usage.md` — MCP tool usage policy
-- `.cursor/rules/10-project-workflow.md` — tab contracts and execution protocol
-- `.cursor/rules/20-project-quality.md` — engineering standards
-- `docs/ai/CURSOR_WORKFLOW.md` — human-readable workflow overview
+For workflow and memory recovery, read this repo contract before operational evidence:
 
-## State tracking
+- `.cursor/rules/00-global-core.md`
+- `.cursor/rules/01-charter-enforcement.md`
+- `.cursor/rules/02-non-routable-exclusions.md`
+- `.cursor/rules/05-global-mcp-usage.md`
+- `.cursor/rules/10-project-workflow.md`
+- `.cursor/rules/20-project-quality.md`
+- `.cursor/rules/openmemory.mdc`
+- `docs/ai/memory/MEMORY_CONTRACT.md`
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
 
-- `docs/ai/STATE.md` — **operational evidence log** (not product law); PLAN reads this first to understand current state, blockers, fallbacks, and cross-repo effects. AGENT updates it after every execution block using the enforced template in `10-project-workflow.md`.
+These repo-tracked files define live workflow policy. Historical snapshots such as `docs/global-rules.md` are informative only.
+
+## State Tracking
+
+- `docs/ai/STATE.md` — operational evidence log, not product law; use the summary/current state section first during recovery, then deeper blocks only as needed
+- `docs/ai/HANDOFF.md` — concise unresolved operator snapshot and current cross-session turbulence
+- `docs/ai/recovery/` — non-canonical recovery bundle written for crash recovery via `filesystem`:
+  - `current-state.json`
+  - `session-summary.md`
+  - `active-blockers.json`
+  - `memory-delta.json`
 - `docs/ai/PLAN.md` — active plan with phases and exit criteria
-- `docs/ai/context/` — non-canonical artifact storage: session transcripts, bulk dumps, and ephemeral context files. Informative only; never authoritative.
-- `docs/ai/archive/` — superseded docs. **Never consulted** by PLAN. Historical reference only.
+- `docs/ai/context/` — non-canonical artifact storage: session transcripts, bulk dumps, and ephemeral context files
+- `docs/ai/archive/` — superseded docs; never part of active bootstrap
 
-## Context source priority (read in this order)
+## Context Source Priority (read in this order)
 
-PLAN must reconstruct current system state from repo-tracked sources before consulting artifacts or chat history. If repo sources and chat context disagree, repo sources win unless current execution evidence proves otherwise. Full rule: `10-project-workflow.md § PLAN source-of-truth priority`.
+PLAN and DEBUG must reconstruct state from the smallest authoritative slice that answers the task. If repo sources and chat context disagree, repo sources win unless current execution evidence proves otherwise.
 
-1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — product charter (supreme)
-2. `docs/ai/STATE.md` — operational source of truth
-3. `docs/ai/memory/DECISIONS.md` — key decisions with rationale
-4. `docs/ai/memory/PATTERNS.md` — reusable patterns
-5. `docs/ai/HANDOFF.md` — session handoff context
-6. `docs/ai/context/` — transcript-derived artifacts and session dumps
-7. Chat history / `@Past Chats` — **last resort only**; use only if the above sources are insufficient
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`
+2. The repo authority contract listed above
+3. Targeted `openmemory` retrieval relevant to the active repo/task
+4. The recovery bundle files in `docs/ai/recovery/`, if present and current
+5. `docs/ai/STATE.md` summary/current state section
+6. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` if needed
+7. `docs/ai/context/AGENT_EXECUTION_LEDGER.md` only as a one-block-at-a-time fallback
 
-## MCP policy
+Do not preload the execution ledger by default.
+
+Other `docs/ai/context/` artifacts and chat history are not part of the default recovery path. Use them only for targeted historical/audit follow-up after the selective deep read and ledger fallback are still insufficient.
+
+## MCP Policy
 
 MCP tool usage is enforced via `.cursor/rules/05-global-mcp-usage.md`.
-Tools are used for: code navigation, documentation lookup, reasoning, browser automation, web extraction, repo operations, and persistent memory.
+Tools are used for code navigation, documentation lookup, reasoning, repo operations, persistent memory, filesystem recovery reads, and optional sidecar knowledge.
 Configuration lives outside the repo. Rules enforce behavior, not plumbing.
 
-## Agent contract
+### Serena Project Map
+
+When Serena is needed, activate it by exact path for the codebase actually in scope:
+
+- `D:/github/AI-Project-Manager`
+- `D:/github/open--claw/open-claw`
+- `D:/github/droidrun`
+
+Do not rely on dashboard names when switching projects. `D:/github/open--claw` repo root is docs/governance heavy and is not the default Serena code project. If the task is docs-only or the current root has no valid Serena project, record Serena as not applicable and use targeted search/read tools instead.
+
+## Agent Contract
 
 AGENT must:
 
 - Follow PLAN prompts exactly
 - Update `docs/ai/STATE.md` after each execution block
-- Append one entry to `docs/ai/context/AGENT_EXECUTION_LEDGER.md` after each completed prompt block (exact prompt text + exact final response + files changed + verdict). This is mandatory and equally required as the STATE.md update.
+- Update `docs/ai/HANDOFF.md` when unresolved turbulence or project-state changes remain relevant
+- Append one entry to `docs/ai/context/AGENT_EXECUTION_LEDGER.md` after each completed prompt block
 - Provide PASS/FAIL evidence for every tool call and command
 - Use MCP tools before falling back to manual approaches
-- Promote unresolved execution turbulence to `docs/ai/HANDOFF.md § Recent Unresolved Issues` when it remains operationally relevant after a task block. Turbulence includes: failed attempts that changed implementation direction, errors not yet resolved, fallback paths that became the new reality, and assumptions that remain unverified.
+- After every meaningful execution, write the recovery bundle via `filesystem` to:
+  - `docs/ai/recovery/current-state.json`
+  - `docs/ai/recovery/session-summary.md`
+  - `docs/ai/recovery/active-blockers.json`
+  - `docs/ai/recovery/memory-delta.json`
+- After every meaningful execution, write at least one compact durable OpenMemory update via `openmemory`
+- Record degraded-tool incidents honestly, including fallback path and any memory reseed debt
 
 ## Execution Ledger (non-canonical)
 
-`docs/ai/context/AGENT_EXECUTION_LEDGER.md` records verbatim AGENT execution events. It is **non-canonical** — informative only, never authoritative. It must never be part of default bootstrap reads for any tab. PLAN and DEBUG may consult it only when STATE.md, DECISIONS.md, PATTERNS.md, and HANDOFF.md are insufficient, and only by reading the specific needed block(s).
+`docs/ai/context/AGENT_EXECUTION_LEDGER.md` records verbatim AGENT execution events. It is non-canonical and must never be part of default bootstrap reads for any tab. PLAN and DEBUG may consult it only when `STATE.md`, `DECISIONS.md`, `PATTERNS.md`, and `HANDOFF.md` are insufficient, and only by reading the specific needed block(s).
 
 **Ledger auto-rotation is hook-enforced** (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`). After every AI edit to the ledger file, the hook script automatically:
-- Checks if entry count > 5 or file > ~300 lines.
-- Moves the oldest entries verbatim (no summarization) to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md`.
-- Keeps the 3–5 most recent entries in the active ledger.
-- Does NOT rotate below 3 active entries.
 
-**AGENT must still append the new entry manually.** Archival of old entries is automatic after each ledger edit. PLAN and DEBUG must NOT preload the ledger; they may consult only the minimum needed block(s), one block at a time.
+- Checks if entry count > 5 or file > ~300 lines
+- Moves the oldest entries verbatim to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md`
+- Keeps the 3–5 most recent entries in the active ledger
+- Does not rotate below 3 active entries
+
+AGENT must still append the new entry manually. PLAN and DEBUG must not preload the ledger; they may consult only the minimum needed block(s), one block at a time.

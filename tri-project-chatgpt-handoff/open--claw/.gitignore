@@ -1,0 +1,49 @@
+# Secrets and local config — NEVER commit secrets (see global rule no-secrets-in-files.mdc)
+open-claw/Agents-Bulk/
+open-claw/AI_Employee_knowledgebase/source_repos/
+open-claw/employees/
+open-claw/employees/deployed/
+.env
+.env.*
+.env.local
+*.pem
+*.key
+auth-profiles.json
+*-key-ed25519.json
+*service-account*.json
+client_secret_*.json
+*client_secret*.json
+.gateway-env
+
+# MCP config (lives outside repo)
+mcp.json
+.cursor/mcp.json
+mcp-config.json
+
+# Dependencies
+node_modules/
+vendor/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+
+# Serena project config
+open-claw/.serena/*
+!open-claw/.serena/project.yml

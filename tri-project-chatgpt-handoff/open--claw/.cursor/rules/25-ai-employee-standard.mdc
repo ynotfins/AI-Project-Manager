@@ -1,0 +1,15 @@
+---
+description: Require all AI employee packets to match the house standard
+alwaysApply: true
+---
+
+# AI Employee Standard
+
+- When creating, importing, auditing, or upgrading any AI employee, read `open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` first (supreme charter). Then read `open-claw/AI_Employee_knowledgebase/AI-EMPLOYEE-STANDARD.md` for packet layout and quality gates. `AUTHORITATIVE_STANDARD.md` and `TEAM_ROSTER.md` interpret the charter; they must not override it.
+- Do not accept an employee as complete just because it has many files.
+- Required library files: `README.md`, `PROVENANCE.md`, `IDENTITY.md`, `SOUL.md`, `AGENTS.md`, `TOOLS.md`, `SKILLS.md`, `WORKFLOWS.md`, `MEMORY.md`, `USER.md`, `BOOTSTRAP.md`, `HEARTBEAT.md`, `SCHEDULE.md`, `CHECKLIST.md`, `AUDIT.md`.
+- Required runtime files for live workers: `Dockerfile`, `docker-compose.yml`, `.env.example`, `package.json`, `setup.sh`, channel bot entrypoints, and any needed bootstrap script such as `entrypoint.sh`.
+- Reject these anti-patterns unless salvaging partial value only: `Custom Role` placeholders, generic skill bundles, copied generic workflows, shallow memory/bootstrap files, outdated runtime shells, or deploy files that reference missing files.
+- When an imported employee is mixed quality, keep only the worthwhile files and replace weak files from stronger sources or build them fresh.
+- Every accepted employee must have current `PROVENANCE.md`, `CHECKLIST.md`, and `AUDIT.md`.
+- `AUDIT.md` must include an explicit grade, and `CHECKLIST.md` must mark doc/runtime/skill completeness.

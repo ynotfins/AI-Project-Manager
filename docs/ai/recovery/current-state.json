@@ -1,0 +1,8 @@
+{
+  "phase": "Phase 1 No-Loss Governance Normalization",
+  "goal": "Keep the tri-workspace recovery model lean and lossless by aligning active governance docs to one bootstrap order, the flat OpenMemory runtime, sidecar-only Obsidian behavior, and the installed MCP descriptor set.",
+  "last_action": "Normalized active repo bootstrap docs, rewrote the repo openmemory rule to the verified flat API, updated the tri-workspace tool workflow to the 9 installed MCP descriptors, and subordinated the conflicting machine-global Obsidian/governance overlays.",
+  "active_workers": [
+    "AGENT"
+  ]
+}

@@ -1,0 +1,496 @@
+{
+  "generated_on": "2026-04-13",
+  "employee_count": 15,
+  "counts": {
+    "telegram_assigned": 15,
+    "direct_uuid_wired": 15,
+    "env_only_assigned": 0,
+    "pending_new_bot": 0,
+    "dockerized_worker_count": 14,
+    "host_native_worker_count": 1,
+    "canonical_botfather_count": 16
+  },
+  "activation_order": [
+    "SPARKY_CEO_BOT",
+    "DELIVERY_DIRECTOR_DAN_BOT",
+    "PRODUCT_MANAGER_PETE_BOT",
+    "ENGINEER_ENRIQUE_BOT",
+    "CODE_CARL_BOT",
+    "OVERNIGHT_OLIVER_BOT",
+    "FINANCE_FRANKY_BOT",
+    "SCRIPT_SARAH_BOT",
+    "FRONTEND_FELIX_BOT",
+    "BACKEND_BRUCE_BOT",
+    "UX_URSELA_BOT",
+    "PERSONAL_PAMELA_BOT",
+    "ACCESS_AUDITOR_ALLISON_BOT",
+    "API_ANDY_BOT",
+    "SEO_SAMANTHA_BOT"
+  ],
+  "canonical_botfather_bots": [
+    {
+      "telegram_name": "BACKEND_ARCHITECT",
+      "telegram_username": "BACKEND_BRUCE_BOT",
+      "packet_dir": "backend-architect",
+      "employee_slug": "BACKEND_BRUCE_BOT",
+      "secret_name": "BACKEND_BRUCE_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "ACCESSIBILITY_AUDITOR",
+      "telegram_username": "ACCESS_AUDITOR_ALLISON_BOT",
+      "packet_dir": "accessibility-auditor",
+      "employee_slug": "ACCESS_AUDITOR_ALLISON_BOT",
+      "secret_name": "ACCESS_AUDITOR_ALLISON_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "Destiny",
+      "telegram_username": "destiny_stripper_bot",
+      "packet_dir": "",
+      "employee_slug": "",
+      "secret_name": "destiny_stripper_bot",
+      "status": "unassigned"
+    },
+    {
+      "telegram_name": "PRODUCT_MANAGER",
+      "telegram_username": "PRODUCT_MANAGER_PETE_BOT",
+      "packet_dir": "product-manager",
+      "employee_slug": "PRODUCT_MANAGER_PETE_BOT",
+      "secret_name": "PRODUCT_MANAGER_PETE_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "DELIVERY_DIRECTOR",
+      "telegram_username": "DELIVERY_DIRECTOR_DAN_BOT",
+      "packet_dir": "delivery-director",
+      "employee_slug": "DELIVERY_DIRECTOR_DAN_BOT",
+      "secret_name": "DELIVERY_DIRECTOR_DAN_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "SPARKY_CEO_BOT",
+      "telegram_username": "SPARKY_CEO_BOT",
+      "packet_dir": "sparky-chief-product-quality-officer",
+      "employee_slug": "SPARKY_CEO_BOT",
+      "secret_name": "SPARKY_CEO_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "UX_DESIGNER",
+      "telegram_username": "UX_URSELA_BOT",
+      "packet_dir": "ux-architect",
+      "employee_slug": "UX_URSELA_BOT",
+      "secret_name": "UX_URSULA_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "SOFTWARE_ENGINEER",
+      "telegram_username": "ENGINEER_ENRIQUE_BOT",
+      "packet_dir": "software-architect",
+      "employee_slug": "ENGINEER_ENRIQUE_BOT",
+      "secret_name": "ENGINEER_ENRIQUE_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "SEO_SPECIALIST",
+      "telegram_username": "SEO_SAMANTHA_BOT",
+      "packet_dir": "seo-ai-discovery-strategist",
+      "employee_slug": "SEO_SAMANTHA_BOT",
+      "secret_name": "SEO_SAMANTHA_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "SCRIPT_BUILDER",
+      "telegram_username": "SCRIPT_SARAH_BOT",
+      "packet_dir": "devops-automator",
+      "employee_slug": "SCRIPT_SARAH_BOT",
+      "secret_name": "SCRIPT_SARAH_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "PERSONAL_CRM",
+      "telegram_username": "PERSONAL_PAMELA_BOT",
+      "packet_dir": "ui-designer",
+      "employee_slug": "PERSONAL_PAMELA_BOT",
+      "secret_name": "PERSONAL_PAMELA_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "OVERNIGHT_CODER",
+      "telegram_username": "OVERNIGHT_OLIVER_BOT",
+      "packet_dir": "qa-evidence-collector",
+      "employee_slug": "OVERNIGHT_OLIVER_BOT",
+      "secret_name": "OVERNIGHT_OLIVER_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "FRONTEND_DEVELOPER",
+      "telegram_username": "FRONTEND_FELIX_BOT",
+      "packet_dir": "frontend-developer",
+      "employee_slug": "FRONTEND_FELIX_BOT",
+      "secret_name": "FRONTEND_FELIX_BOT",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "FINANCIAL_ANALYST",
+      "telegram_username": "FINANCE_FRANKY_BOT",
+      "packet_dir": "reality-checker",
+      "employee_slug": "FINANCE_FRANKY_BOT",
+      "secret_name": "FINANCIAL_ANALYST",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "CODE_REVIEWER",
+      "telegram_username": "CODE_CARL_BOT",
+      "packet_dir": "code-reviewer",
+      "employee_slug": "CODE_CARL_BOT",
+      "secret_name": "CODE_REVIEWER",
+      "status": "assigned"
+    },
+    {
+      "telegram_name": "API_INTEGRATION_SPECIALIST",
+      "telegram_username": "API_ANDY_BOT",
+      "packet_dir": "mcp-integration-engineer",
+      "employee_slug": "API_ANDY_BOT",
+      "secret_name": "API_ANDY_BOT",
+      "status": "assigned"
+    }
+  ],
+  "employees": [
+    {
+      "slug": "ACCESS_AUDITOR_ALLISON_BOT",
+      "packet_dir": "accessibility-auditor",
+      "title": "Accessibility Auditor",
+      "manager": "SPARKY_CEO_BOT",
+      "skills": [
+        "playwright-e2e",
+        "visual-qa-evidence",
+        "design-token-theming",
+        "handoff-state"
+      ],
+      "telegram_name": "ACCESSIBILITY_AUDITOR",
+      "telegram_username": "ACCESS_AUDITOR_ALLISON_BOT",
+      "secret_name": "ACCESS_AUDITOR_ALLISON_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 13,
+      "secret_id": "b1ff4d8c-d7ed-48e8-b96b-b427013718aa",
+      "blockers": []
+    },
+    {
+      "slug": "BACKEND_BRUCE_BOT",
+      "packet_dir": "backend-architect",
+      "title": "Backend Architect",
+      "manager": "ENGINEER_ENRIQUE_BOT",
+      "skills": [
+        "architecture-adr",
+        "mcp-integration",
+        "release-readiness",
+        "handoff-state",
+        "twilio-voice-intake",
+        "elevenlabs-voice-clone"
+      ],
+      "telegram_name": "BACKEND_ARCHITECT",
+      "telegram_username": "BACKEND_BRUCE_BOT",
+      "secret_name": "BACKEND_BRUCE_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 10,
+      "secret_id": "64411f20-e4fb-418a-aa1b-b42701375e83",
+      "blockers": []
+    },
+    {
+      "slug": "CODE_CARL_BOT",
+      "packet_dir": "code-reviewer",
+      "title": "Code Reviewer",
+      "manager": "SPARKY_CEO_BOT",
+      "skills": [
+        "code-review-gate",
+        "architecture-adr",
+        "handoff-state"
+      ],
+      "telegram_name": "CODE_REVIEWER",
+      "telegram_username": "CODE_CARL_BOT",
+      "secret_name": "CODE_REVIEWER",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 5,
+      "secret_id": "9f6d6d14-917f-435d-a757-b41100300499",
+      "blockers": []
+    },
+    {
+      "slug": "DELIVERY_DIRECTOR_DAN_BOT",
+      "packet_dir": "delivery-director",
+      "title": "Delivery Director",
+      "manager": "SPARKY_CEO_BOT",
+      "skills": [
+        "repo-clone-rebrand",
+        "release-readiness",
+        "handoff-state",
+        "architecture-adr",
+        "phone-support-intake"
+      ],
+      "telegram_name": "DELIVERY_DIRECTOR",
+      "telegram_username": "DELIVERY_DIRECTOR_DAN_BOT",
+      "secret_name": "DELIVERY_DIRECTOR_DAN_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 2,
+      "secret_id": "f08c26ae-8b3b-42db-8b8a-b41e00254ae0",
+      "blockers": []
+    },
+    {
+      "slug": "SCRIPT_SARAH_BOT",
+      "packet_dir": "devops-automator",
+      "title": "DevOps Automator",
+      "manager": "DELIVERY_DIRECTOR_DAN_BOT",
+      "skills": [
+        "release-readiness",
+        "playwright-e2e",
+        "handoff-state"
+      ],
+      "telegram_name": "SCRIPT_BUILDER",
+      "telegram_username": "SCRIPT_SARAH_BOT",
+      "secret_name": "SCRIPT_SARAH_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 8,
+      "secret_id": "9127c2f6-7185-41c3-9aab-b41d000c69ee",
+      "blockers": []
+    },
+    {
+      "slug": "FRONTEND_FELIX_BOT",
+      "packet_dir": "frontend-developer",
+      "title": "Frontend Developer",
+      "manager": "ENGINEER_ENRIQUE_BOT",
+      "skills": [
+        "nextjs-app-router",
+        "design-token-theming",
+        "playwright-e2e",
+        "visual-qa-evidence"
+      ],
+      "telegram_name": "FRONTEND_DEVELOPER",
+      "telegram_username": "FRONTEND_FELIX_BOT",
+      "secret_name": "FRONTEND_FELIX_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 9,
+      "secret_id": "db45a28d-e942-4b19-aee9-b4110030a9e8",
+      "blockers": []
+    },
+    {
+      "slug": "API_ANDY_BOT",
+      "packet_dir": "mcp-integration-engineer",
+      "title": "MCP Integration Engineer",
+      "manager": "ENGINEER_ENRIQUE_BOT",
+      "skills": [
+        "mcp-integration",
+        "architecture-adr",
+        "handoff-state"
+      ],
+      "telegram_name": "API_INTEGRATION_SPECIALIST",
+      "telegram_username": "API_ANDY_BOT",
+      "secret_name": "API_ANDY_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 14,
+      "secret_id": "d44c0214-4341-4b57-83b6-b411002ba700",
+      "blockers": []
+    },
+    {
+      "slug": "PRODUCT_MANAGER_PETE_BOT",
+      "packet_dir": "product-manager",
+      "title": "Product Manager",
+      "manager": "DELIVERY_DIRECTOR_DAN_BOT",
+      "skills": [
+        "repo-clone-rebrand",
+        "handoff-state",
+        "architecture-adr",
+        "release-readiness",
+        "phone-support-intake",
+        "twilio-voice-intake"
+      ],
+      "telegram_name": "PRODUCT_MANAGER",
+      "telegram_username": "PRODUCT_MANAGER_PETE_BOT",
+      "secret_name": "PRODUCT_MANAGER_PETE_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 3,
+      "secret_id": "262ed8cc-9adf-46a6-a0ba-b41e00258aa7",
+      "blockers": []
+    },
+    {
+      "slug": "OVERNIGHT_OLIVER_BOT",
+      "packet_dir": "qa-evidence-collector",
+      "title": "QA Evidence Collector",
+      "manager": "DELIVERY_DIRECTOR_DAN_BOT",
+      "skills": [
+        "playwright-e2e",
+        "visual-qa-evidence",
+        "release-readiness"
+      ],
+      "telegram_name": "OVERNIGHT_CODER",
+      "telegram_username": "OVERNIGHT_OLIVER_BOT",
+      "secret_name": "OVERNIGHT_OLIVER_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 6,
+      "secret_id": "cd3ecf0b-b6df-4490-9bf8-b4110030d207",
+      "blockers": []
+    },
+    {
+      "slug": "FINANCE_FRANKY_BOT",
+      "packet_dir": "reality-checker",
+      "title": "Reality Checker",
+      "manager": "SPARKY_CEO_BOT",
+      "skills": [
+        "visual-qa-evidence",
+        "release-readiness",
+        "playwright-e2e"
+      ],
+      "telegram_name": "FINANCIAL_ANALYST",
+      "telegram_username": "FINANCE_FRANKY_BOT",
+      "secret_name": "FINANCIAL_ANALYST",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 7,
+      "secret_id": "d32f653b-0f42-4824-b760-b41100307afd",
+      "blockers": []
+    },
+    {
+      "slug": "SEO_SAMANTHA_BOT",
+      "packet_dir": "seo-ai-discovery-strategist",
+      "title": "SEO and AI Discovery Strategist",
+      "manager": "PRODUCT_MANAGER_PETE_BOT",
+      "skills": [
+        "nextjs-app-router",
+        "repo-clone-rebrand",
+        "handoff-state"
+      ],
+      "telegram_name": "SEO_SPECIALIST",
+      "telegram_username": "SEO_SAMANTHA_BOT",
+      "secret_name": "SEO_SAMANTHA_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 15,
+      "secret_id": "35e7872d-66f5-4a6c-9ec1-b41d000c9501",
+      "blockers": []
+    },
+    {
+      "slug": "ENGINEER_ENRIQUE_BOT",
+      "packet_dir": "software-architect",
+      "title": "Software Architect",
+      "manager": "SPARKY_CEO_BOT",
+      "skills": [
+        "architecture-adr",
+        "mcp-integration",
+        "release-readiness",
+        "code-review-gate",
+        "handoff-state"
+      ],
+      "telegram_name": "SOFTWARE_ENGINEER",
+      "telegram_username": "ENGINEER_ENRIQUE_BOT",
+      "secret_name": "ENGINEER_ENRIQUE_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 4,
+      "secret_id": "5dd1faf1-c943-4be3-8cbf-b41d000cc156",
+      "blockers": []
+    },
+    {
+      "slug": "SPARKY_CEO_BOT",
+      "packet_dir": "sparky-chief-product-quality-officer",
+      "title": "Chief Product and Quality Officer",
+      "manager": "Founder",
+      "skills": [
+        "architecture-adr",
+        "approval-gate",
+        "code-review-gate",
+        "release-readiness",
+        "handoff-state",
+        "nextjs-app-router",
+        "design-token-theming",
+        "playwright-e2e",
+        "visual-qa-evidence",
+        "repo-clone-rebrand",
+        "mcp-integration",
+        "mem0-bridge",
+        "domain-email",
+        "gmail-inbox",
+        "google-calendar",
+        "google-contacts",
+        "sms-twilio",
+        "whatsapp-official",
+        "twilio-voice-intake",
+        "elevenlabs-voice-clone",
+        "phone-support-intake",
+        "video-repair-forensics",
+        "media-recovery-validation"
+      ],
+      "telegram_name": "SPARKY_CEO_BOT",
+      "telegram_username": "SPARKY_CEO_BOT",
+      "secret_name": "SPARKY_CEO_BOT",
+      "deployment_mode": "host_native_primary",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 1,
+      "secret_id": "e08b6a94-02bf-4222-876a-b41e00251315",
+      "blockers": []
+    },
+    {
+      "slug": "PERSONAL_PAMELA_BOT",
+      "packet_dir": "ui-designer",
+      "title": "UI Designer",
+      "manager": "UX_URSELA_BOT",
+      "skills": [
+        "design-token-theming",
+        "visual-qa-evidence",
+        "handoff-state"
+      ],
+      "telegram_name": "PERSONAL_CRM",
+      "telegram_username": "PERSONAL_PAMELA_BOT",
+      "secret_name": "PERSONAL_PAMELA_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 12,
+      "secret_id": "30a52f8e-5afa-4074-86f7-b41d000c36d7",
+      "blockers": []
+    },
+    {
+      "slug": "UX_URSELA_BOT",
+      "packet_dir": "ux-architect",
+      "title": "UX Architect",
+      "manager": "PRODUCT_MANAGER_PETE_BOT",
+      "skills": [
+        "design-token-theming",
+        "nextjs-app-router",
+        "handoff-state",
+        "visual-qa-evidence",
+        "playwright-e2e"
+      ],
+      "telegram_name": "UX_DESIGNER",
+      "telegram_username": "UX_URSELA_BOT",
+      "secret_name": "UX_URSULA_BOT",
+      "deployment_mode": "deployed_curated_docker",
+      "runtime_status": "direct_uuid_wired",
+      "tracked_readiness_state": "runtime_ready",
+      "activation_order": 11,
+      "secret_id": "c58957d8-a07e-4d6f-ab76-b41d000d1de7",
+      "blockers": []
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "title": "Phase 1 no-loss bootstrap order normalized",
+      "summary": "Active AI-PM bootstrap docs now align on the lean order: charter, repo authority, targeted OpenMemory, recovery bundle, STATE summary, one selective deep read, then ledger fallback."
+    },
+    {
+      "title": "Repo openmemory rule now follows the flat live runtime",
+      "summary": "The active rule no longer claims or requires project_id, namespace, user_preference, memory_types, or metadata/filter support that the installed runtime does not expose."
+    },
+    {
+      "title": "Machine-global overlays were subordinated to repo-tracked AI-PM policy",
+      "summary": "The global Obsidian gate, AI-PM governance hint, and thinking-patterns reminder were narrowed so they cannot silently broaden bootstrap or outrank repo-tracked no-loss rules."
+    }
+  ],
+  "patterns": [
+    {
+      "title": "Lean recovery path",
+      "summary": "Default recovery now stops after the first selective deep read unless the ledger is specifically needed one block at a time."
+    },
+    {
+      "title": "Installed MCP descriptor inventory",
+      "summary": "The active tri-workspace MCP descriptor set is 9 servers: Context7, thinking-patterns, openmemory, filesystem, serena, droidrun, obsidian-vault, Magic MCP, and Artiforge."
+    },
+    {
+      "title": "Obsidian sidecar discipline",
+      "summary": "Obsidian is sidecar-only, never canonical, and non-blocking when degraded; pending sidecar sync remains in session-summary.md until a later flush succeeds."
+    }
+  ]
+}

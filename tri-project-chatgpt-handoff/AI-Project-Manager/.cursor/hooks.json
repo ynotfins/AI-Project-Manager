@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "python .cursor/hooks/rotate_ledger.py",
+        "timeout": 30
+      }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+tri-project-chatgpt-handoff/
+|-- WORKSPACE_MAP.md
+|-- DEBUG_START_HERE.md
+|-- PROJECT_TREE.txt
+|-- openclaw.code-workspace
+|-- AI-Project-Manager/
+|   |-- AGENTS.md
+|   |-- README.md
+|   |-- openmemory.md
+|   |-- .cursor/
+|   |   `-- rules/
+|   |-- docs/
+|   |   |-- ai/
+|   |   |-- release/
+|   |   |-- tooling/
+|   |   `-- ...
+|   |-- package/
+|   |   |-- package.json
+|   |   |-- pnpm-lock.yaml
+|   |   |-- README.md
+|   |   `-- test/
+|   `-- scripts/
+|       |-- check_openmemory_stack.ps1
+|       `-- openmemory_cursor_server.py
+|-- open--claw/
+|   |-- AGENTS.md
+|   |-- README.md
+|   |-- .cursor/
+|   |   `-- rules/
+|   |-- docs/
+|   |   `-- ai/
+|   `-- open-claw/
+|       |-- .serena/
+|       |-- docs/
+|       |   |-- VISION.md
+|       |   |-- REQUIREMENTS.md
+|       |   |-- MODULES.md
+|       |   `-- INTEGRATIONS.md
+|       |-- AI_Employee_knowledgebase/
+|       |   |-- FINAL_OUTPUT_PRODUCT.md
+|       |   |-- AUTHORITATIVE_STANDARD.md
+|       |   |-- TEAM_ROSTER.md
+|       |   `-- AI_employees/
+|       |       `-- <employee-packages>/
+|       |           |-- package.json
+|       |           |-- openclaw-runner.js
+|       |           |-- bot-*.js
+|       |           `-- Dockerfile
+|       |-- services/
+|       |   `-- voice-front-desk-agent/
+|       |       |-- package.json
+|       |       |-- Dockerfile
+|       |       `-- src/
+|       `-- scripts/
+|-- droidrun/
+|   |-- AGENTS.md
+|   |-- .gitmodules
+|   |-- mcp_server.py
+|   |-- .cursor/
+|   |   `-- rules/
+|   |-- docs/
+|   |   |-- PROJECT_INTELLIGENCE_INDEX.md
+|   |   |-- entry-points-and-boot-sequence.md
+|   |   |-- environment-config-reference.md
+|   |   `-- ...
+|   |-- scripts/
+|   |   |-- start_mcp_server.ps1
+|   |   |-- startup_droidrun.ps1
+|   |   `-- adb_*.ps1
+|   `-- src/
+|       |-- pyproject.toml
+|       |-- README.md
+|       |-- Dockerfile
+|       |-- droidrun/
+|       |   |-- agent/
+|       |   |-- cli/
+|       |   |-- config_manager/
+|       |   |-- mcp/
+|       |   |-- telemetry/
+|       |   `-- tools/
+|       `-- docs/
+
+Notes:
+- This is a trimmed architecture tree, not an exhaustive file listing.
+- Generated output, dependency folders, secrets, archives, logs, and bulky media were excluded from the export before this tree was written.

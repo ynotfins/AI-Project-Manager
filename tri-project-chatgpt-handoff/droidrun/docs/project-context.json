@@ -1,0 +1,363 @@
+{
+  "project_name": "droidrun",
+  "version": "0.5.1",
+  "status": "Beta",
+  "license": "MIT",
+  "summary": "Python framework (v0.5.1) enabling LLM agents to control Android devices via natural language. Deployed as a tri-workspace component with Cursor/OpenClaw/Claude Desktop integration via MCP. Device: Samsung Galaxy S25 Ultra (SM-S938U, Android 16) connected over Tailscale (100.71.228.18:5555).",
+  "repo_role": "actuator_layer",
+  "workspace_position": "Third repo in tri-workspace: AI-Project-Manager orchestrates open--claw + droidrun. DroidRun is the phone control layer, exposing device automation as MCP tools to other AI clients.",
+  "responsibilities": [
+    "Natural language Android device control via LLM agents",
+    "Portal APK lifecycle management (install, update, verify)",
+    "UI state reading (accessibility tree via Portal HTTP API)",
+    "Atomic device actions: tap, swipe, type, key, app launch, screenshot",
+    "Multi-provider LLM orchestration (DeepSeek, OpenRouter/Gemini, OpenAI, Anthropic, Ollama, Google GenAI)",
+    "MCP server: exposing phone_do, phone_ping, phone_apps to AI clients",
+    "MCP client: consuming external MCP tools as agent capabilities",
+    "Macro record/replay for deterministic tasks",
+    "Telemetry (PostHog) and tracing (Phoenix/Langfuse)",
+    "PowerShell automation: ADB lifecycle, API key injection from Bitwarden, startup"
+  ],
+  "non_responsibilities": [
+    "Android OS or app management",
+    "Tailscale network management",
+    "Bitwarden vault management",
+    "LLM inference (delegated to external APIs)",
+    "AI client UI (Cursor/OpenClaw/Claude Desktop own their UIs)",
+    "iOS production device control (experimental stub only)",
+    "Persistent user data storage between runs",
+    "CI/CD pipeline (none configured)"
+  ],
+  "architecture": {
+    "style": "event-driven LlamaIndex Workflows + MCP stdio server",
+    "layers": [
+      "Layer 0: Infrastructure (ADB, Tailscale, Bitwarden)",
+      "Layer 1: Portal APK on-device (HTTP:8080, Accessibility Service)",
+      "Layer 2: Device Driver (AndroidDriver + PortalClient, host-side)",
+      "Layer 3: Agent Orchestration (DroidAgent, FastAgent/Manager+Executor)",
+      "Layer 4: MCP Interface (mcp_server.py, phone_do/ping/apps)",
+      "Layer 5: AI Clients (Cursor, OpenClaw, Claude Desktop)"
+    ],
+    "agent_modes": {
+      "default": "FastAgent (XML tool-calling, reasoning=false)",
+      "reasoning": "ManagerAgent + ExecutorAgent pipeline (reasoning=true)",
+      "codeact": "CodeActAgent (code generation, codeact=true)",
+      "external": ["AutoGLM", "MAI-UI (requires vLLM server)"]
+    }
+  },
+  "entry_points": [
+    "droidrun CLI: droidrun run/setup/ping/doctor/tui/macro (droidrun.cli.main:cli)",
+    "MCP server: python mcp_server.py (launched by start_mcp_server.ps1)",
+    "Python SDK: from droidrun import DroidAgent",
+    "Startup script: scripts/startup_droidrun.ps1",
+    "Task runner: scripts/droidrun_run.ps1"
+  ],
+  "startup_sequence": [
+    "1. startup_droidrun.ps1: inject API keys from Bitwarden Secrets Manager into env vars",
+    "2. startup_droidrun.ps1: verify/establish ADB connection to 100.71.228.18:5555",
+    "3. start_mcp_server.ps1: launch mcp_server.py (done by AI client on demand)",
+    "4. droidrun run: ConfigLoader.load() -> DroidrunConfig",
+    "5. LLM loaded via llm_loader (reads env vars for API keys)",
+    "6. DroidAgent instantiated (goal, config, llm)",
+    "7. AndroidDriver connects to device via ADB",
+    "8. PortalClient probes transport (TCP:8080 or content provider)",
+    "9. auto_setup check: Portal APK installed/updated if needed",
+    "10. Agent loop begins: observe UI -> LLM plan -> execute action (max 15 steps)"
+  ],
+  "core_modules": [
+    "src/droidrun/agent/droid/ - DroidAgent (top-level workflow coordinator)",
+    "src/droidrun/agent/codeact/ - FastAgent + CodeActAgent",
+    "src/droidrun/agent/manager/ - ManagerAgent (planning, reasoning=true)",
+    "src/droidrun/agent/executor/ - ExecutorAgent (action, reasoning=true)",
+    "src/droidrun/tools/driver/android.py - AndroidDriver (ADB device interface)",
+    "src/droidrun/tools/android/portal_client.py - PortalClient (HTTP to Portal APK)",
+    "src/droidrun/tools/ui/provider.py - UIProvider (accessibility tree fetching)",
+    "src/droidrun/config_manager/ - ConfigLoader + DroidrunConfig",
+    "src/droidrun/cli/main.py - CLI entry point (Click)",
+    "src/droidrun/mcp/ - MCP client (MCPClientManager + adapter)",
+    "mcp_server.py - MCP server (workspace-specific)"
+  ],
+  "key_classes": [
+    "DroidAgent (agent/droid/droid_agent.py) - LlamaIndex Workflow, top-level coordinator",
+    "FastAgent (agent/codeact/) - XML tool-calling agent, default mode",
+    "ManagerAgent (agent/manager/) - planning agent for reasoning mode",
+    "ExecutorAgent (agent/executor/) - action agent for reasoning mode",
+    "AndroidDriver (tools/driver/android.py) - ADB + PortalClient device driver",
+    "PortalClient (tools/android/portal_client.py) - HTTP client to on-device Portal",
+    "UIProvider (tools/ui/provider.py) - accessibility tree fetcher",
+    "ConfigLoader (config_manager/loader.py) - YAML config reader",
+    "DroidrunConfig (config_manager/config_manager.py) - config dataclass hierarchy",
+    "MCPClientManager (mcp/client.py) - external MCP server consumer",
+    "TrajectoryWriter (agent/trajectory/) - session recorder"
+  ],
+  "services": [
+    "Portal APK (com.droidrun.portal) - on-device HTTP:8080 + Accessibility Service",
+    "MCP server (mcp_server.py) - phone_do/ping/apps over stdio JSON-RPC",
+    "PostHog - anonymous usage telemetry",
+    "Arize Phoenix - local LLM tracing (optional)",
+    "Langfuse - cloud LLM tracing (optional)"
+  ],
+  "api_clients": [
+    {
+      "name": "PortalClient",
+      "path": "src/droidrun/tools/android/portal_client.py",
+      "protocol": "HTTP (via ADB forward) or ADB content provider",
+      "auth": "none (secured by ADB trust)",
+      "purpose": "Send device actions, receive UI state"
+    },
+    {
+      "name": "LLM APIs (via LlamaIndex)",
+      "path": "src/droidrun/agent/utils/llm_loader.py",
+      "providers": ["OpenAI", "OpenAILike/OpenRouter", "GoogleGenAI", "Anthropic", "DeepSeek", "Ollama"],
+      "auth": "API key via environment variable",
+      "purpose": "LLM inference for agent planning"
+    },
+    {
+      "name": "MCPClientManager",
+      "path": "src/droidrun/mcp/client.py",
+      "protocol": "MCP stdio or HTTP",
+      "auth": "varies per server",
+      "purpose": "Consume external MCP tool servers as agent capabilities"
+    },
+    {
+      "name": "GitHub API / ungh.cc",
+      "path": "src/droidrun/portal.py",
+      "purpose": "Download Portal APK from droidrun/droidrun-portal releases"
+    }
+  ],
+  "storage": [
+    {
+      "type": "user_config",
+      "path": "~/.config/droidrun/config.yaml",
+      "format": "YAML",
+      "sensitive": false
+    },
+    {
+      "type": "api_keys",
+      "path": "~/.config/droidrun/.env",
+      "format": "dotenv",
+      "sensitive": true
+    },
+    {
+      "type": "api_keys_windows",
+      "path": "HKCU\\Environment (Windows registry)",
+      "format": "registry key-value",
+      "sensitive": true,
+      "keys": ["DROIDRUN_DEEPSEEK_KEY", "DROIDRUN_OPENROUTER_KEY"]
+    },
+    {
+      "type": "trajectories",
+      "path": "trajectories/ (relative to CWD)",
+      "format": "JSON + optional GIF",
+      "sensitive": "potentially (device screen content)"
+    },
+    {
+      "type": "credentials",
+      "path": "config/credentials.yaml (if enabled)",
+      "format": "YAML",
+      "sensitive": true
+    }
+  ],
+  "workers": [],
+  "routes_or_screens": [
+    "CLI: droidrun run <goal>",
+    "CLI: droidrun setup",
+    "CLI: droidrun ping",
+    "CLI: droidrun doctor",
+    "CLI: droidrun tui",
+    "CLI: droidrun macro",
+    "MCP tool: phone_do(goal, vision)",
+    "MCP tool: phone_ping()",
+    "MCP tool: phone_apps()"
+  ],
+  "config_keys": [
+    "agent.name", "agent.max_steps", "agent.reasoning", "agent.streaming",
+    "agent.fast_agent.vision", "agent.fast_agent.codeact", "agent.fast_agent.parallel_tools", "agent.fast_agent.safe_execution",
+    "agent.manager.vision", "agent.manager.stateless",
+    "agent.executor.vision",
+    "agent.scripter.enabled", "agent.scripter.safe_execution",
+    "agent.app_cards.enabled", "agent.app_cards.mode",
+    "llm_profiles.{role}.provider", "llm_profiles.{role}.model", "llm_profiles.{role}.temperature",
+    "device.serial", "device.use_tcp", "device.platform", "device.auto_setup",
+    "telemetry.enabled",
+    "tracing.enabled", "tracing.provider", "tracing.langfuse_screenshots",
+    "logging.debug", "logging.save_trajectory", "logging.trajectory_path",
+    "safe_execution.allow_all_imports", "safe_execution.blocked_modules",
+    "tools.disabled_tools",
+    "credentials.enabled", "credentials.file_path",
+    "mcp.enabled", "mcp.servers"
+  ],
+  "secrets_references": [
+    "DROIDRUN_DEEPSEEK_KEY (Windows env, from Bitwarden SM secret 14d69c11-...)",
+    "DROIDRUN_OPENROUTER_KEY (Windows env, from Bitwarden SM secret f9ed80a7-...)",
+    "GOOGLE_API_KEY / GEMINI_API_KEY (framework standard env var)",
+    "OPENAI_API_KEY (framework standard env var)",
+    "ANTHROPIC_API_KEY (framework standard env var)",
+    "DEEPSEEK_API_KEY (framework standard env var)",
+    "BWS_ACCESS_TOKEN (Bitwarden Secrets Manager machine account token, bootstrapped from BWS_DROIDRUN_TOKEN in regular vault)",
+    "LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY, LANGFUSE_HOST (optional tracing)"
+  ],
+  "dependencies": {
+    "runtime_core": [
+      "async_adbutils", "llama-index==0.14.4", "llama-index-workflows==2.8.3",
+      "pydantic>=2.11.10", "httpx>=0.27.0", "mcp>=1.26.0", "python-dotenv>=1.2.1",
+      "rich>=14.1.0", "textual>=6.11.0", "aiofiles>=25.1.0", "posthog>=6.7.6",
+      "arize-phoenix>=12.3.0", "mobilerun-sdk"
+    ],
+    "llm_providers": [
+      "llama-index-llms-openai>=0.5.6", "llama-index-llms-openai-like>=0.5.1",
+      "llama-index-llms-google-genai>=0.8.5", "llama-index-llms-ollama>=0.7.2",
+      "llama-index-llms-openrouter>=0.4.2"
+    ],
+    "optional": [
+      "anthropic>=0.67.0", "llama-index-llms-anthropic",
+      "llama-index-llms-deepseek>=0.2.1",
+      "langfuse==3.12.1", "openinference-instrumentation-llama-index"
+    ],
+    "dev": ["black==25.9.0", "ruff>=0.13.0", "mypy>=1.0.0", "bandit>=1.8.6", "safety>=3.2.11"],
+    "system": ["ADB (Android platform tools)", "Tailscale", "bws CLI", "PowerShell 5.1+"]
+  },
+  "integrations": [
+    {
+      "name": "ADB (async_adbutils)",
+      "type": "device_communication",
+      "required": true,
+      "purpose": "Android device connection, command execution, file transfer, port forwarding"
+    },
+    {
+      "name": "DroidRun Portal APK",
+      "package": "com.droidrun.portal",
+      "type": "on_device_agent",
+      "required": true,
+      "purpose": "On-device HTTP API (port 8080) + Accessibility Service for UI tree and input injection"
+    },
+    {
+      "name": "Tailscale",
+      "type": "network_infrastructure",
+      "required": false,
+      "purpose": "Secure remote ADB access without public internet exposure; device at 100.71.228.18"
+    },
+    {
+      "name": "Bitwarden Secrets Manager",
+      "type": "secret_management",
+      "required": true,
+      "purpose": "API key injection at startup; machine account access via bws CLI"
+    },
+    {
+      "name": "LLM APIs (OpenAI/DeepSeek/OpenRouter/Anthropic/Google/Ollama)",
+      "type": "ai_inference",
+      "required": true,
+      "purpose": "Agent planning and action selection"
+    },
+    {
+      "name": "MCP protocol (mcp library)",
+      "type": "ai_tool_protocol",
+      "required": true,
+      "purpose": "Both server (expose phone tools) and client (consume external tools)"
+    },
+    {
+      "name": "Cursor/OpenClaw/Claude Desktop",
+      "type": "ai_client",
+      "required": false,
+      "purpose": "Consume DroidRun MCP tools for phone automation from AI chat interfaces"
+    },
+    {
+      "name": "PostHog",
+      "type": "telemetry",
+      "required": false,
+      "purpose": "Anonymous usage analytics"
+    },
+    {
+      "name": "Arize Phoenix / Langfuse",
+      "type": "observability",
+      "required": false,
+      "purpose": "LLM trace export for debugging agent behavior"
+    },
+    {
+      "name": "mobilerun-sdk",
+      "type": "cloud_device",
+      "required": "Unknown",
+      "purpose": "Unknown / Needs Verification - likely DroidRun Cloud device service"
+    }
+  ],
+  "risks": [
+    "llama-index pinned to 0.14.4 — outdated, may have security issues",
+    "No CI/CD pipeline — no automated testing or security scanning",
+    "Portal accessibility service may not survive Android reboot",
+    "ADB wireless debug port randomizes on reboot (mitigated by adb tcpip 5555)",
+    "mcp_server.py is workspace-specific, not synced with upstream droidrun",
+    "iOS driver is experimental stub, not production-ready",
+    "mobilerun-sdk dependency purpose unknown",
+    "Trajectory files contain device screen content unencrypted on disk",
+    "LLM prompts include device UI content (may be sent to cloud LLM APIs)"
+  ],
+  "unknowns": [
+    "mobilerun-sdk purpose and integration details",
+    "iOS driver actual functionality and stability",
+    "StealthDriver implementation details",
+    "app_cards server mode implementation",
+    "StatelessManagerAgent vs ManagerAgent behavioral difference",
+    "ToolRegistry class exact contents and usage",
+    "Portal APK HTTP API exact endpoint schema",
+    "Upstream droidrun CI/CD pipeline (not present in this workspace)",
+    "Credential encryption at rest (FileCredentialManager)",
+    "Auto-setup behavior on version mismatch (reinstall vs update)"
+  ],
+  "critical_files": [
+    "src/droidrun/agent/droid/droid_agent.py",
+    "src/droidrun/cli/main.py",
+    "src/droidrun/tools/driver/android.py",
+    "src/droidrun/tools/android/portal_client.py",
+    "src/droidrun/config_manager/config_manager.py",
+    "src/droidrun/config_example.yaml",
+    "mcp_server.py",
+    "scripts/startup_droidrun.ps1",
+    "scripts/droidrun_run.ps1",
+    "docs/PROJECT_INTELLIGENCE_INDEX.md"
+  ],
+  "docs_index": {
+    "master_index": "docs/PROJECT_INTELLIGENCE_INDEX.md",
+    "checklist": "docs/DOCS_CHECKLIST.md",
+    "ai_handoff": "docs/ai-handoff-summary.md",
+    "architecture": "docs/system-architecture.md",
+    "all_docs": [
+      "docs/project-overview.md",
+      "docs/repo-boundaries.md",
+      "docs/glossary.md",
+      "docs/system-architecture.md",
+      "docs/module-map.md",
+      "docs/runtime-lifecycle.md",
+      "docs/state-management.md",
+      "docs/data-flow.md",
+      "docs/external-integrations.md",
+      "docs/offline-sync-model.md",
+      "docs/error-handling-model.md",
+      "docs/source-tree-guide.md",
+      "docs/key-classes-and-services.md",
+      "docs/entry-points-and-boot-sequence.md",
+      "docs/background-jobs-workers-schedulers.md",
+      "docs/navigation-screen-flow.md",
+      "docs/api-layer-client-contracts.md",
+      "docs/storage-layer.md",
+      "docs/feature-inventory.md",
+      "docs/environment-config-reference.md",
+      "docs/build-release-process.md",
+      "docs/ci-cd.md",
+      "docs/dependency-inventory.md",
+      "docs/secrets-handling.md",
+      "docs/logging-observability.md",
+      "docs/troubleshooting-playbook.md",
+      "docs/security-overview.md",
+      "docs/permission-manifest.md",
+      "docs/data-privacy-storage.md",
+      "docs/threat-model.md",
+      "docs/safe-failure-disable-paths.md",
+      "docs/ai-handoff-summary.md",
+      "docs/adr-summary.md",
+      "docs/unknowns-gaps-assumptions.md",
+      "docs/recommended-next-docs.md",
+      "docs/project-context.json",
+      "docs/FINAL_SUMMARY.md"
+    ]
+  }
+}
