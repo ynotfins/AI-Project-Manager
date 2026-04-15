@@ -34,7 +34,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-04-14 (rules audit artifact: `TOOLS_RULES_OPTIMIZATION.md`)
+> Last updated: 2026-04-15 (governance/tool-contract unification)
 > Previous archive: `docs/ai/archive/state-log-phase0-governance-2026-03-29-to-2026-03-31.md` (Phase 0 operations + Governance Normalization)
 > Earlier archives: `docs/ai/archive/state-log-phases-0-5.md`, `state-log-phase-6ab.md`, `state-log-phase-6c-archive.md`, `state-log-phase-6c-active.md`, `state-log-post-6c-ops.md`, `state-log-mcp-triworkspace-2026-03-16.md`, `state-log-tab-bootstrap-2026-03-16.md`, `state-log-release-p0-gateway-fix-2026-03-16.md`, `state-log-security-winnode-2026-03-16.md`, `state-log-windows-node-crewclaw-2026-03-17-18.md`, `state-log-ops-governance-2026-03-19.md`
 
@@ -4453,3 +4453,244 @@ None required for the audit itself.
 ### What's Next
 
 If governance owners want less duplication inside `TOOLS_RULES_OPTIMIZATION.md`, replace repeated tool-section copies with pointers to the master list while keeping the master list complete.
+
+## 2026-04-14 22:53 - Docs hardening pass: canonical no-loss order
+
+### Goal
+
+Harden the tri-workspace docs/governance surfaces so only AI-PM owns the authoritative numbered no-loss recovery order, while `open--claw` points to that order without changing runtime or product behavior.
+
+### Scope
+
+Touched: `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/operations/DOCUMENTATION_SYSTEM.md`, and this file.
+
+Inspected for alignment without change: `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`, `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, `docs/ai/recovery/memory-delta.json`.
+
+Cross-repo companion docs were edited in `open--claw` only on the scoped governance surfaces.
+
+### Commands / Tool Calls
+
+- `Shell`: `git -C "D:/github/open--claw" status --short`
+- `Shell`: `git -C "D:/github/AI-Project-Manager" status --short`
+- `Shell`: `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- `Glob`
+- `ReadFile`
+- `ApplyPatch`
+- `ReadLints`
+- `CallMcpTool`: `user-openmemory.search-memories`
+- `CallMcpTool`: `user-thinking-patterns.sequential_thinking`
+- `CallMcpTool`: `user-openmemory.add-memory`
+
+### Changes
+
+Checklist:
+- [x] Kept the only authoritative numbered no-loss recovery order in `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- [x] Removed `RECOVERY_BUNDLE_SPEC.md` from the repo-authority step in that order
+- [x] Made the recovery bundle explicitly generated and non-canonical in the canonical recovery-order doc
+- [x] Updated `docs/ai/operations/DOCUMENTATION_SYSTEM.md` so other active docs point to the canonical no-loss order instead of duplicating it
+- [x] Confirmed `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md` already matched the required non-canonical/generated bundle wording and left it unchanged
+- [x] Stored one durable OpenMemory policy summary for this hardening pass
+
+### Evidence
+
+- PASS — `git -C "D:/github/open--claw" status --short` showed only the pre-existing user edits in the protected Phase 1 surfaces plus `docs/ai/STATE.md`.
+- PASS — `git -C "D:/github/AI-Project-Manager" status --short` showed only the pre-existing `.cursor/rules/openmemory.mdc` edit before this pass.
+- PASS — `user-openmemory.search-memories` returned matching active no-loss governance memories for the required order and Obsidian sidecar policy.
+- PASS — `user-thinking-patterns.sequential_thinking` completed successfully before any edit and produced the intended minimal-doc-change plan.
+- PASS — `ApplyPatch` updated only the scoped AI-PM governance docs plus the paired scoped `open--claw` governance docs.
+- PASS — `ReadLints` reported no diagnostics on the touched docs.
+- PASS — `user-openmemory.add-memory` stored the durable policy summary successfully (`id=18`).
+- PASS — `Get-Date -Format "yyyy-MM-dd HH:mm"` returned `2026-04-14 22:53`.
+
+### Verdict
+
+READY — AI-PM now owns the single authoritative numbered no-loss recovery order for the active tri-workspace docs.
+
+### Blockers
+
+None in scope.
+
+### Fallbacks Used
+
+None.
+
+### Cross-Repo Impact
+
+`open--claw` now points back to the AI-PM canonical no-loss order instead of carrying competing numbered recovery chains in its active governance docs.
+
+### Decisions Captured
+
+- Keep the numbered no-loss recovery order in `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` only.
+- Treat `HANDOFF.md` as optional and never required for recovery.
+- Keep the AI-PM recovery bundle generated and non-canonical.
+
+### Pending Actions
+
+- Final git status/diff reporting for this docs-only pass.
+- Recovery bundle refresh was deferred in this scoped pass to avoid expanding edits beyond the requested file list.
+
+### What Remains Unverified
+
+- The machine-local recovery bundle files were inspected but not regenerated in this docs-only pass.
+- Untouched historical logs and archive entries may still contain older wording by design.
+
+### What's Next
+
+Use the canonical AI-PM no-loss order for future recovery/documentation passes and refresh the recovery bundle only when a later scoped task explicitly includes it.
+
+---
+
+## 2026-04-15 15:26 - Canonical governance and MCP contract unification
+
+### Goal
+
+Repair the scoped cross-repo governance contradictions so AI-PM remains the single owner of the numbered no-loss bootstrap order and the live installed-tool matrix, while DroidRun and OpenClaw stop carrying conflicting workflow or unsupported tool-contract claims.
+
+### Scope
+
+Changed files:
+
+- `D:/github/AI-Project-Manager/.cursor/rules/openmemory.mdc`
+- `D:/github/AI-Project-Manager/docs/ai/CURSOR_WORKFLOW.md`
+- `D:/github/AI-Project-Manager/docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md`
+- `D:/github/AI-Project-Manager/docs/ai/operations/AUTONOMOUS_PLAN_SYSTEM.md`
+- `D:/github/AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`
+- `D:/github/droidrun/.cursor/rules/10-project-workflow.md`
+- `D:/github/droidrun/docs/ai/CURSOR_WORKFLOW.md`
+- `D:/github/droidrun/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+- `D:/github/droidrun/docs/ai/memory/MEMORY_CONTRACT.md`
+- `D:/github/open--claw/.cursor/rules/15-model-routing.md`
+- `D:/github/open--claw/.cursor/rules/sparky-mandatory-tool-usage.md`
+- `D:/github/AI-Project-Manager/docs/ai/STATE.md`
+
+Inspected but unchanged:
+
+- `D:/github/AI-Project-Manager/AGENTS.md`
+- `D:/github/AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
+- `D:/github/AI-Project-Manager/.cursor/rules/10-project-workflow.md`
+- `D:/github/AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `D:/github/AI-Project-Manager/docs/ai/operations/DOCUMENTATION_SYSTEM.md`
+- `D:/github/droidrun/AGENTS.md` (aligned on reread but produced no net `git diff`)
+- `C:/Users/ynotf/.cursor/plans/tri_governance_audit_7269c6d7.plan.md`
+- `C:/Users/ynotf/.cursor/projects/d-github-AI-Project-Manager/mcps/user-thinking-patterns/tools/sequential_thinking.json`
+- `C:/Users/ynotf/.cursor/projects/d-github-AI-Project-Manager/mcps/user-openmemory/tools/search-memories.json`
+
+### Commands / Tool Calls
+
+Exact shell commands:
+
+- `git status --short` in `D:/github/AI-Project-Manager`
+- `git status --short` in `D:/github/open--claw`
+- `git status --short` in `D:/github/droidrun`
+- `git diff -- .cursor/rules/openmemory.mdc docs/ai/CURSOR_WORKFLOW.md docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md docs/ai/operations/AUTONOMOUS_PLAN_SYSTEM.md docs/tooling/MCP_CANONICAL_CONFIG.md` in `D:/github/AI-Project-Manager`
+- `git diff -- AGENTS.md .cursor/rules/10-project-workflow.md docs/ai/CURSOR_WORKFLOW.md docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md docs/ai/memory/MEMORY_CONTRACT.md` in `D:/github/droidrun`
+- `git diff -- .cursor/rules/15-model-routing.md .cursor/rules/sparky-mandatory-tool-usage.md` in `D:/github/open--claw`
+- `Get-Date -Format "yyyy-MM-dd HH:mm"` in `D:/github/AI-Project-Manager`
+- `git diff -- AGENTS.md` in `D:/github/droidrun`
+- `git status --short` in `D:/github/AI-Project-Manager` (final after `STATE.md`)
+- `git status --short` in `D:/github/open--claw` (final after `STATE.md`)
+- `git status --short` in `D:/github/droidrun` (final after `STATE.md`)
+
+Exact tool calls:
+
+- `ReadFile`: `C:/Users/ynotf/.cursor/plans/tri_governance_audit_7269c6d7.plan.md`
+- `ReadFile`: `C:/Users/ynotf/.cursor/skills-cursor/create-rule/SKILL.md`
+- `Glob`: `C:/Users/ynotf/.cursor/projects/d-github-AI-Project-Manager/mcps/user-thinking-patterns/tools/*.json`
+- `Glob`: `C:/Users/ynotf/.cursor/projects/d-github-AI-Project-Manager/mcps/user-openmemory/tools/*.json`
+- `ReadFile`: `C:/Users/ynotf/.cursor/projects/d-github-AI-Project-Manager/mcps/user-thinking-patterns/tools/sequential_thinking.json`
+- `ReadFile`: `C:/Users/ynotf/.cursor/projects/d-github-AI-Project-Manager/mcps/user-openmemory/tools/search-memories.json`
+- `ReadFile`: all user-scoped required inspection files across `AI-Project-Manager`, `droidrun`, and `open--claw`
+- `CallMcpTool`: `user-thinking-patterns.sequential_thinking`
+- `CallMcpTool`: `user-openmemory.search-memories`
+- `Glob`: `C:/Users/ynotf/.cursor/projects/d-github-AI-Project-Manager/mcps/**/tools/*.json`
+- `ApplyPatch`: all changed files listed in Scope
+- `ReadFile`: `D:/github/AI-Project-Manager/docs/ai/STATE.md` (top and tail) and the AI-PM diff artifact
+- `CallMcpTool`: `user-openmemory.add-memory`
+- `ReadLints`: touched AI-PM, DroidRun, and OpenClaw docs/rules
+
+### Changes
+
+Checklist:
+
+- [x] Kept AI-PM as the only owner of the numbered no-loss bootstrap order by leaving `NO_LOSS_RECOVERY_LOOP.md` unchanged and converting competing docs into pointer-safe summaries.
+- [x] Rewrote `AI-Project-Manager/.cursor/rules/openmemory.mdc` around the live flat OpenMemory runtime instead of stale mem0-style fields.
+- [x] Reduced `AI-Project-Manager/docs/ai/CURSOR_WORKFLOW.md` and `AI-Project-Manager/docs/ai/operations/AUTONOMOUS_PLAN_SYSTEM.md` so they no longer override canonical order.
+- [x] Made `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md` the single owner of the installed-tool matrix and updated it to the live 11-server session-visible surface.
+- [x] Reframed `AI-Project-Manager/docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md` as routing guidance only, pointing inventory ownership upward to `MCP_CANONICAL_CONFIG.md`.
+- [x] Aligned the editable DroidRun governance surfaces to the AI-PM no-loss order and flat OpenMemory semantics.
+- [x] Narrowed OpenClaw special model/tool rules to supported live contracts only.
+- [x] Left runtime code, generated mapping surfaces, recovery bundle files, Sparky packet docs, and `C:/Users/ynotf/.cursor/mcp.json` untouched.
+
+File-by-file diff summary:
+
+- `AI-Project-Manager/.cursor/rules/openmemory.mdc`: replaced stale `project_id`/`namespace`/`user_preference`/metadata semantics with a flat-runtime contract, compact self-identifying storage text, and canonical no-loss pointers.
+- `AI-Project-Manager/docs/ai/CURSOR_WORKFLOW.md`: compressed the doc into a human-readable map that points to canonical owners instead of restating its own source priority.
+- `AI-Project-Manager/docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md`: removed stale inventory ownership and 9-server claims; made it a routing-only doc that points to `MCP_CANONICAL_CONFIG.md` and `NO_LOSS_RECOVERY_LOOP.md`.
+- `AI-Project-Manager/docs/ai/operations/AUTONOMOUS_PLAN_SYSTEM.md`: removed `STATE.md`-first/broad context-stack behavior and converted the file into a summary of the planning loop with canonical pointers.
+- `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`: rewrote the file as the single owner of the installed-tool matrix; recorded the 11 server session-visible surface and retired stale installed-server claims for `github`, `firecrawl-mcp`, and `context-matic`.
+- `droidrun/.cursor/rules/10-project-workflow.md`: replaced the local `STATE.md`-first source order with a pointer to AI-PM's canonical no-loss order and removed the automatic commit/push instruction.
+- `droidrun/docs/ai/CURSOR_WORKFLOW.md`: aligned the local workflow summary to the shared no-loss order and downgraded `STATE.md`/`HANDOFF.md` to evidence-only roles.
+- `droidrun/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`: rewrote bootstrap prompts to follow the canonical AI-PM order and plain-text flat OpenMemory usage.
+- `droidrun/docs/ai/memory/MEMORY_CONTRACT.md`: aligned memory guidance to flat OpenMemory semantics and compact self-identifying memory text.
+- `open--claw/.cursor/rules/15-model-routing.md`: removed unsupported model inventories and mandatory response headers; kept only a narrow local escalation supplement.
+- `open--claw/.cursor/rules/sparky-mandatory-tool-usage.md`: narrowed mandatory tool guidance to supported live tool behavior and removed unsupported `thinking-patterns`/OpenMemory parameter claims.
+- `AI-Project-Manager/docs/ai/STATE.md`: recorded this scoped governance pass, evidence, contradictions fixed, and remaining unproven items.
+
+### Evidence
+
+- PASS — pre-edit `git status --short` in `AI-Project-Manager` showed only pre-existing edits in `.cursor/rules/openmemory.mdc`, `docs/ai/STATE.md`, `docs/ai/operations/DOCUMENTATION_SYSTEM.md`, and `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`.
+- PASS — pre-edit `git status --short` in `open--claw` showed only pre-existing user edits outside the scoped rule files.
+- PASS — pre-edit `git status --short` in `droidrun` was clean.
+- PASS — `ReadFile` of `sequential_thinking.json` proved the required `thinking-patterns` schema before tool use.
+- PASS — `CallMcpTool(user-thinking-patterns.sequential_thinking)` succeeded and locked the minimum-diff plan before editing.
+- PASS — `ReadFile` of `search-memories.json` proved the required OpenMemory schema before tool use.
+- PASS — `CallMcpTool(user-openmemory.search-memories)` succeeded and returned governance/tooling memories that matched the canonical no-loss direction but were treated as secondary to live file inspection.
+- PASS — required governance files were inspected before editing.
+- PASS — `Glob` of the local descriptor cache confirmed the session has a broader installed MCP surface than the stale 9-tool docs claimed.
+- PASS — targeted `git diff -- ...` outputs showed the intended pointer-safe rewrites in AI-PM, DroidRun, and OpenClaw.
+- PASS — `Get-Date -Format "yyyy-MM-dd HH:mm"` returned `2026-04-15 15:26` for this block.
+- PASS — `CallMcpTool(user-openmemory.add-memory)` stored a durable governance/tooling memory summary successfully (`id=19`).
+- PASS — final `git status --short` in `AI-Project-Manager` showed the expected scoped edits plus the pre-existing unrelated dirty files `docs/ai/operations/DOCUMENTATION_SYSTEM.md` and `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`.
+- PASS — final `git status --short` in `open--claw` showed only the two scoped rule edits plus the user's unrelated pre-existing dirty files elsewhere in that repo.
+- PASS — final `git status --short` in `droidrun` showed the four scoped editable docs/rules (`.cursor/rules/10-project-workflow.md`, `docs/ai/CURSOR_WORKFLOW.md`, `docs/ai/memory/MEMORY_CONTRACT.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`) and no unrelated dirt.
+- PASS — `git diff -- AGENTS.md` in `droidrun` returned no diff, so `droidrun/AGENTS.md` is recorded as inspected/aligned-but-unchanged rather than as a changed file.
+- PASS — `ReadLints` reported no linter errors on the touched docs/rules.
+
+### Verdict
+
+READY — within the scoped editable surfaces, authority order, flat OpenMemory semantics, and installed-tool ownership now agree; the remaining items are out-of-scope verification/remediation work, not unresolved contradictions inside the changed docs.
+
+### Blockers
+
+None in the requested repo-doc scope.
+
+### Fallbacks Used
+
+None. Required `thinking-patterns` and `openmemory` calls both succeeded.
+
+### Cross-Repo Impact
+
+- `AI-Project-Manager` now clearly owns the no-loss bootstrap order and installed-tool inventory.
+- `droidrun` no longer models a `STATE.md`-first local recovery path in the edited workflow/bootstrap/memory surfaces.
+- `open--claw` no longer requires unsupported model labels, headers, or stale tool parameters in the two scoped special rules.
+
+### Decisions Captured
+
+- Keep the only authoritative numbered bootstrap order in `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`.
+- Keep the installed-tool matrix owned only by `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`.
+- Treat normal-use OpenMemory as a flat runtime and use compact self-identifying text instead of unsupported metadata semantics.
+- Keep DroidRun and OpenClaw governance mirrors pointer-based where possible so they cannot silently diverge from AI-PM.
+
+### Pending Actions
+
+- Follow up separately on the machine-global Artiforge secret-on-disk issue without editing repo docs outside the approved scope.
+
+### What Remains Unverified
+
+- `C:/Users/ynotf/.cursor/mcp.json` was intentionally not inspected or edited in this phase, so the reported Artiforge secret-on-disk issue remains unproven in-session and unremediated here. Exact follow-up needed: inspect the Artiforge entry out of band, remove any embedded secret from disk config, move auth to runtime/env-backed delivery, restart Cursor via the canonical launcher, re-probe the Artiforge server, then update `MCP_CANONICAL_CONFIG.md` only if the live installed surface changes.
+- Only `thinking-patterns` and `openmemory` were actively called in this phase; the rest of the 11-server matrix was validated from the live session-visible server list and descriptor cache rather than direct per-server smoke tests.
+- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md` was inspected and left unchanged in this phase, so older phrasing there still needs a future scoped pass if the governance owner wants every active wording fragment to match the new installed-tool inventory text exactly.
+
+### What's Next
+
+Run the final post-edit `git status --short` checks and `ReadLints`, patch this entry with those results, then stop without expanding into broader cleanup.

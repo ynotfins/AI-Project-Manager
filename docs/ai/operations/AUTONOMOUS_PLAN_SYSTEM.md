@@ -1,59 +1,44 @@
 # Autonomous PLAN System
 
-This document defines how PLAN operates with high autonomy while preserving safety, context fidelity, and long-term project awareness.
+This file describes the planning loop. It is a summary, not the owner of the bootstrap order.
 
-## Objective
+## Canonical pointers
 
-Enable PLAN and AGENT to work in a Devin-like autonomous loop while remaining evidence-first, repo-truth-first, and reversible.
+- `AGENTS.md` defines the repo authority contract.
+- `.cursor/rules/10-project-workflow.md` defines the PLAN and AGENT execution contract.
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` defines the only authoritative numbered no-loss bootstrap order.
+- `docs/ai/operations/DOCUMENTATION_SYSTEM.md` defines doc-maintenance ownership and update order.
 
-## Hard invariants
+## PLAN objective
 
-- Repository docs are the source of truth.
-- `docs/ai/STATE.md` is always read before planning.
-- No secrets in docs, code, logs, or commits.
-- PLAN does not execute or edit; AGENT executes and records evidence.
-- Every meaningful change updates `docs/ai/STATE.md`.
+PLAN should produce the smallest safe next execution block while preserving:
 
-## Autonomous control loop
+- repo-truth-first behavior
+- explicit model selection
+- explicit tool requirements
+- reversible, evidence-backed execution
 
-1. Reconstruct context from canonical docs.
-2. Select smallest safe execution block with clear exit criteria.
-3. Generate one deterministic AGENT prompt.
-4. Execute, verify, and collect PASS/FAIL evidence.
-5. Update `STATE.md`, `DECISIONS.md`, and `PATTERNS.md` as needed.
-6. Re-evaluate blockers and next best block.
+## Control loop
 
-## Canonical context stack
+1. Reconstruct context using the canonical no-loss order.
+2. Use `thinking-patterns` for non-trivial planning before finalizing the next block.
+3. Select the smallest deterministic AGENT step with clear exit criteria.
+4. Emit exactly one AGENT prompt with model rationale and required tools.
+5. Require AGENT to verify, record PASS/FAIL evidence, and update `docs/ai/STATE.md`.
+6. Re-evaluate blockers and decide whether to continue, narrow scope, or return to PLAN.
 
-PLAN and AGENT should read in this order:
+## Planning discipline
 
-1. `docs/ai/STATE.md`
-2. `docs/ai/PLAN.md`
-3. `docs/ai/memory/DECISIONS.md`
-4. `docs/ai/memory/PATTERNS.md`
-5. `docs/ai/operations/PROJECT_LONGTERM_AWARENESS.md`
-6. `docs/ai/operations/CONTEXT_WINDOW_MONITORING.md`
-7. `docs/ai/context/` and archive docs (historical only)
+- Prefer minimum-diff execution blocks over broad speculative cleanup.
+- Do not let this file redefine source priority or tool inventory ownership.
+- Treat `docs/ai/STATE.md` as operational evidence reached through the canonical recovery path, not as the first planning read by default.
+- Stop and surface contradictions instead of silently smoothing them over.
 
-## Decision discipline
+## Escalation triggers
 
-- Prefer incremental changes over broad refactors.
-- Require evidence for each claimed success.
-- Stop and surface ambiguity instead of silently proceeding.
-- Explicitly document fallbacks when preferred tools are unavailable.
+Return to a deeper planning pass when:
 
-## Context-loss prevention model
-
-- Keep canonical docs concise and current.
-- Move superseded details to archive files.
-- Maintain a short, high-signal handoff.
-- Track context-size health using the monitoring policy in `CONTEXT_WINDOW_MONITORING.md`.
-
-## Escalation rules
-
-Escalate back to PLAN when:
-
-- Required tools are unavailable and fallback is risky.
-- Evidence contradicts assumptions.
-- A change crosses repo boundaries unexpectedly.
-- Security, credentials, or deployment posture changes.
+- required tools are degraded and fallback is risky
+- live evidence contradicts repo governance
+- the task expands outside the approved phase
+- security or secret-handling posture would need to change

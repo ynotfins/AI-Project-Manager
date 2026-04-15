@@ -1,57 +1,58 @@
 ---
-description: "Flat OpenMemory runtime policy for no-loss recovery and durable storage"
+description: "OpenMemory discipline for the live flat runtime"
 globs: ["**/*"]
 alwaysApply: true
 ---
 
-# OpenMemory Runtime Policy
+# OpenMemory Integration
 
-OpenMemory is the primary durable structured recall layer for this repo, but it is never canonical authority.
+OpenMemory is the durable recall layer for this workspace. It improves recovery and continuity, but it does not outrank repo-tracked docs or the product charter.
 
-## Recovery order
+## Canonical order
 
-Use OpenMemory in the lean no-loss path:
+- The only authoritative numbered no-loss bootstrap order lives in `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`.
+- OpenMemory comes after the charter and repo authority contract, and before the recovery bundle and `docs/ai/STATE.md`.
+- Do not restate a competing recovery order here.
 
-1. Read the charter
-2. Read repo authority docs
-3. Run a targeted OpenMemory query for the active repo/task
-4. Then use the recovery bundle, `STATE.md` summary, and one selective deep read if needed
+## Live runtime contract
 
-Do not preload `docs/ai/context/AGENT_EXECUTION_LEDGER.md`. It stays one-block fallback only.
-
-## Live runtime only
-
-The verified Cursor-side surface is flat:
+Treat the active Cursor OpenMemory surface as flat:
 
 - `search-memories(query)`
 - `list-memories()`
 - `add-memory(content)`
 
-Do not claim or require `project_id`, `namespace`, `user_preference`, `memory_types`, metadata dicts, or direct filter support unless a proven wrapper exists in the active runtime.
+Do not claim or rely on `project_id`, `namespace`, `user_preference`, `memory_types`, title/content split, metadata dicts, or filter fields unless the active runtime proves them during the current session.
 
-## Retrieval behavior
+If a destructive memory-reset tool is present, never use it without explicit user confirmation.
 
-- Run targeted searches for non-trivial PLAN, AGENT, or DEBUG recovery work.
-- Keep queries specific to the active repo, task, or policy question.
-- Do not invent multi-phase search quotas or block execution on arbitrary search counts.
+## Required usage
 
-## Storage behavior
+- Before non-trivial PLAN, AGENT, or DEBUG recovery work, run a targeted `search-memories` query for the active repo/task.
+- After validated durable decisions, patterns, or governance changes, write one compact `add-memory(content)` summary if the tool is healthy.
+- Use `list-memories()` only when it is the smallest safe way to inspect current durable recall.
 
-- Store only validated durable knowledge: decisions, reusable patterns, stable debug findings, and recovery-policy updates.
-- Use compact self-identifying plain text, for example:
-  - `[repo=ai-pm][kind=decision][stability=durable][source=docs/ai/memory/DECISIONS.md] ...`
-  - `[repo=tri-workspace][kind=policy][status=active][source=docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md] ...`
-- Never store secrets, credentials, raw transcripts, or copied ledger blocks.
+## Storage format
+
+Because the runtime is flat, stored text must identify itself inside the content:
+
+- `[repo=ai-pm][kind=policy][status=active][source=docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md] ...`
+- `[repo=droidrun][kind=pattern][status=active][source=docs/ai/memory/PATTERNS.md] ...`
+
+Store durable conclusions, not raw transcripts or copied docs.
+
+## Guardrails
+
+- Repo docs win if memory and repo truth disagree.
+- Never store secrets, tokens, credentials, personal data, or large pasted code blocks.
+- Never pretend unsupported filters or metadata exist.
+- Never silently skip a required OpenMemory step.
 
 ## Failure behavior
 
 If OpenMemory is required and degraded:
 
-1. Announce FAIL immediately
-2. Name the exact failed step
-3. Use repo docs plus the recovery bundle only if the task remains safely satisfiable
-4. Record the fallback path and any reseed debt in `docs/ai/STATE.md`
-
-## Guide discipline
-
-Keep `openmemory.md` aligned with the live flat runtime and the compact text convention. Do not treat it as an aspirational mem0 schema.
+1. Announce FAIL immediately.
+2. Name the exact failed step.
+3. Use the safe fallback from the canonical workflow (`docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` and repo docs) only if the task remains satisfiable.
+4. Record the evidence gap or memory reseed debt in `docs/ai/STATE.md`.
