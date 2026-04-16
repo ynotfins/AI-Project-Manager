@@ -29,18 +29,19 @@ Use this order unless a stricter repo rule applies:
    - `.cursor/rules/05-global-mcp-usage.md`
    - `.cursor/rules/10-project-workflow.md`
    - `docs/ai/memory/MEMORY_CONTRACT.md`
-3. Targeted OpenMemory search
-4. Recovery bundle via `filesystem`, if present and current. This bundle is generated and non-canonical:
+3. `docs/tooling/MCP_CANONICAL_CONFIG.md`
+4. Targeted OpenMemory search
+5. Recovery bundle via `filesystem`, if present and current. This bundle is generated and non-canonical:
    - `docs/ai/recovery/current-state.json`
    - `docs/ai/recovery/session-summary.md`
    - `docs/ai/recovery/active-blockers.json`
    - `docs/ai/recovery/memory-delta.json`
-5. `docs/ai/STATE.md` summary/current state section
-6. Exactly one selective deep read, only if needed:
+6. `docs/ai/STATE.md` summary/current state section
+7. Exactly one selective deep read, only if needed:
    - `docs/ai/memory/DECISIONS.md`
    - `docs/ai/memory/PATTERNS.md`
    - `docs/ai/HANDOFF.md` (optional operator snapshot, never required for recovery)
-7. `docs/ai/context/AGENT_EXECUTION_LEDGER.md` one block at a time only as a fallback
+8. `docs/ai/context/AGENT_EXECUTION_LEDGER.md` one block at a time only as a fallback
 
 `docs/ai/context/` artifacts and chat history are excluded from the default bootstrap path. Use them only for targeted historical follow-up after the selective deep read and ledger fallback still do not answer the task.
 
@@ -156,4 +157,4 @@ Do not claim unsupported metadata fields as if they are enforced by the runtime.
 
 ## Recovery simulation
 
-If the system restarts, follow the bootstrap order above exactly: charter, repo authority, targeted OpenMemory, the generated non-canonical recovery bundle, `STATE.md` summary/current state, one selective deep read only if needed, then the ledger one block at a time only as a fallback.
+If the system restarts, follow the bootstrap order above exactly: charter, repo authority, `docs/tooling/MCP_CANONICAL_CONFIG.md`, targeted OpenMemory, the generated non-canonical recovery bundle, `STATE.md` summary/current state, one selective deep read only if needed, then the ledger one block at a time only as a fallback.

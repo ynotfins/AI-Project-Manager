@@ -1,9 +1,13 @@
 {
-  "phase": "Lossless Bridge Proof",
-  "goal": "Prove the smallest real OpenClaw-to-OpenMemory bridge seam with live durable-memory, recovery, ledger-hook, and quarantine-safe retrieval evidence without widening the allowed file set.",
-  "last_action": "Completed the allowed bridge seam edits, promoted and retrieved one real bridge memory, proved clean-room recovery and quarantine-safe retrieval, then observed that the normal AI-PM ledger append did not trigger visible hook rotation/archive behavior.",
+  "phase": "Foundation Checkpoint Lock",
+  "goal": "Preserve the current lossless-ready foundation checkpoint in canonical docs and recovery surfaces so future chats can recover without depending on chat history.",
+  "last_action": "Locked the checkpoint refs, proof status, ledger fallback, and final PLAN bootstrap stack into the AI-PM canonical docs and recovery bundle.",
+  "checkpoint_tag": "foundation-lossless-ready-2026-04-15",
+  "checkpoint_backup_branch": "backup/foundation-lossless-ready-2026-04-15",
   "active_workers": [
     "AGENT"
   ],
-  "bridge_status": "PARTIAL: bridge seam live and durable retrieval proven; ledger-hook proof remains open"
+  "system_status": "LOSSLESS-READY: AI-Project-Manager is the governance/control plane; the OpenClaw-to-OpenMemory bridge seam is live; new-chat recovery, power-loss-safe recovery, quarantine-safe retrieval, and repo-local ledger rotation logic are proven.",
+  "auto_lossless_status": "NOT YET FULLY AUTO-LOSSLESS-PROVEN: live Cursor afterFileEdit hook delivery remains unproven.",
+  "ledger_fallback": "python .cursor/hooks/rotate_ledger.py --force"
 }

@@ -162,14 +162,15 @@ OpenMemory is the retrieval pre-step for this process:
 
 1. Read `FINAL_OUTPUT_PRODUCT.md` first
 2. Read the repo authority contract for the repo in scope
-3. Search active-project memory for task-relevant decisions and patterns
-4. Search governance memory only when the task includes cross-repo, containment, routing, or policy concerns
-5. Read the recovery bundle in `docs/ai/recovery/` before any broad repo logs or scans
-6. Then use the repository-tracked priority order below
+3. Read `docs/tooling/MCP_CANONICAL_CONFIG.md`
+4. Search active-project memory for task-relevant decisions and patterns
+5. Search governance memory only when the task includes cross-repo, containment, routing, or policy concerns
+6. Read the recovery bundle in `docs/ai/recovery/` before any broad repo logs or scans
+7. Then use the repository-tracked priority order below
 
 Default preload budget:
 
-- After the authority contract, OpenMemory, and the four recovery bundle files, read the summary/current state portion of `docs/ai/STATE.md`.
+- After the authority contract, `docs/tooling/MCP_CANONICAL_CONFIG.md`, OpenMemory, and the four recovery bundle files, read the summary/current state portion of `docs/ai/STATE.md`.
 - Read exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` only if needed.
 - `docs/ai/context/AGENT_EXECUTION_LEDGER.md` is never default preload; read one block at a time and only as a last resort.
 
@@ -177,10 +178,11 @@ Repository-tracked priority order:
 
 1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — supreme product charter (governs what the system must become)
 2. The repo authority contract: `AGENTS.md`, `.cursor/rules/01-charter-enforcement.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/memory/MEMORY_CONTRACT.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, and `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
-3. `docs/ai/STATE.md` summary/current state section — operational evidence
-4. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` on demand
-5. `docs/ai/context/` — non-canonical artifacts (on-demand only)
-6. Chat history / `@Past Chats` — last resort only
+3. `docs/tooling/MCP_CANONICAL_CONFIG.md` — live installed-tool matrix
+4. `docs/ai/STATE.md` summary/current state section — operational evidence
+5. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` on demand
+6. `docs/ai/context/` — non-canonical artifacts (on-demand only)
+7. Chat history / `@Past Chats` — last resort only
 
 If repository-tracked sources and chat context disagree, repository-tracked sources win unless current execution evidence proves otherwise.
 

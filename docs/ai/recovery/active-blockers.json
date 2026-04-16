@@ -1,9 +1,10 @@
 {
   "blockers": [
     {
-      "title": "Normal AI-PM ledger append did not trigger visible hook rotation/archive",
+      "title": "Live Cursor afterFileEdit ledger delivery remains unproven",
       "severity": "high",
-      "status": "open-proof-gap"
+      "status": "open-proof-gap",
+      "workaround": "Run `python .cursor/hooks/rotate_ledger.py --force` after ledger appends when compaction is needed."
     }
   ]
 }

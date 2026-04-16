@@ -65,11 +65,12 @@ PLAN and DEBUG must reconstruct state from the smallest authoritative slice that
 
 1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`
 2. The repo authority contract listed above
-3. Targeted `openmemory` retrieval relevant to the active repo/task
-4. The recovery bundle files in `docs/ai/recovery/`, if present and current
-5. `docs/ai/STATE.md` summary/current state section
-6. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` if needed
-7. `docs/ai/context/AGENT_EXECUTION_LEDGER.md` only as a one-block-at-a-time fallback
+3. `docs/tooling/MCP_CANONICAL_CONFIG.md`
+4. Targeted `openmemory` retrieval relevant to the active repo/task
+5. The recovery bundle files in `docs/ai/recovery/`, if present and current
+6. `docs/ai/STATE.md` summary/current state section
+7. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` if needed
+8. `docs/ai/context/AGENT_EXECUTION_LEDGER.md` only as a one-block-at-a-time fallback
 
 Do not preload the execution ledger by default.
 

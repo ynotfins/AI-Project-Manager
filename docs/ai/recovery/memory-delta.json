@@ -1,6 +1,14 @@
 {
   "decisions": [
     {
+      "title": "Foundation checkpoint refs are fixed for the current lossless-ready baseline",
+      "summary": "Use tag `foundation-lossless-ready-2026-04-15` and branch `backup/foundation-lossless-ready-2026-04-15` as the explicit backup refs for the current foundation checkpoint."
+    },
+    {
+      "title": "Current system status is lossless-ready, not fully auto-lossless-proven",
+      "summary": "AI-Project-Manager is the governance/control plane; the OpenClaw-to-OpenMemory bridge seam is live; new-chat recovery, power-loss-safe recovery, quarantine-safe retrieval, and repo-local ledger rotation logic are proven; live Cursor afterFileEdit hook delivery remains the only open proof gap."
+    },
+    {
       "title": "mem0-bridge is now the allowed OpenMemory compatibility seam",
       "summary": "The bridge keeps the `mem0-bridge` name for continuity but now documents retrieve-before-plan and store-after-gate against the flat Cursor OpenMemory runtime."
     },
@@ -10,6 +18,14 @@
     }
   ],
   "patterns": [
+    {
+      "title": "Canonical PLAN bootstrap stack",
+      "summary": "Recover in this order: charter, repo authority contract, `docs/tooling/MCP_CANONICAL_CONFIG.md`, targeted OpenMemory, AI-PM recovery bundle, `STATE.md` summary/current state, then exactly one of `DECISIONS.md`, `PATTERNS.md`, or `HANDOFF.md` only if needed."
+    },
+    {
+      "title": "Canonical ledger compaction fallback",
+      "summary": "Until live Cursor afterFileEdit delivery is re-proven, use `python .cursor/hooks/rotate_ledger.py --force` after ledger appends when compaction is needed."
+    },
     {
       "title": "Bridge promotion loop",
       "summary": "Search memory first, validate the packet, add one compact self-identifying memory, immediately re-search for discoverability, then mirror the proof into recovery/state docs."

@@ -34,9 +34,17 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-04-15 (repo-local rotation logic proven; live `afterFileEdit` still unproven; manual `--force` is the current fallback)
+> Last updated: 2026-04-15 (foundation checkpoint lock; lossless-ready with live hook caveat preserved)
 > Previous archive: `docs/ai/archive/state-log-phase0-governance-2026-03-29-to-2026-03-31.md` (Phase 0 operations + Governance Normalization)
 > Earlier archives: `docs/ai/archive/state-log-phases-0-5.md`, `state-log-phase-6ab.md`, `state-log-phase-6c-archive.md`, `state-log-phase-6c-active.md`, `state-log-post-6c-ops.md`, `state-log-mcp-triworkspace-2026-03-16.md`, `state-log-tab-bootstrap-2026-03-16.md`, `state-log-release-p0-gateway-fix-2026-03-16.md`, `state-log-security-winnode-2026-03-16.md`, `state-log-windows-node-crewclaw-2026-03-17-18.md`, `state-log-ops-governance-2026-03-19.md`
+
+### Foundation Checkpoint
+
+- **Checkpoint identity**: `foundation-lossless-ready-2026-04-15`
+- **Backup refs**: tag `foundation-lossless-ready-2026-04-15`; branch `backup/foundation-lossless-ready-2026-04-15`
+- **System status**: operationally ready / lossless-ready. `AI-Project-Manager` is the governance/control plane, the OpenClaw -> OpenMemory bridge seam is live, new-chat recovery passed, power-loss-safe recovery passed, quarantine-safe retrieval passed, and repo-local ledger rotation logic is proven.
+- **Open proof gap**: the system is not yet fully auto-lossless-proven because live Cursor `afterFileEdit` hook delivery remains unproven.
+- **Canonical ledger fallback**: when compaction is needed after a ledger append, run `python .cursor/hooks/rotate_ledger.py --force`.
 
 ### Authority Reality
 
@@ -5194,3 +5202,73 @@ None. This finalization pass stayed inside `AI-Project-Manager`.
 ### What's Next
 
 Keep future work narrow: use the manual fallback operationally when needed, and reserve any deeper work for a dedicated Cursor-side hook proof pass.
+
+---
+
+## 2026-04-15 23:11 - Foundation checkpoint documentation lock
+
+### Goal
+
+Preserve the current lossless-ready foundation checkpoint in canonical docs and recovery surfaces so future chats can recover the present system state without relying on chat history.
+
+### Scope
+
+- Inspected: `AGENTS.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/STATE.md`, `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, `docs/ai/recovery/memory-delta.json`, `D:/github/open--claw/docs/ai/STATE.md`, `D:/github/droidrun/docs/ai/STATE.md`
+- Changed: `AGENTS.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/STATE.md`, `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, `docs/ai/recovery/memory-delta.json`, `D:/github/open--claw/docs/ai/STATE.md`, `D:/github/droidrun/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `git status --short`
+- `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- `ReadFile`
+- `rg`
+- `ApplyPatch`
+
+### Changes
+
+- Preserved the checkpoint refs `foundation-lossless-ready-2026-04-15` and `backup/foundation-lossless-ready-2026-04-15` in the AI-PM summary and recovery bundle.
+- Locked the canonical PLAN bootstrap stack to: charter -> repo authority contract -> `docs/tooling/MCP_CANONICAL_CONFIG.md` -> targeted OpenMemory -> AI-PM recovery bundle -> `STATE.md` summary/current state -> exactly one of `DECISIONS.md`, `PATTERNS.md`, or `HANDOFF.md` only if needed.
+- Preserved the current proof split across canonical surfaces: operationally ready / lossless-ready overall, but not fully auto-lossless-proven because live Cursor `afterFileEdit` delivery remains unproven.
+- Preserved the canonical ledger-compaction fallback: `python .cursor/hooks/rotate_ledger.py --force`.
+
+### Evidence
+
+- PASS: targeted reads showed the hook caveat was already captured, but the checkpoint refs and tool-matrix bootstrap step were not yet preserved in the most canonical recovery surfaces.
+- PASS: the AI-PM summary and recovery bundle now explicitly preserve the governance/control-plane role, live OpenClaw bridge seam, new-chat recovery proof, power-loss-safe recovery proof, quarantine-safe retrieval proof, proven repo-local ledger rotation logic, and the still-open live hook-delivery gap.
+- PASS: `HANDOFF.md` remains optional in the canonical bootstrap wording.
+
+### Verdict
+
+READY - the critical recent foundation state is now preserved in canonical docs and recovery surfaces strongly enough for new-chat recovery without depending on this conversation history.
+
+### Blockers
+
+- Live Cursor `afterFileEdit` hook delivery remains unproven on an ordinary ledger edit.
+
+### Fallbacks Used
+
+- None. OpenMemory was optional for this pass and was not needed because the canonical docs and recovery bundle were sufficient.
+
+### Cross-Repo Impact
+
+- `open--claw/docs/ai/STATE.md` now mirrors the live bridge seam, proof passes, checkpoint refs, and the shared hook caveat.
+- `droidrun/docs/ai/STATE.md` now mirrors the checkpoint refs, AI-PM governance/control-plane role, and the shared lossless-ready versus auto-lossless-proven distinction.
+
+### Decisions Captured
+
+- Treat `foundation-lossless-ready-2026-04-15` and `backup/foundation-lossless-ready-2026-04-15` as the current foundation checkpoint refs.
+- Treat the system as operationally ready / lossless-ready, but not fully auto-lossless-proven while the live Cursor hook path remains unproven.
+- Treat `python .cursor/hooks/rotate_ledger.py --force` as the canonical ledger-compaction fallback until live hook delivery is reproven.
+
+### Pending Actions
+
+- Re-prove live Cursor hook delivery in a dedicated hook-only pass if the final auto-lossless proof gap needs to be closed.
+
+### What Remains Unverified
+
+- Whether Cursor invoked `afterFileEdit` at all for the ordinary ledger edit path.
+- Whether Cursor invoked it but failed before the repo-local script body could perform rotation.
+
+### What's Next
+
+Start future PLAN recovery from the preserved checkpoint refs and canonical bootstrap stack instead of relying on chat history.
