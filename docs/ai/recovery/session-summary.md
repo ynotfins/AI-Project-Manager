@@ -1,8 +1,8 @@
 # Recovery Session Summary
 
 Current foundation checkpoint:
-- Tag: `foundation-lossless-ready-2026-04-15`
-- Backup branch: `backup/foundation-lossless-ready-2026-04-15`
+- Tag: `foundation-lossless-ready-lock-2026-04-15`
+- Backup branch: `backup/foundation-lossless-ready-lock-2026-04-15`
 
 Current system status:
 - Operationally ready / lossless-ready.

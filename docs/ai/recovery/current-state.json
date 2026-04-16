@@ -2,8 +2,8 @@
   "phase": "Foundation Checkpoint Lock",
   "goal": "Preserve the current lossless-ready foundation checkpoint in canonical docs and recovery surfaces so future chats can recover without depending on chat history.",
   "last_action": "Locked the checkpoint refs, proof status, ledger fallback, and final PLAN bootstrap stack into the AI-PM canonical docs and recovery bundle.",
-  "checkpoint_tag": "foundation-lossless-ready-2026-04-15",
-  "checkpoint_backup_branch": "backup/foundation-lossless-ready-2026-04-15",
+  "checkpoint_tag": "foundation-lossless-ready-lock-2026-04-15",
+  "checkpoint_backup_branch": "backup/foundation-lossless-ready-lock-2026-04-15",
   "active_workers": [
     "AGENT"
   ],

@@ -40,8 +40,8 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ### Foundation Checkpoint
 
-- **Checkpoint identity**: `foundation-lossless-ready-2026-04-15`
-- **Backup refs**: tag `foundation-lossless-ready-2026-04-15`; branch `backup/foundation-lossless-ready-2026-04-15`
+- **Checkpoint identity**: `foundation-lossless-ready-lock-2026-04-15`
+- **Backup refs**: tag `foundation-lossless-ready-lock-2026-04-15`; branch `backup/foundation-lossless-ready-lock-2026-04-15`
 - **System status**: operationally ready / lossless-ready. `AI-Project-Manager` is the governance/control plane, the OpenClaw -> OpenMemory bridge seam is live, new-chat recovery passed, power-loss-safe recovery passed, quarantine-safe retrieval passed, and repo-local ledger rotation logic is proven.
 - **Open proof gap**: the system is not yet fully auto-lossless-proven because live Cursor `afterFileEdit` hook delivery remains unproven.
 - **Canonical ledger fallback**: when compaction is needed after a ledger append, run `python .cursor/hooks/rotate_ledger.py --force`.
@@ -5226,7 +5226,7 @@ Preserve the current lossless-ready foundation checkpoint in canonical docs and 
 
 ### Changes
 
-- Preserved the checkpoint refs `foundation-lossless-ready-2026-04-15` and `backup/foundation-lossless-ready-2026-04-15` in the AI-PM summary and recovery bundle.
+- Preserved the checkpoint refs `foundation-lossless-ready-lock-2026-04-15` and `backup/foundation-lossless-ready-lock-2026-04-15` in the AI-PM summary and recovery bundle.
 - Locked the canonical PLAN bootstrap stack to: charter -> repo authority contract -> `docs/tooling/MCP_CANONICAL_CONFIG.md` -> targeted OpenMemory -> AI-PM recovery bundle -> `STATE.md` summary/current state -> exactly one of `DECISIONS.md`, `PATTERNS.md`, or `HANDOFF.md` only if needed.
 - Preserved the current proof split across canonical surfaces: operationally ready / lossless-ready overall, but not fully auto-lossless-proven because live Cursor `afterFileEdit` delivery remains unproven.
 - Preserved the canonical ledger-compaction fallback: `python .cursor/hooks/rotate_ledger.py --force`.
@@ -5256,7 +5256,7 @@ READY - the critical recent foundation state is now preserved in canonical docs 
 
 ### Decisions Captured
 
-- Treat `foundation-lossless-ready-2026-04-15` and `backup/foundation-lossless-ready-2026-04-15` as the current foundation checkpoint refs.
+- Treat `foundation-lossless-ready-lock-2026-04-15` and `backup/foundation-lossless-ready-lock-2026-04-15` as the current foundation checkpoint refs.
 - Treat the system as operationally ready / lossless-ready, but not fully auto-lossless-proven while the live Cursor hook path remains unproven.
 - Treat `python .cursor/hooks/rotate_ledger.py --force` as the canonical ledger-compaction fallback until live hook delivery is reproven.
 
@@ -5272,3 +5272,61 @@ READY - the critical recent foundation state is now preserved in canonical docs 
 ### What's Next
 
 Start future PLAN recovery from the preserved checkpoint refs and canonical bootstrap stack instead of relying on chat history.
+
+---
+
+## 2026-04-15 23:39 - Locked checkpoint ref sync
+
+### Goal
+
+Replace provisional checkpoint tag/branch names with the actual post-push lock refs everywhere they are preserved in canonical docs and recovery surfaces.
+
+### Scope
+
+- `docs/ai/STATE.md`, `docs/ai/recovery/*` (AI-PM); `open--claw/docs/ai/STATE.md`; `droidrun/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `git status --short`
+- `rg`
+- `StrReplace`
+
+### Changes
+
+- Replaced `foundation-lossless-ready-2026-04-15` with `foundation-lossless-ready-lock-2026-04-15` and `backup/foundation-lossless-ready-2026-04-15` with `backup/foundation-lossless-ready-lock-2026-04-15` where those provisional refs still appeared.
+
+### Evidence
+
+- PASS: `rg` found no remaining provisional ref strings in the touched repos after replacement.
+
+### Verdict
+
+READY
+
+### Blockers
+
+None.
+
+### Fallbacks Used
+
+None.
+
+### Cross-Repo Impact
+
+- `open--claw` and `droidrun` `STATE.md` checkpoint lines now match the locked refs.
+
+### Decisions Captured
+
+None.
+
+### Pending Actions
+
+None.
+
+### What Remains Unverified
+
+None for this wording-only sync.
+
+### What's Next
+
+Commit the ref sync when the user requests it.

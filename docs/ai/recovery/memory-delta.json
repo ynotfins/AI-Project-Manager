@@ -2,7 +2,7 @@
   "decisions": [
     {
       "title": "Foundation checkpoint refs are fixed for the current lossless-ready baseline",
-      "summary": "Use tag `foundation-lossless-ready-2026-04-15` and branch `backup/foundation-lossless-ready-2026-04-15` as the explicit backup refs for the current foundation checkpoint."
+      "summary": "Use tag `foundation-lossless-ready-lock-2026-04-15` and branch `backup/foundation-lossless-ready-lock-2026-04-15` as the explicit backup refs for the current foundation checkpoint."
     },
     {
       "title": "Current system status is lossless-ready, not fully auto-lossless-proven",
