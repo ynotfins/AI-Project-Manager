@@ -81,1066 +81,317 @@ Each entry uses this exact structure. All fields are required; write `None` if a
 
 ---
 
-## LEDGER-007 — 2026-04-01 — AI-Project-Manager STATE.md Archive/Compaction Pass (Prompt 6 Pre-Req)
+## LEDGER-014 — 2026-04-15 22:01 — Hook Path Diagnosis Live Append
 
 ### Execution Prompt (exact)
 
+```text
+Perform one normal AI append to `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` so the registered `afterFileEdit` hook has a live chance to rotate the ledger under the current threshold logic.
 ```
-You are ARCHIVE (documentation curator)
+
+### Final AGENT Response (exact)
+
+```text
+One normal ledger append was written as the primary live proof step for the hook-path diagnosis. Post-edit inspection of the active ledger and archive directory will determine whether hook-driven rotation actually occurred.
+```
+
+### Files Changed
+
+- `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- None yet
+
+### Verdict
+
+PASS — ordinary ledger append performed for the live hook-path proof.
+
+### Notes / Follow-up
+
+- Capture post-edit ledger counts, archive changes, and whether this entry remained active.
+---
+
+## LEDGER-013 — 2026-04-16 01:50 — Ledger Hook Proof Live Append
+
+### Execution Prompt (exact)
+
+```text
+Narrow live-proof append for the AI-PM ledger hook. This is the single ordinary ledger edit required to test whether the `afterFileEdit` hook fires and rotates the active ledger under the current threshold logic.
+```
+
+### Final AGENT Response (exact)
+
+```text
+Single normal ledger append completed for the live hook test. The authoritative verdict for the proof pass will be recorded in `docs/ai/STATE.md` after post-edit inspection of the active ledger and archive directory.
+```
+
+### Files Changed
+
+- `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### STATE.md Entries Updated
+
+- None yet
+
+### Verdict
+
+PASS — ordinary ledger append performed to trigger the live hook path.
+
+### Notes / Follow-up
+
+- Capture post-edit ledger counts, archive changes, and whether this entry remained active.
+---
+
+## LEDGER-012 — 2026-04-15 17:21 — Lossless Bridge Proof
+
+### Execution Prompt (exact)
+
+```text
 You are AGENT (Executioner)
 Model: Sonnet 4.6 — thinking
-Rationale: This is a selective archive/compaction pass for the central governance STATE.md and must preserve active tri-workspace context, durable decisions, and workflow truth without losing anything still needed for the remaining prompt sequence.
-
-[Full prompt from TAB_BOOTSTRAP_PROMPTS.md — see user_query in session transcript]
-
-Task:
-Perform a dedicated archive/compaction pass for `AI-Project-Manager/docs/ai/STATE.md` only, following the written archive policy exactly and preserving all operationally relevant context for the active prompt sequence.
-
-Goals: Bring STATE.md back into policy compliance. Preserve governance-layer context for remaining prompt sequence. Avoid losing durable decisions, patterns, blockers, or cross-repo dependencies. Record the archive pass in STATE.md.
-
-Required actions:
-1. Create one archive file under docs/ai/archive/state-log-<descriptor>.md
-2. Move completed/no-longer-operationally-needed historical entries verbatim
-3. Update top of STATE.md with Current State Summary
-4. Keep only entries from current open phase that are still operationally relevant
-5. Remove duplicate/obsolete bootstrap noise
-6. Cross-check DECISIONS.md, PATTERNS.md, HANDOFF.md before archiving
-7. Append structured archive-pass entry to STATE.md
-8. Do not do manual ledger archive work — hook handles rotation
-```
-
-### Final AGENT Response (exact)
-
-AGENT performed a full archive/compaction pass for AI-Project-Manager docs/ai/STATE.md. STATE.md reduced from 2661 lines to 460 lines — well below the 800-line soft warning zone and 1000-line hard ceiling.
-
-**Pre-archive promotion (required before archiving — 3 decisions existed only in STATE entries):**
-- `docs/ai/memory/DECISIONS.md`: Added 3 decisions: (1) mem0-bridge ≠ OpenMemory proxy (two separate systems, different ports — critical Phase 1B design constraint), (2) Live model chain openai/gpt-5.4 → openrouter/x-ai/grok-4 → anthropic/claude-opus-4-6, (3) Sparky identity lives in model system prompt only (no on-disk SOUL.md — drift risk on gateway wipe)
-
-**Archive file created (verbatim — no summarization):**
-- `docs/ai/archive/state-log-phase0-governance-2026-03-29-to-2026-03-31.md` — 2399 lines
-- Contains all historical STATE entries verbatim: Phase 0 operations (0A through 0M), workflow governance updates, tri-workspace context bootstrap, authority surface rewrite, autonomy model rewrite, Prompt 7 governance normalization, duplicate Prompt 8 entry, Install AGENT Execution Ledger System entry, Sparky Enforcement Gate entry, Charter Enforcement Kernel entry, old outdated Current State Summary
-
-**STATE.md rewritten (policy-compliant):**
-- New Current State Summary: authority reality (charter, enforcement kernel, layer model, quarantine, ledger hook), active prompt-sequence status, complete phase table, runtime snapshot (model chain, channels, workers, Docker, DroidRun), active blockers (WhatsApp, xAI key, curated workers, memory bridge, Sparky identity drift, ledger hook live test), cross-repo dependencies, what remains unverified, full archive index
-- 3 active entries kept: Prompt 8 (full template entry), Prompt 8 bookkeeping repair, Ledger Hook (Prompt 5)
-- Archive pass entry appended
-- Result: 460 lines — well below 800-line soft warning
-
-**HANDOFF.md cross-check result:** Already current per LEDGER-006; no changes needed.
-**PATTERNS.md cross-check result:** No patterns unique to archived entries would be lost; no changes needed.
-**DECISIONS.md cross-check result:** 3 decisions promoted before archiving; nothing lost.
-
-**open--claw and droidrun STATE.md:** Not modified — both are already clean (open--claw ~290 lines, droidrun ~447 lines from prior archive passes).
-
-FINAL_OUTPUT_PRODUCT.md not modified. No charter or governance meaning weakened.
-
-### Files Changed
-
-- `docs/ai/STATE.md` — compacted from 2661 → 460 lines
-- `docs/ai/archive/state-log-phase0-governance-2026-03-29-to-2026-03-31.md` — created (verbatim historical entries, 2399 lines)
-- `docs/ai/memory/DECISIONS.md` — 3 decisions promoted from archived STATE entries
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md` — this entry (LEDGER-007)
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-01 — AI-Project-Manager STATE.md Archive/Compaction Pass (Prompt 6 Pre-Req)`
-
-### Verdict
-
-PASS — STATE.md is policy-compliant at 460 lines (well below 800-line soft warning and 1000-line hard ceiling). Archive file created verbatim at 2399 lines. 3 decisions promoted. HANDOFF.md and PATTERNS.md required no changes. Current State Summary sufficient for PLAN to regain situational awareness. Central governance repo is clean to proceed to Prompt 6.
-
-### Notes / Follow-up
-
-- After this ledger entry is appended, the hook should fire: 4 entries at ~500+ lines. Since 4 > MIN_ACTIVE_ENTRIES (3) and lines > 300, rotation is expected — LEDGER-004 (oldest) should be archived to `docs/ai/context/archive/ledger-2026-04-01.md`. Verify file line count after ledger edit.
-- open--claw and droidrun `docs/ai/context/AGENT_EXECUTION_LEDGER.md` still do not exist — create when first block in those repos requires a ledger entry.
----
-
-## LEDGER-006 — 2026-04-01 18:00 — Ledger Auto-Rotation Hook Installed (Prompt 5)
-
-### Execution Prompt (exact)
-
-```
-You are AGENT (Executioner)
-Model: Sonnet 4.6 — thinking
-Rationale: This changes workflow infrastructure and must safely automate archival without losing execution history or creating hook recursion/rotation bugs.
-
-Read first:
-- @AGENTS.md
-- @.cursor/rules/00-global-core.md
-- @.cursor/rules/10-project-workflow.md
-- @docs/ai/CURSOR_WORKFLOW.md
-- @docs/ai/HANDOFF.md
-- @docs/ai/context/AGENT_EXECUTION_LEDGER.md
-- @docs/ai/STATE.md
-- @../open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md
-
-Also use current Cursor docs for hooks:
-- project-level hooks live at `.cursor/hooks.json`
-- project hook scripts run from project root
-- `afterFileEdit` is available and receives the edited file path
-- hook automation should be deterministic and lightweight
-
-Task:
-Implement true automatic execution-ledger rotation for `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` so AGENT no longer has to remember archival manually.
-
-[... full prompt as issued — see user_query in session transcript ...]
-```
-
-### Final AGENT Response (exact)
-
-AGENT implemented the complete ledger auto-rotation hook system for AI-Project-Manager.
-
-**Hook infrastructure created:**
-- `.cursor/hooks.json` — project-level Cursor hook registration: `version: 1`, `afterFileEdit` hook, command `python .cursor/hooks/rotate_ledger.py`, timeout 30s
-- `.cursor/hooks/rotate_ledger.py` — 250-line Python rotation script with:
-  - Stdin JSON payload mode (Cursor hook invocation): parses `file_path` and `workspace_roots`; exits cleanly if file is not the ledger
-  - `--force` direct mode (CLI invocation): uses CWD or `--project-root` arg as project root
-  - Regex-based ledger parser: splits on `\n(?=---\n\n## LEDGER-\d+)` — correctly excludes the format example in the header
-  - Keeps newest 3–5 entries (configurable via `MAX_ACTIVE_ENTRIES`, `MIN_ACTIVE_ENTRIES`)
-  - Archives oldest entries in chronological order (oldest first) to `docs/ai/context/archive/ledger-YYYY-MM-DD.md`
-  - Verbatim archive: no summarization or rewriting
-  - Idempotent: second run at minimum floor exits cleanly with advisory message
-  - Fail-open: non-zero exits still return `{}` to Cursor
-  - Returns `{}` to stdout (required by Cursor hook protocol)
-
-**Validation results:**
-- PASS: Python syntax (`ast.parse`) — no errors
-- PASS: Non-ledger file (`STATE.md` path) → `{}`, exit 0
-- PASS: Empty stdin → `{}`, exit 0
-- PASS: First rotation — 638 lines → 409 lines, 5 entries → 3 entries
-- PASS: LEDGER-001 and LEDGER-002 moved to `docs/ai/context/archive/ledger-2026-04-01.md` (LEDGER-001 first = chronological)
-- PASS: Archive file: 235 lines, verbatim entry blocks in chronological order
-- PASS: Active ledger header/policy section unchanged
-- PASS: Second `--force` run — at minimum floor (3 entries), no further rotation (idempotent)
-- PASS: Hook payload mode test — exits cleanly with `{}`
-
-**Governance docs updated:**
-- `AGENTS.md` — Execution Ledger section updated: hook enforcement explained, AGENT-vs-hook responsibilities clarified
-- `.cursor/rules/10-project-workflow.md` — Size management section updated: "hook-enforced — automatic"
-- `docs/ai/CURSOR_WORKFLOW.md` — ledger reference updated: hook location referenced
-- `docs/ai/HANDOFF.md` — Durable Operator Behaviors section updated: hook enforcement documented, fallback policy added
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md` — Size management section updated to "hook-enforced — automatic"
-- `docs/ai/STATE.md` — this block entry appended
-
-**First rotation report:**
-- Before: 638 lines, 5 entries (LEDGER-001 through LEDGER-005)
-- After: 409 lines, 3 entries (LEDGER-005, LEDGER-004, LEDGER-003 — newest first)
-- Archived: LEDGER-001 (Install AGENT Execution Ledger System) and LEDGER-002 (Sparky Enforcement Gate)
-- Archive file: `docs/ai/context/archive/ledger-2026-04-01.md` (235 lines, chronological order)
-- Note: 409 lines > 300-line threshold, but 3 entries = minimum floor — this is correct behavior
-
-FINAL_OUTPUT_PRODUCT.md not modified. open--claw and droidrun not modified.
-
-### Files Changed
-
-- `.cursor/hooks.json` — created
-- `.cursor/hooks/rotate_ledger.py` — created
-- `docs/ai/context/archive/ledger-2026-04-01.md` — created (verbatim LEDGER-001 + LEDGER-002)
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md` — policy section updated; this entry appended
-- `AGENTS.md` — Execution Ledger section updated
-- `.cursor/rules/10-project-workflow.md` — Size management section updated
-- `docs/ai/CURSOR_WORKFLOW.md` — ledger reference updated
-- `docs/ai/HANDOFF.md` — Durable Operator Behaviors updated
-- `docs/ai/STATE.md` — Prompt 5 entry appended
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-01 18:00 — Ledger Auto-Rotation Hook Installed (Prompt 5)`
-
-### Verdict
-
-PASS — Hook installed and validated. First rotation complete. Active ledger policy-compliant. Archive verbatim and chronological. Governance docs reflect hook enforcement. Project is clean to proceed to Prompt 6.
-
-### Notes / Follow-up
-
-- Active ledger is at 409 lines with 3 entries (minimum floor). The 409 > 300-line threshold cannot be resolved without going below 3 entries. This is correct per policy.
-- STATE.md is at ~2580+ lines — above the hard ceiling (~1000). A dedicated STATE.md archive pass is required before the next non-trivial AGENT block.
-- Hook fires for AI edits to the ledger only (not for hook-script writes per Cursor docs) — no recursion risk confirmed by docs.
-- Live Cursor session test not performed in this block — docs-confirmed behavior.
----
-
-## LEDGER-005 — 2026-04-01 — open--claw STATE.md Archive/Compaction Pass (Archive Prompt)
-
-### Execution Prompt (exact)
-
-```
-You are AGENT (Executioner)
-Model: Sonnet 4.6 — thinking
-Rationale: This is a selective archival/compaction pass that must preserve operational truth, avoid losing active context, and apply the STATE.md policy carefully rather than mechanically.
-
-Read first:
-- @../open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md
-- @../open--claw/AGENTS.md
-- @../open--claw/.cursor/rules/00-global-core.md
-- @../open--claw/.cursor/rules/01-charter-enforcement.md
-- @../open--claw/.cursor/rules/10-project-workflow.md
-- @../open--claw/docs/ai/STATE.md
-- @../open--claw/docs/ai/HANDOFF.md
-- @../open--claw/docs/ai/memory/DECISIONS.md
-- @../open--claw/docs/ai/memory/PATTERNS.md
-- @AGENTS.md
-- @.cursor/rules/10-project-workflow.md
-- @docs/ai/context/AGENT_EXECUTION_LEDGER.md
-
-Task:
-Perform a dedicated archive/compaction pass for `open--claw/docs/ai/STATE.md` only, following the written archive policy exactly and preserving all operationally relevant context for the currently active prompt sequence.
-
-Goals:
-1. Bring `open--claw/docs/ai/STATE.md` back into policy compliance.
-2. Preserve active/open-phase operational context needed for the remaining prompt sequence.
-3. Avoid losing any durable decisions, patterns, blockers, or follow-up items.
-4. Record the archive pass cleanly in the repo state and central execution ledger.
-
-Required actions:
-1. Create one archive file under: `open--claw/docs/ai/archive/state-log-<descriptor>.md`
-2. Move completed or no-longer-operationally-needed historical entries verbatim.
-3. Update the top of `open--claw/docs/ai/STATE.md` with a concise Current State Summary.
-4. Keep only entries from the current open phase that are still operationally relevant.
-5. Remove duplicate or obsolete session bootstrap noise.
-6. Cross-check DECISIONS.md, PATTERNS.md, and HANDOFF.md before archiving.
-7. Append a new structured entry to STATE.md for this archival pass.
-8. Append the matching entry to AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md.
-```
-
-### Final AGENT Response (exact)
-
-AGENT performed a full STATE.md archive/compaction pass for the open--claw repo. STATE.md reduced from 1,170 lines to ~175 lines — well below the 800-line soft warning zone.
-
-**Pre-archive promotion (required before archiving — both docs were empty):**
-- `docs/ai/memory/DECISIONS.md`: Populated with 10 durable decisions extracted from STATE entries (worker agent identity, Docker volume pattern, OpenClaw install recipe, Sparky authority, handoff chain, reality checker role, forbidden platforms, KB archive policy, quarantine model, quarantine source of truth)
-- `docs/ai/memory/PATTERNS.md`: Populated with 4 reusable patterns (OpenClaw Docker worker install, named Docker volume for device identity, curated employee packet structure, quarantine banner)
-
-**Archive file created (verbatim — no summarization):**
-- `open--claw/docs/ai/archive/state-log-phase1a-governance-normalization-2026-03-21-to-2026-03-31.md`
-- Contains 16 historical STATE entries verbatim: 2026-03-21 Mirror entries, 2026-03-27 GitHub sync, 2026-03-29 Phase 1A, 2026-03-30 Phase 1B through 1G, 2026-03-31 Sparky enforcement gate, charter-first alignment, charter enforcement kernel, autonomy model rewrite, Prompt 7 governance normalization, and the old outdated 2026-03-29 Current State Summary
-
-**STATE.md rewritten (policy-compliant):**
-- New Current State Summary: authority reality, active prompt sequence status, phase status, runtime snapshot, active blockers, cross-repo dependencies, what remains unverified, archived entry index
-- Archive pass entry (this task) appended
-- Prompt 8 quarantine entry kept active (most recent completed work)
-- Result: ~175 lines — well below 800-line soft warning and 1,000-line hard ceiling
-
-**HANDOFF.md updated:**
-- Date updated to 2026-04-01
-- Phase status table updated to include all completed governance phases and Prompt 8
-- Quarantine system section added
-- Read order updated to include DECISIONS.md and PATTERNS.md (now populated)
-- Active blockers unchanged (WhatsApp 401, token gaps, live startup, memory bridge)
-
-**DECISIONS.md and PATTERNS.md cross-check result:**
-- Both docs were empty before this pass — required population before archiving to prevent loss of key decisions and patterns
-- All promoted content extracted from existing STATE entries (no new decisions made during archive pass)
-
-**HANDOFF.md cross-check result:** Updated to reflect post-Prompt 8 and archive pass state; unresolved turbulence (live startup blockers) preserved and still reflected.
-
-FINAL_OUTPUT_PRODUCT.md not modified. No decisions/patterns lost. No charter or governance meaning weakened.
-
-### Files Changed
-
-- `open--claw/docs/ai/STATE.md` — compacted from 1,170 → ~175 lines
-- `open--claw/docs/ai/archive/state-log-phase1a-governance-normalization-2026-03-21-to-2026-03-31.md` — created (verbatim historical entries)
-- `open--claw/docs/ai/memory/DECISIONS.md` — populated from empty (10 decisions)
-- `open--claw/docs/ai/memory/PATTERNS.md` — populated from empty (4 patterns)
-- `open--claw/docs/ai/HANDOFF.md` — updated to 2026-04-01 state
-- `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` — this entry (LEDGER-005)
-
-### STATE.md Entries Updated
-
-- `open--claw/docs/ai/STATE.md`: `## 2026-04-01 — STATE.md Archive/Compaction Pass (Archive Prompt)`
-
-### Verdict
-
-PASS — STATE.md is policy-compliant at ~175 lines. Archive file created verbatim. DECISIONS.md and PATTERNS.md populated. HANDOFF.md updated. Current State Summary sufficient for PLAN to regain situational awareness. Repo is clean to proceed to Prompt 6.
-
-### Notes / Follow-up
-
-- `open--claw/docs/ai/context/AGENT_EXECUTION_LEDGER.md` still does not exist — create when first open--claw AGENT block runs a real execution task.
-- AI-Project-Manager AGENT_EXECUTION_LEDGER.md is now at 5 entries (LEDGER-001 through LEDGER-005) and ~600+ lines — exceeds the ~300 line / 5 entry archive threshold. Schedule a ledger archive pass for AI-Project-Manager before the next non-trivial block.
-- open--claw DECISIONS.md and PATTERNS.md were empty prior to this pass — this was a gap that would have caused decision/pattern loss on the next STATE archive. Now resolved.
-
----
-
-## LEDGER-006 — 2026-04-12 — OpenMemory Permanent Runtime Fix
-
-### Execution Prompt (exact)
-
-```
-Find the solution and make the changes to fix this issue. This is a huge problem that has to be fixed fast and permanently.
-```
-
-### Final AGENT Response (exact)
-
-I found the root cause and replaced the broken runtime permanently.
-
-- The current `npx -y openmemory` package was a legacy wrapper calling dead hosted endpoints and falsely reporting write success even when the API call failed.
-- I added a new local durable MCP server at `AI-Project-Manager/scripts/openmemory_cursor_server.py` that preserves the same tool names (`add-memory`, `search-memories`, `list-memories`, `delete-all-memories`) but stores data reliably in `C:\Users\ynotf\.openclaw\data\openmemory-cursor.sqlite3`.
-- I updated:
-  - `C:\Users\ynotf\.openclaw\patch-mcp.ps1`
-  - `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1`
-  - `C:\Users\ynotf\.openclaw\verify-openmemory.ps1`
-  - `AI-Project-Manager/scripts/check_openmemory_stack.ps1`
-  - `AI-Project-Manager/openmemory.md`
-  - `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`
-- I applied the patched MCP config to the live `C:\Users\ynotf\.cursor\mcp.json`.
-
-Verification:
-- `verify-openmemory.ps1`: PASS
-- `scripts/check_openmemory_stack.ps1`: PASS
-- direct MCP stdio harness against the new server: PASS for initialize, tools/list, add, search, list, delete
-
-The permanent fix is installed. One final Cursor restart may still be needed for this already-open chat session to bind the new local `user-openmemory` server instead of the stale old one.
-
-### Files Changed
-
-- `AI-Project-Manager/scripts/openmemory_cursor_server.py` — created
-- `AI-Project-Manager/scripts/check_openmemory_stack.ps1` — replaced
-- `AI-Project-Manager/openmemory.md` — updated
-- `AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md` — updated
-- `AI-Project-Manager/docs/ai/STATE.md` — fix entry appended
-- `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` — this entry
-- `C:\Users\ynotf\.openclaw\patch-mcp.ps1` — updated
-- `C:\Users\ynotf\.openclaw\start-cursor-with-secrets.ps1` — updated
-- `C:\Users\ynotf\.openclaw\verify-openmemory.ps1` — updated
-- `C:\Users\ynotf\.cursor\mcp.json` — rewritten by `patch-mcp.ps1`
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-12 00:17 - OpenMemory Permanent Runtime Fix`
-
-### Verdict
-
-PASS — the broken hosted-wrapper OpenMemory path has been replaced with a durable local runtime, verified with a real add/search/list/delete roundtrip.
-
-### Notes / Follow-up
-
-- If this currently open chat still shows the old broken `user-openmemory` behavior, restart Cursor once more so the live MCP binding picks up the new server.
-- If hosted historical memories matter, plan a one-time migration into the new local SQLite-backed store.
-
----
-
-## LEDGER-007 — 2026-04-13 — Phase 1 No-Loss Recovery Governance Rewrite
-
-### Execution Prompt (exact)
-
-```text
-@c:\Users\ynotf\.cursor\plans\no-loss_recovery_eefc3124.plan.md 
-You are AGENT (Executioner)
-Rationale: This is a cross-repo governance and memory-architecture cleanup with real rule conflicts, thin-tool-surface constraints, and no product feature work.
-Required Tools: [thinking-patterns, openmemory]
-Optional Tools: [filesystem, obsidian-vault, serena, Artiforge]
-Safe to disable: [Context7, github, droidrun, Magic MCP, playwright, Exa Search, firecrawl-mcp]
-
-Mission: implement phase 1 only for the AI-Project-Manager tri-workspace memory/governance redesign.
-
-Scope:
-- Audit + clean up conflicting/stale rule guidance.
-- Redesign the memory architecture docs for a no-loss recovery loop.
-- Update bootstrap docs/rules so the next PLAN session can recover context after power loss with minimal reads.
-- No product feature changes. No runtime feature work. No gateway/device/app changes.
-
-Hard invariants:
-- Preserve the five-tab workflow exactly: PLAN no edits/no commands, AGENT executes, DEBUG investigates, ASK explores, ARCHIVE compresses docs.
-- Preserve authority order: `FINAL_OUTPUT_PRODUCT.md` first, then authoritative repo rules/docs, then `STATE.md` / `HANDOFF.md` as operational evidence.
-- Treat OpenMemory as the primary durable structured memory backbone.
-- Treat Obsidian as a fast-access sidecar memory, never canonical state.
-- Treat filesystem as the raw artifact / recovery bundle / snapshot layer.
-- Treat Artiforge as a supporting scaffold/synthesis tool, never authority.
-- AGENT must still update `STATE.md`, `AGENT_EXECUTION_LEDGER.md`, and `HANDOFF.md` with PASS/FAIL evidence.
-- Do not preload `AGENT_EXECUTION_LEDGER.md` by default.
-- Do not let global user rules override repo-tracked rules.
-- Do not make product/runtime changes.
-
-Required behavior:
-1. Use `thinking-patterns` at the start for the phase breakdown and again before finalizing if the cleanup reveals new rule conflicts.
-2. Use `openmemory` as a retrieval pre-step, but respect the live thin schema; do not assume direct namespace/project filters if the tool surface does not expose them.
-3. Update the AI-PM docs/rules first because it is the workflow/process authority for the tri-workspace.
-4. Mirror only the necessary alignment changes into `open--claw`.
-5. Keep health/evidence docs honest: if you did not re-test something live, label it as documented/prior evidence, not newly verified truth.
-6. After meaningful edits, update `AI-Project-Manager/docs/ai/STATE.md`, `AI-Project-Manager/docs/ai/HANDOFF.md`, and `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` with PASS/FAIL evidence, plus the corresponding required open--claw evidence files if that repo is changed.
-
-Files to modify in AI-Project-Manager:
-- `AGENTS.md`
-- `.cursor/rules/05-global-mcp-usage.md`
-- `.cursor/rules/10-project-workflow.md`
-- `.cursor/rules/openmemory.mdc`
-- `docs/ai/memory/MEMORY_CONTRACT.md`
-- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
-- `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
-- `docs/ai/architecture/NO_LOSS.md`
-- `openmemory.md`
-- `docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`
-- `docs/ai/DECISIONS.md` (deprecate or redirect if still duplicate)
-- Create `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-- Create `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
-
-Files to modify in open--claw:
-- `AGENTS.md`
-- `.cursor/rules/05-global-mcp-usage.md`
-- `.cursor/rules/10-project-workflow.md`
-- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
-- `docs/ai/memory/MEMORY_CONTRACT.md`
-- `open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`
-- `open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`
-
-Design requirements to implement in docs/rules:
-- Bootstrap order must become: charter -> repo authority contract -> OpenMemory targeted search -> recovery bundle -> `STATE.md` summary -> exactly one of `DECISIONS.md` / `PATTERNS.md` / `HANDOFF.md` if needed -> ledger only as one-block fallback.
-- `openmemory.mdc` must no longer claim absolute priority over the charter or allow silent continuation when a required memory/tool step is degraded.
-- Document the flat OpenMemory reality and use a compact self-identifying memory text convention instead of unsupported metadata claims.
-- Add explicit tool triggers for `openmemory`, `obsidian-vault`, `filesystem`, `Artiforge`, `thinking-patterns`, and `serena`.
-- Define a non-canonical filesystem recovery bundle that minimizes broad file thrash after reboot.
-- Keep Obsidian sidecar-only and Artiforge non-authoritative.
-
-Deliverables:
-- Cleaned-up rule stack with conflicts removed or explicitly resolved.
-- Canonical no-loss recovery architecture doc.
-- Recovery bundle spec.
-- Updated bootstrap prompts and workflow docs.
-- Evidence entries in required state/handoff/ledger docs.
-
-Output before stopping:
-- Brief summary of the rule conflicts you resolved.
-- Files changed.
-- Any remaining unresolved risks.
-- PASS/FAIL evidence for each MCP tool actually used and each validation step actually run.
-```
-
-### Final AGENT Response (exact)
-
-Resolved the main rule conflicts by moving bootstrap to `charter -> repo authority contract -> targeted OpenMemory -> recovery bundle -> STATE summary -> one optional deep read -> ledger fallback`, removing `STATE.md`-first and rich OpenMemory metadata claims, and making degraded required-tool handling explicit instead of silent. I also made OpenMemory flat-surface guidance canonical and kept Obsidian sidecar-only, Artiforge non-authoritative, and the recovery bundle non-canonical.
-
-Files changed:
-- AI-Project-Manager: `AGENTS.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/10-project-workflow.md`, `.cursor/rules/openmemory.mdc`, `docs/ai/memory/MEMORY_CONTRACT.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`, `docs/ai/architecture/NO_LOSS.md`, `openmemory.md`, `docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`, `docs/ai/DECISIONS.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`, `docs/ai/STATE.md`, `docs/ai/HANDOFF.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-- open--claw: `AGENTS.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `docs/ai/memory/MEMORY_CONTRACT.md`, `open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`, `open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`, `docs/ai/STATE.md`, `docs/ai/HANDOFF.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-
-Remaining risks:
-- The recovery bundle is specified but not yet live-generated in a machine-local path.
-- Untouched docs outside the requested file list may still contain older no-loss/bootstrap guidance.
-- I did not re-test gateway/runtime/device behavior live in this phase; those remain documented/prior evidence only.
-
-PASS/FAIL evidence:
-- PASS: `thinking-patterns.sequential_thinking`
-- FAIL then PASS: `thinking-patterns.problem_decomposition` (schema mismatch on first payload, corrected on retry)
-- PASS: `openmemory.search-memories`
-- PASS: `thinking-patterns.critical_thinking`
-- PASS: `openmemory.add-memory` (stored ids 7 and 8) and follow-up retrieval
-- PASS: `ReadLints` on all touched files
-- PASS: targeted `git status --short` and `git diff --stat` in both repos
-- PASS: evidence docs updated in both repos
-
-### Files Changed
-
-- `AI-Project-Manager/AGENTS.md`
-- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
-- `AI-Project-Manager/.cursor/rules/10-project-workflow.md`
-- `AI-Project-Manager/.cursor/rules/openmemory.mdc`
-- `AI-Project-Manager/docs/ai/memory/MEMORY_CONTRACT.md`
-- `AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
-- `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
-- `AI-Project-Manager/docs/ai/architecture/NO_LOSS.md`
-- `AI-Project-Manager/openmemory.md`
-- `AI-Project-Manager/docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`
-- `AI-Project-Manager/docs/ai/DECISIONS.md`
-- `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-- `AI-Project-Manager/docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
-- `AI-Project-Manager/docs/ai/STATE.md`
-- `AI-Project-Manager/docs/ai/HANDOFF.md`
-- `AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-- `open--claw/AGENTS.md`
-- `open--claw/.cursor/rules/05-global-mcp-usage.md`
-- `open--claw/.cursor/rules/10-project-workflow.md`
-- `open--claw/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
-- `open--claw/docs/ai/memory/MEMORY_CONTRACT.md`
-- `open--claw/open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`
-- `open--claw/open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`
-- `open--claw/docs/ai/STATE.md`
-- `open--claw/docs/ai/HANDOFF.md`
-- `open--claw/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-
-### STATE.md Entries Updated
-
-- `AI-Project-Manager/docs/ai/STATE.md`: `## 2026-04-13 18:47 — Phase 1 No-Loss Recovery Governance Rewrite`
-- `open--claw/docs/ai/STATE.md`: `## 2026-04-13 18:47 - Phase 1 Recovery Governance Alignment Mirror`
-
-### Verdict
-
-PASS — the requested phase-1 governance and memory-architecture rewrite is complete for the scoped files, with residual follow-up risks documented honestly.
-
----
-
-## Entry: 2026-04-13 - Phase 2 Materialize No-Loss Recovery System
-
-### User Prompt
-
-```text
-You are AGENT (Executioner)
-
-Mission: Phase 2 — Materialize the No-Loss Recovery System.
-
-Context:
-Phase 1 redesigned the memory architecture and rules, but the recovery system is still theoretical. The recovery bundle is specified but not actually written or used. This phase makes the system real and testable.
-
-Hard requirement:
-After this phase, the system must be able to recover context after a crash using ONLY:
-
-* OpenMemory MCP
-* filesystem recovery bundle
-
-No broad repo scanning allowed for recovery.
-
-Scope:
-
-* No product/runtime features
-* Only memory system materialization
-* Only AI-Project-Manager (mirror minimal changes into open--claw if required)
-
-Tasks:
-
-1. Create recovery bundle writer
-
-* Define concrete filesystem paths:
-  /docs/ai/recovery/current-state.json
-  /docs/ai/recovery/session-summary.md
-  /docs/ai/recovery/active-blockers.json
-  /docs/ai/recovery/memory-delta.json
-
-2. Update AGENT workflow rules
-
-* After every meaningful execution:
-
-  * Write recovery bundle files via filesystem MCP
-  * Write compact memory update via openmemory
-* This must be mandatory, not optional
-
-3. Update PLAN bootstrap rules
-
-* Before any broad repo reads:
-
-  * Read OpenMemory
-  * Read recovery bundle
-* Only then proceed to STATE.md or deeper docs if needed
-
-4. Implement minimal schema
-
-* current-state.json:
-  phase, goal, last_action, active_workers
-* active-blockers.json:
-  blocker list with severity
-* memory-delta.json:
-  last decisions/patterns
-* session-summary.md:
-  human-readable narrative
-
-5. Add validation step
-
-* Simulate recovery path in docs:
-  “If system restarts, do X → Y → Z”
-
-6. Mirror minimal required changes into open--claw
-
-7. Update:
-
-* STATE.md
-* HANDOFF.md
-* AGENT_EXECUTION_LEDGER.md
-
-Evidence requirements:
-
-* PASS/FAIL for filesystem writes
-* PASS/FAIL for openmemory writes
-* Explicit statement whether recovery bundle was physically created
-* No claims of recovery capability without evidence
-
-Output:
-
-* Files created
-* Rules updated
-* Evidence
-* Remaining risks
-
-Do not redesign. Do not expand scope. Materialize only.
-```
-
-### Final AGENT Response (exact)
-
-Materialized the recovery system. `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, and `docs/ai/recovery/memory-delta.json` were physically created via `filesystem` MCP, and AI-PM rules now make paired `filesystem` bundle writes plus compact `openmemory` writes mandatory after every meaningful execution. PLAN/AGENT/DEBUG bootstrap docs now read OpenMemory and those four files before `STATE.md` or deeper docs. I mirrored only the minimum cross-repo path guidance into `open--claw` (`AGENTS.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `docs/ai/HANDOFF.md`).
-
-Evidence:
-- PASS: `user-filesystem.create_directory` created `docs/ai/recovery/`.
-- PASS: `user-filesystem.write_file` created the four bundle files.
-- PASS: `user-openmemory.add-memory` stored ids `9` and `10`.
-- PASS: recovery simulation succeeded with only `user-openmemory.search-memories` plus `user-filesystem.read_text_file` on the four bundle files; phase, goal, blockers, and memory delta were recoverable without broad repo scanning.
-- PASS: `ReadLints` found no new diagnostics.
-- PASS: focused `git status --short` / `git diff --stat` in both repos matched the intended scope.
-
-Rules updated:
-- `AI-Project-Manager/AGENTS.md`
-- `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
-- `AI-Project-Manager/.cursor/rules/10-project-workflow.md`
-- `AI-Project-Manager/docs/ai/memory/MEMORY_CONTRACT.md`
-- `AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
-- `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-- `AI-Project-Manager/docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
-- `AI-Project-Manager/docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
-- `AI-Project-Manager/docs/ai/STATE.md`
-- `AI-Project-Manager/docs/ai/HANDOFF.md`
-- minimal mirror: `open--claw/AGENTS.md`, `open--claw/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, `open--claw/docs/ai/HANDOFF.md`
-
-Remaining risks:
-- The bundle now exists physically, but the mandatory auto-refresh path is only proven for this materialization pass, not yet a later independent execution.
-- Older untouched docs outside this scoped file list may still carry stale bootstrap wording.
-- No runtime/gateway/device behavior was re-tested in this phase.
-
-### Files Changed
-
-- `AGENTS.md`
-- `.cursor/rules/05-global-mcp-usage.md`
-- `.cursor/rules/10-project-workflow.md`
-- `docs/ai/memory/MEMORY_CONTRACT.md`
-- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
-- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-- `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
-- `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
-- `docs/ai/recovery/current-state.json`
-- `docs/ai/recovery/session-summary.md`
-- `docs/ai/recovery/active-blockers.json`
-- `docs/ai/recovery/memory-delta.json`
-- `docs/ai/STATE.md`
-- `docs/ai/HANDOFF.md`
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-13 19:14 - Phase 2 Materialize No-Loss Recovery System`
-
-### Verdict
-
-PASS — phase 2 materialization completed for the requested scope, and the recovery bundle was physically created with direct filesystem/OpenMemory evidence.
-
----
-
-## Entry: 2026-04-13 - Phase 3 Prove Recovery Loop Stays Alive
-
-### User Prompt
-
-```text
-You are AGENT (Executioner)
-
-Mission: Phase 3 — Prove the No-Loss Recovery Loop stays alive automatically across a new execution.
-
-Context:
-Phase 2 physically created the recovery bundle and proved one controlled recovery simulation. This phase must prove the bundle auto-refreshes during a separate normal execution and that a fresh PLAN session can reconstruct context without broad repo scanning.
-
-Do not redesign architecture. Do not add new tools. Do not expand scope. This is a proof/stability pass only.
-
-Tasks:
-
-1. Choose one small, safe, governance-only change in AI-Project-Manager (docs or rules only, no runtime/product work).
-2. Execute that change normally under the current workflow.
-3. Confirm that after the execution:
-
-   * docs/ai/recovery/current-state.json updated
-   * docs/ai/recovery/session-summary.md updated
-   * docs/ai/recovery/active-blockers.json updated
-   * docs/ai/recovery/memory-delta.json updated
-   * OpenMemory received the paired compact write
-4. Then simulate fresh recovery:
-
-   * use only OpenMemory retrieval
-   * use only the four recovery bundle files
-   * do not broad-scan the repo
-   * reconstruct current phase, last action, blockers, and recent memory delta
-5. Report whether recovery was sufficient or where it leaked.
-6. Update STATE.md, HANDOFF.md, and AGENT_EXECUTION_LEDGER.md with PASS/FAIL evidence.
-
-Evidence requirements:
-
-* PASS/FAIL for each recovery file refresh
-* PASS/FAIL for OpenMemory write
-* PASS/FAIL for fresh recovery simulation
-* Explicit note if any manual intervention was needed
-* Explicit note if any stale docs or rules still interfered
-
-Output before stopping:
-
-* What small execution was performed
-* Whether automatic recovery refresh worked
-* Whether fresh recovery succeeded without repo thrash
-* Remaining leaks or risks
-```
-
-### Final AGENT Response (exact)
-
-Small execution performed: I made one proof-only governance change in `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`, adding the requirement that a healthy recovery path must survive a later normal execution without manual repair between execution and recovery.
-
-Automatic recovery refresh worked: `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, and `docs/ai/recovery/memory-delta.json` were all refreshed in this separate execution, and OpenMemory received paired compact writes with ids `11` and `12`.
-
-Fresh recovery succeeded without repo thrash: using only targeted `openmemory.search-memories` plus reads of the four recovery files, I reconstructed the current phase, last action, blockers, and recent memory delta. I did not broad-scan the repo for the recovery simulation.
-
-PASS/FAIL evidence:
-- PASS: `current-state.json` refresh
-- PASS: `session-summary.md` refresh
-- PASS: `active-blockers.json` refresh
-- PASS: `memory-delta.json` refresh
-- PASS: paired `openmemory.add-memory` write
-- PASS: fresh recovery simulation
-
-Manual intervention needed: none beyond the normal workflow-required bundle and OpenMemory refresh steps.
-
-Leak found: one older low-relevance OpenMemory bootstrap summary still appears in search results with stale pre-bundle wording. It did not block recovery because the newer phase-2/phase-3 entries plus the bundle were sufficient.
-
-Remaining risks:
-- The loop is now proven across one later normal execution, but not across many future sessions yet.
-- Older untouched docs outside this scoped file list may still carry stale bootstrap wording.
-- No runtime/gateway/device behavior was re-tested in this proof pass.
-
-### Files Changed
-
-- `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
-- `docs/ai/recovery/current-state.json`
-- `docs/ai/recovery/session-summary.md`
-- `docs/ai/recovery/active-blockers.json`
-- `docs/ai/recovery/memory-delta.json`
-- `docs/ai/HANDOFF.md`
-- `docs/ai/STATE.md`
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-13 19:21 - Phase 3 Prove Recovery Loop Stays Alive`
-
-### Verdict
-
-PASS — the no-loss recovery loop stayed alive across a later normal execution, and fresh recovery succeeded from OpenMemory plus the four bundle files without repo thrash.
-
----
-
-## Entry: 2026-04-13 - Obsidian Sidecar Catch-Up
-
-### User Prompt
-
-```text
-You are AGENT.
-
-Mission: Obsidian sidecar catch-up only.
-
-Do not redesign anything. Do not modify canonical recovery architecture. Do not touch runtime/product code.
-
-Tasks:
-
-1. Read the latest phase-1, phase-2, and phase-3 evidence from:
-
-   * docs/ai/STATE.md
-   * docs/ai/HANDOFF.md
-   * docs/ai/context/AGENT_EXECUTION_LEDGER.md
-   * docs/ai/recovery/current-state.json
-   * docs/ai/recovery/session-summary.md
-   * docs/ai/recovery/active-blockers.json
-   * docs/ai/recovery/memory-delta.json
-2. Using obsidian-vault, create or update a concise sidecar note that summarizes:
-
-   * phase 1 rule cleanup
-   * phase 2 recovery bundle materialization
-   * phase 3 proof pass
-   * current known leak/risk: stale low-relevance OpenMemory bootstrap memory
-3. Do not treat Obsidian as canonical.
-4. Do not rewrite existing repo truth.
-5. Update STATE.md and HANDOFF.md only to note whether the Obsidian sidecar catch-up succeeded or failed.
-
-Output:
-
-* PASS/FAIL for obsidian-vault
-* note path written in Obsidian
-* whether sidecar memory is now caught up
-```
-
-### Final AGENT Response (exact)
-
-PASS/FAIL for `obsidian-vault`: FAIL.
-
-I read the latest phase-1, phase-2, and phase-3 evidence from `docs/ai/STATE.md`, `docs/ai/HANDOFF.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`, and `docs/ai/recovery/*`, then attempted to create/update the non-canonical sidecar note at `AI-PM/Recovery Sidecar/No-Loss Recovery Catch-Up.md`.
-
-`obsidian-vault` failed twice:
-- `obsidian_list_notes` returned `Obsidian API Network Error: No response received from /vault/`
-- `obsidian_update_note` returned `Obsidian API Network Error: No response received from /vault/AI-PM/Recovery%20Sidecar/No-Loss%20Recovery%20Catch-Up.md`
-
-Note path written in Obsidian: none. Intended path: `AI-PM/Recovery Sidecar/No-Loss Recovery Catch-Up.md`
-
-Sidecar memory caught up: no.
-
-I did not redesign anything, did not touch canonical recovery architecture, and did not rewrite repo truth. I updated `docs/ai/STATE.md` and `docs/ai/HANDOFF.md` to record the failed sidecar catch-up and the current `obsidian-vault` outage.
-
-### Files Changed
-
-- `docs/ai/STATE.md`
-- `docs/ai/HANDOFF.md`
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-13 19:55 - Obsidian Sidecar Catch-Up`
-
-### Verdict
-
-FAIL — the Obsidian sidecar catch-up could not complete because `obsidian-vault` is currently unreachable.
-
----
-
-## Entry: 2026-04-14 - Obsidian Failure Fallback Rule
-
-### User Prompt
-
-```text
-Obsidian Failure Fallback Rule
-
-When obsidian-vault fails:
-
-Do NOT retry aggressively
-Do NOT block execution
-
-Write sidecar summary into:
-
-docs/ai/recovery/session-summary.md
-
-Mark:
-
-obsidian_sync: pending
-On next successful Obsidian availability:
-flush pending summaries into Obsidian
-```
-
-### Final AGENT Response (exact)
-
-Applied the fallback rule. I did not retry `obsidian-vault` again.
-
-Changes made:
-- Added the Obsidian failure fallback rule to `AI-Project-Manager/.cursor/rules/05-global-mcp-usage.md`
-- Added the same fallback behavior to `AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-- Wrote the pending sidecar summary into `AI-Project-Manager/docs/ai/recovery/session-summary.md`
-- Marked the recovery bundle state as pending Obsidian sync by refreshing `current-state.json`, `active-blockers.json`, and `memory-delta.json`
-- Updated `AI-Project-Manager/docs/ai/STATE.md` and `AI-Project-Manager/docs/ai/HANDOFF.md` so sidecar sync is now tracked as pending flush instead of a blocking failure
-- Stored a compact durable OpenMemory note for the new fallback rule
-
-Result:
-- `obsidian_sync: pending` now lives in `docs/ai/recovery/session-summary.md`
-- On next successful Obsidian availability, the pending summary should be flushed into Obsidian instead of being rebuilt from scratch
-- Execution is no longer blocked by an Obsidian outage
-
-### Files Changed
-
-- `.cursor/rules/05-global-mcp-usage.md`
-- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-- `docs/ai/recovery/session-summary.md`
-- `docs/ai/recovery/current-state.json`
-- `docs/ai/recovery/active-blockers.json`
-- `docs/ai/recovery/memory-delta.json`
-- `docs/ai/STATE.md`
-- `docs/ai/HANDOFF.md`
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-14 01:33 - Obsidian Failure Fallback Rule`
-
-### Verdict
-
-PASS — the Obsidian failure fallback rule is now live and the pending sidecar summary is stored in the recovery bundle instead of blocking execution.
-
-### Notes / Follow-up
-
-- The recovery bundle is specified in repo docs but not yet live-generated in a machine-local path.
-- Older untouched docs may still carry stale no-loss guidance until a broader harmonization pass is run.
-- No live runtime/gateway/device re-test was performed in this phase.
-
----
-
-## LEDGER-008 — 2026-04-14 01:54 — Phase 1 No-Loss Governance Normalization
-
-### Execution Prompt (exact)
-
-```text
-@c:\Users\ynotf\.cursor\plans\no-loss_memory_audit_9cabe978.plan.md
-You are AGENT (Executioner)
-Rationale: Phase 1 is a bounded multi-file governance rewrite with real rule-conflict resolution but no runtime/product feature work.
+Rationale: This is a narrow but high-stakes proof pass that mixes runtime-facing bridge wiring with live recovery verification, so it needs careful reasoning and strict evidence discipline.
 Required Tools: [thinking-patterns, openmemory, filesystem]
 Optional Tools: [serena]
 Safe to disable: [obsidian-vault, Artiforge]
 
-Task: Execute Phase 1 only of the tri-workspace no-loss memory cleanup.
+Scope: Build the smallest real OpenClaw-to-OpenMemory bridge seam and produce live proof for no-handoff recovery, power-loss-style recovery, live ledger-hook behavior, and quarantine-safe retrieval. No broad cleanup outside this scope.
 
-Scope boundaries:
-- Governance/rules/docs only.
-- No product/runtime feature work.
-- Preserve the five-tab workflow exactly.
-- Do not make Obsidian canonical.
-- Do not preload AGENT_EXECUTION_LEDGER.md by default.
-- Do not let machine-global rules silently override repo-tracked AI-PM authority.
+Exact repos to check before edits:
+- D:/github/AI-Project-Manager
+- D:/github/open--claw
+- D:/github/droidrun
 
-Before editing:
-1. Read `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`.
-2. Read `AGENTS.md`, `.cursor/rules/05-global-mcp-usage.md`, `.cursor/rules/openmemory.mdc`, `docs/ai/memory/MEMORY_CONTRACT.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`, `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`, and `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md`.
-3. Run a targeted OpenMemory search for no-loss recovery / bootstrap / Obsidian sidecar policy.
-4. Use `thinking-patterns` before finalizing edits.
+Exact files to inspect before editing:
+- D:/github/open--claw/open-claw/skills/mem0-bridge/SKILL.md
+- D:/github/open--claw/open-claw/configs/openclaw.template.json5
+- D:/github/open--claw/open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md
+- D:/github/open--claw/open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md
+- D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/skills/mem0-bridge/SKILL.md
+- D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/.openclaw-runtime/workspace/skills/mem0-bridge/SKILL.md
+- D:/github/AI-Project-Manager/.cursor/hooks/rotate_ledger.py
+- D:/github/AI-Project-Manager/.cursor/rules/02-non-routable-exclusions.md
+- D:/github/open--claw/.cursor/rules/02-non-routable-exclusions.md
+- D:/github/AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md
+- D:/github/AI-Project-Manager/docs/ai/STATE.md
+- D:/github/open--claw/docs/ai/STATE.md
 
-Edits to make in this phase:
-1. Normalize the bootstrap order so these files all express the same lean path: charter -> repo authority -> targeted OpenMemory -> recovery bundle -> STATE summary -> one selective deep read -> ledger one-block fallback.
-2. Rewrite `.cursor/rules/openmemory.mdc` so it matches the live flat OpenMemory runtime and no longer asserts unsupported `project_id` / `namespace` / metadata requirements or mandatory multi-phase search blockers.
-3. Update `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md` so tool inventory, OpenMemory behavior, and role boundaries match the installed MCP descriptors.
-4. Update the Obsidian policy wording in repo-tracked docs so it is explicitly sidecar-only and non-blocking when degraded.
-5. If needed, edit the machine-global Obsidian gate and AI-PM governance/global MCP duplicate rules only enough to subordinate them to the repo-tracked no-loss model.
-6. Update `docs/ai/STATE.md` in the same execution block with checklist-style evidence, exact files changed, any fallbacks used, and what remains unverified.
+Exact files allowed to change in this phase:
+- D:/github/open--claw/open-claw/skills/mem0-bridge/SKILL.md
+- D:/github/open--claw/open-claw/configs/openclaw.template.json5
+- D:/github/open--claw/open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md
+- D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/skills/mem0-bridge/SKILL.md
+- D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/.openclaw-runtime/workspace/skills/mem0-bridge/SKILL.md
+- D:/github/open--claw/docs/ai/STATE.md
+- D:/github/open--claw/docs/ai/HANDOFF.md only if unresolved blockers remain after proof
+- D:/github/AI-Project-Manager/docs/ai/STATE.md
+- D:/github/AI-Project-Manager/docs/ai/recovery/current-state.json
+- D:/github/AI-Project-Manager/docs/ai/recovery/session-summary.md
+- D:/github/AI-Project-Manager/docs/ai/recovery/active-blockers.json
+- D:/github/AI-Project-Manager/docs/ai/recovery/memory-delta.json
+- D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md
 
-Validation:
-- Confirm the edited docs no longer claim unsupported OpenMemory metadata/filter features.
-- Confirm Obsidian failure is documented as non-blocking to canonical work.
-- Confirm the ledger is still last-resort only.
-- Confirm five-tab workflow language remains intact.
+Required work:
+1. Use thinking-patterns before editing to lock the minimum implementation and proof sequence.
+2. Use openmemory.search-memories for prior bridge/proof guidance before making changes.
+3. Repurpose the existing mem0-bridge seam into a real OpenMemory-compatible retrieve-before-plan / store-after-gate routine. Keep repo docs canonical and keep the bridge compact-summary-only.
+4. Wire only the minimum runtime-facing surfaces needed for one validated end-to-end promotion from OpenClaw/Sparky workflow into OpenMemory.
+5. Use MEMORY_PROMOTION_TEMPLATE.md as the canonical shape for the promoted memory packet. Do not rely on unsupported OpenMemory metadata filters.
+6. Produce one real durable memory through the bridge path and then verify it is retrievable via openmemory.search-memories.
+7. Refresh the AI-PM recovery bundle and AI-PM/open--claw STATE evidence after the proof run.
+8. Append one real entry to D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md through a normal file edit path so the live afterFileEdit hook has a chance to fire.
+9. Prove clean-room no-handoff recovery using a fresh readonly subagent or other genuinely context-isolated verifier. The verifier must recover from persisted sources only: charter, repo authority, targeted OpenMemory retrieval, AI-PM recovery bundle, and STATE summary only if needed. HANDOFF.md and the ledger must remain optional / last-resort.
+10. Prove quarantine-safe retrieval by querying OpenMemory with quarantined path terms such as candidate_employees, ios_provider.py, and another quarantined path fragment. Policy memories about the quarantine are allowed; recalled quarantined content is not.
+11. Do not rename mem0-bridge, do not repair Obsidian, do not clean unrelated docs, and do not touch global mcp.json in this phase.
 
-Output:
-- Short summary of the normalized rule stack.
-- Remaining drift intentionally deferred to Phase 2.
-- Any global-rule edits made to prevent silent override.
+Required exact commands / tool calls to record in evidence:
+- git -C "D:/github/AI-Project-Manager" status --short
+- git -C "D:/github/open--claw" status --short
+- git -C "D:/github/droidrun" status --short
+- openmemory.search-memories (bridge/proof query before edits)
+- openmemory.add-memory (for the real promoted bridge artifact)
+- openmemory.search-memories (to confirm the promoted artifact is retrievable)
+- filesystem writes for:
+  - D:/github/AI-Project-Manager/docs/ai/recovery/current-state.json
+  - D:/github/AI-Project-Manager/docs/ai/recovery/session-summary.md
+  - D:/github/AI-Project-Manager/docs/ai/recovery/active-blockers.json
+  - D:/github/AI-Project-Manager/docs/ai/recovery/memory-delta.json
+- one fresh readonly subagent recovery probe with strict instructions not to rely on chat history, HANDOFF.md, or the ledger unless canonical recovery fails
+- git diff --stat on the scoped changed files in AI-Project-Manager and open--claw
+- git -C "D:/github/AI-Project-Manager" status --short
+- git -C "D:/github/open--claw" status --short
+- git -C "D:/github/droidrun" status --short
+
+Required exact proof outputs:
+- BRIDGE_PROOF:
+  - the exact canonical source doc path used for the promoted summary
+  - the exact promoted memory text
+  - the openmemory.add-memory result
+  - the follow-up retrieval result showing the promoted memory is discoverable
+- NEW_CHAT_PROOF:
+  - fresh-context verifier output showing current objective, last action, blockers, and bridge status recovered from persisted surfaces without HANDOFF.md or ledger as default inputs
+- POWER_LOSS_PROOF:
+  - explicit statement that the verifier used only persisted surfaces written before verification (repo docs, OpenMemory, recovery bundle), making the recovery path power-loss-safe
+- LEDGER_HOOK_PROOF:
+  - before/after active ledger line counts
+  - before/after active ledger entry counts
+  - whether an archive file changed
+  - which LEDGER block moved or stayed
+  - no manual --force run counted as proof
+- QUARANTINE_PROOF:
+  - the exact retrieval queries used
+  - returned results summary
+  - explicit confirmation that no quarantined file content was recalled
+
+Required reporting before completion:
+- file-by-file diff summary for every changed file
+- explicit inspected-but-unchanged list
+- explicit list of commands/tool calls with PASS/FAIL
+- explicit list of proof outputs above
+- explicit residual blockers, if any
+
+Completion rule:
+- Do not claim the tri-workspace is lossless-proven unless all four live proofs succeed.
+- If the bridge works but any one proof fails, mark the phase PARTIAL and state exactly which proof gate remains open.
+- If implementing the bridge requires files outside the exact allowed file set above, stop and report instead of widening scope.
 ```
 
 ### Final AGENT Response (exact)
 
 ```text
-## Normalized Rule Stack
-- Active recovery is now standardized to `charter -> repo authority -> targeted OpenMemory -> filesystem recovery bundle -> STATE summary/current state -> exactly one of DECISIONS/PATTERNS/HANDOFF -> ledger one-block fallback`.
-- `.cursor/rules/openmemory.mdc` now matches the live flat runtime only: `search-memories(query)`, `list-memories()`, `add-memory(content)`. Unsupported `project_id` / `namespace` / metadata/filter claims were removed.
-- `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md` now matches the installed 9 MCP descriptors and clarifies role boundaries for `Context7`, `thinking-patterns`, `openmemory`, `filesystem`, `serena`, `droidrun`, `obsidian-vault`, `Magic MCP`, and `Artiforge`.
-- Validated in the active edited docs: unsupported OpenMemory fields are now described only as unsupported, Obsidian failure remains non-blocking, the ledger stays last-resort only, and the five-tab workflow language was preserved.
+## Verdict
+`PARTIAL`. The smallest real OpenClaw-to-OpenMemory bridge seam is live in the allowed file set, the durable memory promotion/retrieval passed, quarantine-safe retrieval passed, and clean-room power-loss-safe recovery passed. The only open gate is `LEDGER_HOOK_PROOF`: the normal edit to `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` did not trigger visible rotation/archive behavior, so I am not claiming full lossless proof.
 
-## Global Override Guard
-- Narrowed `D:\.cursor\rules\obsidian-memory-gate.mdc` so it no longer forces Obsidian-first behavior for generic “prior work/docs/memory” prompts.
-- Narrowed `D:\.cursor\rules\01-ai-pm-canonical-governance.mdc` so it acts as an activation hint and defers to `AI-Project-Manager/AGENTS.md` for authority order.
-- Narrowed `D:\.cursor\rules\MCP-AGENT_RULES.mdc` so it cannot silently expand repo-local MCP requirements.
+## Proof Outputs
+`BRIDGE_PROOF`
+- Canonical source doc path: `D:/github/open--claw/open-claw/skills/mem0-bridge/SKILL.md`
+- Exact promoted memory text: `[repo=openclaw][kind=pattern][source=open-claw/skills/mem0-bridge/SKILL.md] mem0-bridge is a compatibility-named OpenMemory routine: after charter and authority docs, run openmemory.search-memories for targeted recall, promote only Sparky-validated compact packets from open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md, store with openmemory.add-memory, and immediately verify discoverability with openmemory.search-memories; do not rely on namespace or project_id filters.`
+- `openmemory.add-memory`: PASS, `id=21`, store `C:\Users\ynotf\.openclaw\data\openmemory-cursor.sqlite3`
+- Retrieval proof: PASS. Query `openclaw mem0-bridge OpenMemory routine MEMORY_PROMOTION_TEMPLATE Sparky validated add-memory verify discoverability` returned id `21` as the top hit.
 
-## Deferred To Phase 2
-- Broader untouched docs, `docs/ai/HANDOFF.md`, and historical `STATE` / ledger / archive surfaces may still carry stale wording by design.
-- `docs/ai/STATE.md` still needs a dedicated archive/compaction pass.
-- I refreshed the recovery bundle, stored a compact OpenMemory summary, and recorded the full evidence in `docs/ai/STATE.md`.
+`NEW_CHAT_PROOF`
+- `current_objective`: Prove the smallest real OpenClaw-to-OpenMemory bridge seam with live durable memory, recovery evidence, ledger-hook proof, and quarantine-safe retrieval, without widening the allowed file set.
+- `last_action`: Allowed mem0-bridge surfaces were rewired to the flat OpenMemory search/add/verify routine, one durable bridge memory was promoted and confirmed retrievable as OpenMemory id `21`, and quarantine-safe retrieval spot checks were run.
+- `blockers`: the fresh verifier cleared the recovery gate; the remaining open blocker is the live `afterFileEdit` ledger-hook proof.
+- `bridge_status`: the bridge seam is live in the allowed OpenClaw docs/config with one promoted memory stored and retrievable.
+- `handoff_or_ledger_used`: No. The verifier did not read `HANDOFF.md` or the ledger.
+
+`POWER_LOSS_PROOF`
+- PASS. The successful isolated verifier recovered the objective, last action, blockers, and bridge status from persisted sources written before verification: charter, AI-PM authority doc, AI-PM recovery bundle, AI-PM `STATE.md` summary band, and one targeted OpenMemory search.
+
+`LEDGER_HOOK_PROOF`
+- Before normal ledger append: active ledger `1286` lines / `9` entries.
+- After normal ledger append and recheck: active ledger `1437` lines / `10` entries.
+- Archive file change: none. `D:/github/AI-Project-Manager/docs/ai/context/archive/ledger-2026-04-15.md` was not created.
+- Stayed active: `LEDGER-005`, `LEDGER-006`, `LEDGER-007`, `LEDGER-008`, `LEDGER-009`, `LEDGER-010`, `LEDGER-011`, `LEDGER-012`. No block moved to archive.
+- Manual `--force`: not used and not counted as proof.
+
+`QUARANTINE_PROOF`
+- Query `candidate_employees`: no memories found.
+- Query `ios_provider.py`: returned unrelated/noise memories only; no quarantined file content.
+- Query `droidrun/tools/ios`: returned policy/noise memories only; no quarantined file content.
+- Confirmation: no quarantined file content was recalled.
+
+## File-By-File Diff Summary
+- `D:/github/open--claw/open-claw/skills/mem0-bridge/SKILL.md`: replaced mem0-server/API wording with the flat OpenMemory retrieve-before-plan/store-after-gate routine and explicit stop conditions.
+- `D:/github/open--claw/open-claw/configs/openclaw.template.json5`: enabled `mem0-bridge` and documented it as the minimum runtime-facing OpenMemory seam.
+- `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`: made canonical source paths mandatory in the final memory text and downgraded namespace/memory-type fields to human labels only.
+- `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/skills/mem0-bridge/SKILL.md`: mirrored the shared OpenMemory bridge routine into Sparky’s employee packet.
+- `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/.openclaw-runtime/workspace/skills/mem0-bridge/SKILL.md`: mirrored the same bridge routine into Sparky’s runtime workspace skill copy.
+- `D:/github/open--claw/docs/ai/STATE.md`: updated the OpenClaw summary and appended the bridge-proof mirror entry.
+- `D:/github/AI-Project-Manager/docs/ai/STATE.md`: updated the AI-PM summary and appended the full bridge-proof evidence block with the partial verdict.
+- `D:/github/AI-Project-Manager/docs/ai/recovery/current-state.json`: rewrote the recovery pointer to the current bridge-proof objective, last action, and partial bridge status.
+- `D:/github/AI-Project-Manager/docs/ai/recovery/session-summary.md`: rewrote the recovery narrative around the bridge seam, durable retrieval, verifier proof, and open hook gap.
+- `D:/github/AI-Project-Manager/docs/ai/recovery/active-blockers.json`: collapsed the blocker list to the single remaining hook-proof gap.
+- `D:/github/AI-Project-Manager/docs/ai/recovery/memory-delta.json`: recorded the bridge seam decision plus the clean-room recovery pattern and the “do not call it complete until the hook fires” rule.
+- `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`: appended this real execution entry through a normal file edit path; the hook did not rotate/archive it.
+
+## Inspected But Unchanged
+- `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`
+- `D:/github/AI-Project-Manager/.cursor/hooks/rotate_ledger.py`
+- `D:/github/AI-Project-Manager/.cursor/rules/02-non-routable-exclusions.md`
+- `D:/github/open--claw/.cursor/rules/02-non-routable-exclusions.md`
+- `D:/github/AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `D:/github/open--claw/docs/ai/HANDOFF.md`
+
+## Commands / Tool Calls
+- `git -C "D:/github/AI-Project-Manager" status --short`: PASS before and after. Final snapshot still shows the pre-existing dirty AI-PM governance/recovery files plus this pass’s scoped updates.
+- `git -C "D:/github/open--claw" status --short`: PASS before and after. Final snapshot shows only the six scoped OpenClaw files changed by this pass.
+- `git -C "D:/github/droidrun" status --short`: PASS before and after. No new DroidRun changes were introduced; the repo remains in its pre-existing dirty state.
+- `git -C "D:/github/AI-Project-Manager" diff --stat -- ...`: PASS. Scoped AI-PM diff stat covered `STATE.md`, the four recovery-bundle files, and the ledger: `541 insertions`, `74 deletions`.
+- `git -C "D:/github/open--claw" diff --stat -- ...`: PASS. Scoped OpenClaw diff stat covered the three bridge surfaces, two Sparky mirrors, and `docs/ai/STATE.md`: `275 insertions`, `111 deletions`.
+- `Get-Date -Format "yyyy-MM-dd HH:mm"`: PASS. Returned `2026-04-15 17:21`.
+- `user-thinking-patterns.sequential_thinking`: PASS. Used twice to lock and then confirm the minimum allowed seam/proof sequence.
+- `user-openmemory.search-memories`: PASS pre-edit guidance search; PASS bridge retrieval verification; PASS quarantine retrieval checks.
+- `user-openmemory.add-memory`: PASS. Added the real promoted bridge artifact as id `21`.
+- `user-filesystem.read_multiple_files`: PASS. Read the AI-PM recovery bundle before edits in the required bootstrap order.
+- `user-filesystem.write_file`: PASS. Refreshed all four AI-PM recovery-bundle files twice: once before clean-room verification and once for the final partial verdict.
+- `ReadFile`, `Glob`, `rg`: PASS. Used to inspect only the exact scoped files and targeted state/authority surfaces.
+- `ApplyPatch`: PASS for the allowed bridge/state/ledger edits. Functional result PASS, but the normal ledger edit did not trigger visible hook rotation.
+- `Subagent` readonly verifier: FAIL for strict proof purposes. It recovered from files but could not execute the required live OpenMemory search in its readonly environment.
+- `Subagent` isolated verifier fallback: PASS. It recovered from persisted sources only and executed the required targeted OpenMemory search without using `HANDOFF.md` or the ledger by default.
+- `ReadLints`: PASS. No linter errors found on the touched files.
+
+## Residual Blockers
+- The AI-PM `afterFileEdit` ledger hook did not visibly fire on the normal ledger append, so the tri-workspace is not yet lossless-proven end to end.
+
+## Next Step
+Keep the next pass tightly scoped to diagnosing the AI-PM ledger-hook path and rerunning only that proof gate.
 ```
 
 ### Files Changed
 
-- `AGENTS.md`
-- `.cursor/rules/05-global-mcp-usage.md`
-- `.cursor/rules/openmemory.mdc`
-- `docs/ai/memory/MEMORY_CONTRACT.md`
-- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-- `docs/ai/operations/SESSION_BOOTSTRAP_SOP.md`
-- `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
-- `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md`
-- `docs/ai/recovery/current-state.json`
-- `docs/ai/recovery/session-summary.md`
-- `docs/ai/recovery/active-blockers.json`
-- `docs/ai/recovery/memory-delta.json`
-- `docs/ai/STATE.md`
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-- `D:/.cursor/rules/obsidian-memory-gate.mdc`
-- `D:/.cursor/rules/01-ai-pm-canonical-governance.mdc`
-- `D:/.cursor/rules/MCP-AGENT_RULES.mdc`
+- `D:/github/open--claw/open-claw/skills/mem0-bridge/SKILL.md`
+- `D:/github/open--claw/open-claw/configs/openclaw.template.json5`
+- `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`
+- `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/skills/mem0-bridge/SKILL.md`
+- `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/.openclaw-runtime/workspace/skills/mem0-bridge/SKILL.md`
+- `D:/github/AI-Project-Manager/docs/ai/recovery/current-state.json`
+- `D:/github/AI-Project-Manager/docs/ai/recovery/session-summary.md`
+- `D:/github/AI-Project-Manager/docs/ai/recovery/active-blockers.json`
+- `D:/github/AI-Project-Manager/docs/ai/recovery/memory-delta.json`
+- `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
 
 ### STATE.md Entries Updated
 
-- `docs/ai/STATE.md`: `## 2026-04-14 01:54 - Phase 1 No-Loss Governance Normalization`
+- `Pending final state updates after hook observation`
 
 ### Verdict
 
-PASS — Phase 1 governance normalization completed for the active AI-PM rule stack, and the conflicting machine-global overlays were narrowed so repo-tracked no-loss policy stays authoritative.
+PARTIAL — bridge, retrieval, quarantine, and clean-room recovery proofs are in hand; hook proof and final state/diff recording are being completed.
 
 ### Notes / Follow-up
 
-- Phase 2 should sweep broader untouched docs/historical surfaces and decide whether older low-relevance bootstrap memories need explicit supersession.
-- `docs/ai/STATE.md` remains above its archive threshold and still needs a dedicated archival pass.
+- Finalize the exact final response text in this ledger entry after the hook proof is observed.
 
 ---
 
-## LEDGER-009 — 2026-04-14 10:55 — Tri-Project ChatGPT Handoff Export
+## LEDGER-015 — 2026-04-15 22:12 — Live Hook Reproof After Root-Resolution Hardening
 
-### User Prompt
+### Execution Prompt (exact)
 
 ```text
-Create a single zipped handoff folder for ChatGPT covering the three related projects in this workspace.
-
-Requirements:
-- preserve enough code/config/docs to understand structure, boundaries, build tooling, runtime config, env expectations, ports, APIs, auth, DB wiring, and inter-project communication
-- exclude bulky/generated/noisy content such as node_modules, dist/build output, caches, logs, real .env files, archives, and large media
-- create `tri-project-chatgpt-handoff/`
-- place clean copies of the three projects inside it
-- add `WORKSPACE_MAP.md`, `DEBUG_START_HERE.md`, and `PROJECT_TREE.txt`
-- zip it as `tri-project-chatgpt-handoff.zip`
-- report zip path, excluded major directories, detected stack per project, and residual risks
+Append one ordinary ledger entry after the root-resolution hardening so the AI-PM `afterFileEdit` hook has a live chance to rotate `docs/ai/context/AGENT_EXECUTION_LEDGER.md` without any manual fallback.
 ```
 
 ### Final AGENT Response (exact)
 
 ```text
-Created `D:/github/AI-Project-Manager/tri-project-chatgpt-handoff.zip`.
-
-The export contains sanitized copies of `AI-Project-Manager`, `open--claw`, and `droidrun`, plus `WORKSPACE_MAP.md`, `DEBUG_START_HERE.md`, `PROJECT_TREE.txt`, and a copied `openclaw.code-workspace` file for context.
-
-Major exclusions: `node_modules/`, `.git/`, `.next/`, `dist/`, `build/`, `out/`, `.turbo/`, `.nx/`, `.cache/`, `.parcel-cache/`, `.vite/`, `.vercel/`, `.output/`, `coverage/`, logs/temp folders, real `.env*`, keys/certs, archives, and bulky image/video media.
-
-Detected stack:
-- `AI-Project-Manager`: docs/governance repo with PowerShell + Python tooling and a small `pnpm` TypeScript package under `package/`
-- `open--claw`: governance/docs at repo root plus Node/JavaScript runtime packages under `open-claw/`, including worker packages and a Twilio/ElevenLabs voice service
-- `droidrun`: Python 3.11-3.13 CLI/framework with Click, Textual, LlamaIndex workflows, local MCP server, PowerShell automation, and the upstream package snapshot under `src/`
-
-Residual risks:
-- machine-local services and secrets live outside the repos
-- `droidrun/src` is a submodule snapshot dependency
-- `open--claw` relies on external OpenClaw CLI/gateway setup rather than a single repo-root run command
-- live runtime behavior was not executed as part of packaging
+One normal ledger append was written immediately after the resolver hardening change. The post-edit ledger and archive state will determine whether this now counts as a successful live hook proof.
 ```
 
 ### Files Changed
 
-- `tri-project-chatgpt-handoff/AI-Project-Manager/**`
-- `tri-project-chatgpt-handoff/open--claw/**`
-- `tri-project-chatgpt-handoff/droidrun/**`
-- `tri-project-chatgpt-handoff/WORKSPACE_MAP.md`
-- `tri-project-chatgpt-handoff/DEBUG_START_HERE.md`
-- `tri-project-chatgpt-handoff/PROJECT_TREE.txt`
-- `tri-project-chatgpt-handoff/openclaw.code-workspace`
-- `tri-project-chatgpt-handoff.zip`
-- `docs/ai/STATE.md`
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`
 
 ### STATE.md Entries Updated
 
-- `docs/ai/STATE.md`: `## 2026-04-14 10:55 - Tri-Project ChatGPT Handoff Export`
+- None yet
 
 ### Verdict
 
-PASS — the tri-project handoff bundle was created, summarized, and archived without modifying application logic.
+PASS — ordinary ledger append performed for the live hook reproof.
 
----
+### Notes / Follow-up
 
-## LEDGER-010 — 2026-04-14 11:51 — Serena Added To Preferred Tools List
-
-### User Prompt
-
-```text
-add serena to the list of tools
-```
-
-### Final AGENT Response (exact)
-
-```text
-Added `serena` to the preferred-tool list in `TOOLS_RULES_OPTIMIZATION.md`, so the document now treats the set as a true 10-tool list instead of flagging a 9-tool mismatch.
-```
-
-### Files Changed
-
-- `TOOLS_RULES_OPTIMIZATION.md`
-- `docs/ai/STATE.md`
-- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
-
-### STATE.md Entries Updated
-
-- `docs/ai/STATE.md`: `## 2026-04-14 11:51 - Serena Added To Preferred Tools List`
-
-### Verdict
-
-PASS — the preferred-tool list now explicitly includes `serena`.
+- Inspect the active ledger and archive directory after the edit to confirm whether hook-triggered rotation occurred.

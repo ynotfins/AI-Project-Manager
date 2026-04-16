@@ -116,9 +116,10 @@ Read these in this order:
 4. `D:/github/AI-Project-Manager/.cursor/rules/10-project-workflow.md`
 5. `D:/github/AI-Project-Manager/docs/ai/memory/MEMORY_CONTRACT.md`
 6. `D:/github/AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-7. `D:/github/AI-Project-Manager/docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
-8. `D:/github/AI-Project-Manager/docs/ai/CURSOR_WORKFLOW.md`
-9. `D:/github/AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
+7. `D:/github/AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`
+8. `D:/github/AI-Project-Manager/docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
+9. `D:/github/AI-Project-Manager/docs/ai/CURSOR_WORKFLOW.md`
+10. `D:/github/AI-Project-Manager/docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md`
 
 ### Workflow and governance reads
 
@@ -335,6 +336,8 @@ Artiforge should treat these as secondary overlays, never as a replacement for r
 ## Tooling Expectations
 
 Artiforge should assume the workspace is MCP-first.
+
+The installed-tool matrix is owned by `D:/github/AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`. Artiforge must not maintain a competing inventory in generated guidance.
 
 Key policy points from `05-global-mcp-usage.md`:
 

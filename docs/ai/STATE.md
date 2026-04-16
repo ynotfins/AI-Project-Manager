@@ -34,7 +34,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 
 ## Current State Summary
 
-> Last updated: 2026-04-15 (governance/tool-contract unification)
+> Last updated: 2026-04-15 (repo-local rotation logic proven; live `afterFileEdit` still unproven; manual `--force` is the current fallback)
 > Previous archive: `docs/ai/archive/state-log-phase0-governance-2026-03-29-to-2026-03-31.md` (Phase 0 operations + Governance Normalization)
 > Earlier archives: `docs/ai/archive/state-log-phases-0-5.md`, `state-log-phase-6ab.md`, `state-log-phase-6c-archive.md`, `state-log-phase-6c-active.md`, `state-log-post-6c-ops.md`, `state-log-mcp-triworkspace-2026-03-16.md`, `state-log-tab-bootstrap-2026-03-16.md`, `state-log-release-p0-gateway-fix-2026-03-16.md`, `state-log-security-winnode-2026-03-16.md`, `state-log-windows-node-crewclaw-2026-03-17-18.md`, `state-log-ops-governance-2026-03-19.md`
 
@@ -44,9 +44,13 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 - **Enforcement kernel**: `.cursor/rules/01-charter-enforcement.md` — active, hard-stop on charter violations
 - **Forbidden platforms**: macOS, iOS, Swift, Xcode, CocoaPods — violations stop execution and route to Sparky
 - **Layer model**: AI-Project-Manager = workflow/process governance; open--claw = strict enforcement center; droidrun = Android-only actuator
+- **Workflow anchor**: `AI-Project-Manager/AGENTS.md` is the live root authority anchor for workflow/process policy and points secondary docs back to the canonical bootstrap and tool-matrix owners
+- **Bootstrap owner**: `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` is the only authoritative numbered recovery order; secondary docs now point back instead of restating competing chains
+- **Installed-tool matrix**: `docs/tooling/MCP_CANONICAL_CONFIG.md` is the single owner of the 11-server live surface; stale `github` / `firecrawl-mcp` / `context-matic` inventory claims are no longer current
+- **OpenMemory reality**: active docs now consistently treat the runtime as flat `search-memories(query)`, `list-memories()`, `add-memory(content)` and droidrun's local rule now mirrors that contract
 - **Sparky** (`sparky-chief-product-quality-officer`) is the exclusive ACCEPT/REFACTOR/REJECT authority for all file changes and release decisions
 - **Quarantine system**: 5 enforcement layers active; `candidate_employees/**` (2,608 files) and droidrun iOS paths are permanently non-routable until promoted via `NON_ROUTABLE_QUARANTINE.md`
-- **Ledger auto-rotation**: `.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py` — `afterFileEdit` hook installed; active ledger at ~409 lines / 3 entries (minimum floor)
+- **Ledger auto-rotation**: `.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py` remains the registered path; repo-local rotation logic, thresholds, and archive writing are proven via direct invocation, but the latest ordinary AI append still produced no observable archive change, so live Cursor `afterFileEdit` execution remains unproven and `python .cursor/hooks/rotate_ledger.py --force` is the current canonical fallback when compaction is needed after a ledger append
 
 ### Active Prompt-Sequence Status
 
@@ -73,7 +77,7 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 | Charter Enforcement Kernel Install | COMPLETE | 2026-03-31 |
 | Governance Normalization (Prompt 7) | COMPLETE | 2026-03-31 |
 | Non-Routable Quarantine (Prompt 8) | COMPLETE | 2026-04-01 |
-| **Memory Bridge (OpenClaw ↔ OpenMemory)** | **NOT STARTED** | Phase 1B (deferred) |
+| **Memory Bridge (OpenClaw ↔ OpenMemory)** | **PARTIAL** | 2026-04-15 (seam live; ledger hook proof still open) |
 
 ### Runtime Snapshot (as of 2026-03-29; last verified)
 
@@ -95,20 +99,19 @@ Write `None` or `N/A` for any section with nothing to report. Do not omit sectio
 | WhatsApp 401 — session expired | MEDIUM | PENDING USER ACTION: QR re-scan in WSL |
 | Direct xAI key missing from Bitwarden | MEDIUM | OpenRouter Grok fallback active; direct `xai/*` awaits `XAI_API_KEY` in Bitwarden |
 | Curated standard not synced into deployed workers | HIGH | `AI_Employee_knowledgebase` exists; live workers still use older packets |
-| Memory bridge OpenClaw ↔ OpenMemory not built | HIGH | DEFERRED Phase 1B; design required; mem0-bridge and OpenMemory are two separate systems |
+| AI-PM execution-ledger hook live invocation still unproven | HIGH | OPEN PROOF GAP: repo-local root-resolution hardening and direct `rotate_ledger.py` rotation both passed, but the latest ordinary append still grew the ledger `3 -> 4` real entries and `365 -> 397` lines with archive unchanged, so the remaining unresolved bucket is live Cursor invocation rather than proven rotation logic |
 | Sparky identity not file-persisted | LOW | Name lives in system prompt; gateway wipe requires re-establishing via conversation |
-| Ledger hook not live-tested in a real Cursor session | LOW | Docs confirm behavior; actual Cursor hook fire not yet observed |
+| AI-PM bridge proof remains partial until live `afterFileEdit` execution is reproven | MEDIUM | Bridge, quarantine, clean-room recovery, manual ledger rotation, and multi-root hardening passed; until native hook firing is reproven, use `python .cursor/hooks/rotate_ledger.py --force` after ledger appends when compaction is needed |
 
 ### Cross-Repo Dependencies Still Active
 
 - `open--claw`: canonical quarantine registry `NON_ROUTABLE_QUARANTINE.md`; 15 curated AI employees in `AI_Employee_knowledgebase`; live gateway runtime; DECISIONS.md and PATTERNS.md populated
 - `droidrun`: iOS quarantine mirrored; `02-non-routable-exclusions.md` active; Android actuator for DroidRun MCP
-- `AI-Project-Manager`: `AGENT_EXECUTION_LEDGER.md` active (hook-enforced rotation); Bitwarden secret inventory; tri-workspace governance source of truth
+- `AI-Project-Manager`: `AGENT_EXECUTION_LEDGER.md` active; hook registration is present, repo-local rotation logic is proven, and live rotation proof is still partial; Bitwarden secret inventory; tri-workspace governance source of truth
 
 ### What Remains Unverified
 
-- Live ledger hook behavior in a Cursor session (`afterFileEdit` hook confirmed by docs; not observed live)
-- Quarantine openmemory.mdc exclusions require a live memory search test
+- Why Cursor did not execute or deliver usable input to the AI-PM `afterFileEdit` ledger hook on an ordinary ledger edit even after the repo-local multi-root fix
 - Sparky routing plumbing through multi-agent Sparky gate (requires live multi-agent session)
 - Governance overlay (Phase 6B) still blocked on ANTHROPIC_API_KEY for WSL-based enforcement wiring
 
@@ -4694,3 +4697,500 @@ None. Required `thinking-patterns` and `openmemory` calls both succeeded.
 ### What's Next
 
 Run the final post-edit `git status --short` checks and `ReadLints`, patch this entry with those results, then stop without expanding into broader cleanup.
+
+---
+
+## 2026-04-15 16:50 - Lossless Proof Gate + Bootstrap/Matrix Drift Collapse
+
+### Goal
+
+Collapse the live AI-PM control plane onto one authority anchor, one bootstrap order, and one installed-tool matrix; normalize `droidrun` to the flat OpenMemory runtime; then record a fresh proof split without broad scans or runtime-code edits.
+
+### Scope
+
+- `AI-Project-Manager`: `AGENTS.md`, `docs/ai/CURSOR_WORKFLOW.md`, `docs/ai/HANDOFF.md`, `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md`, `docs/tooling/PRIORITY_TOOL_USAGE.md`, `docs/tooling/OPENMEMORY_VERIFICATION.md`, `docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`, `docs/ai/STATE.md`, `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, `docs/ai/recovery/memory-delta.json`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- `droidrun`: `.cursor/rules/openmemory.mdc`, `docs/ai/HANDOFF.md`, `docs/source-tree-guide.md`, `docs/ai/STATE.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- `open--claw`: inspected `AGENTS.md`, `docs/ai/HANDOFF.md`, `docs/ai/STATE.md`; no edits
+
+### Commands / Tool Calls
+
+- `git -C "D:/github/AI-Project-Manager" status --short`
+- `git -C "D:/github/open--claw" status --short`
+- `git -C "D:/github/droidrun" status --short`
+- `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- `user-thinking-patterns.sequential_thinking`
+- `user-openmemory.search-memories`
+- `user-openmemory.add-memory`
+- `user-filesystem.read_multiple_files`
+- `user-filesystem.write_file`
+- `user-filesystem.create_directory`
+- `ReadFile`
+- `Glob`
+- `rg`
+- `ApplyPatch`
+- `ReadLints`
+
+### Changes
+
+Checklist:
+- [x] Reconfirmed the AI-PM workflow anchor and pointed secondary docs back to the canonical bootstrap/tool-matrix owners.
+- [x] Removed stale installed-tool and rich-schema OpenMemory claims from the targeted AI-PM docs.
+- [x] Replaced droidrun's repo-local rich-schema OpenMemory rule with the flat-runtime contract.
+- [x] Wrote one compact durable OpenMemory update after the canonical doc changes.
+- [x] Refreshed all four AI-PM recovery-bundle files via `filesystem`.
+- [x] Created the first `droidrun` execution-ledger surface for this first local AGENT block.
+
+- Updated the targeted AI-PM governance docs so the only numbered bootstrap order points to `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` and the installed-tool matrix points to `docs/tooling/MCP_CANONICAL_CONFIG.md`.
+- Rewrote `docs/tooling/PRIORITY_TOOL_USAGE.md` and `docs/tooling/OPENMEMORY_VERIFICATION.md` around the live 11-server surface and the flat OpenMemory contract.
+- Updated `droidrun/.cursor/rules/openmemory.mdc`, `docs/ai/HANDOFF.md`, and `docs/source-tree-guide.md` so repo-local guidance no longer requires `project_id`, `namespace`, or `openmemory.md` maintenance.
+- Refreshed the AI-PM recovery bundle and both repos' operational-state surfaces to record the fresh proof split.
+
+### Evidence
+
+- PASS: `git -C "D:/github/AI-Project-Manager" status --short` was clean before edits and later showed the expected governance/doc changes only: `AGENTS.md`, `docs/ai/CURSOR_WORKFLOW.md`, `docs/ai/HANDOFF.md`, `docs/ai/STATE.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`, `docs/ai/context/TRI_WORKSPACE_CONTEXT_BRIEF.md`, `docs/ai/recovery/active-blockers.json`, `docs/ai/recovery/current-state.json`, `docs/ai/recovery/memory-delta.json`, `docs/ai/recovery/session-summary.md`, `docs/tooling/ARTIFORGE_TRI_WORKSPACE_BRIEF.md`, `docs/tooling/OPENMEMORY_VERIFICATION.md`, `docs/tooling/PRIORITY_TOOL_USAGE.md`.
+- PASS: `git -C "D:/github/open--claw" status --short` was clean before inspection and remained clean after inspection.
+- PASS: `git -C "D:/github/droidrun" status --short` was clean before edits and later showed only the expected local-doc changes: `.cursor/rules/openmemory.mdc`, `docs/ai/HANDOFF.md`, `docs/ai/STATE.md`, `docs/source-tree-guide.md`, and untracked `docs/ai/context/`.
+- FAIL then PASS: the first `user-thinking-patterns.sequential_thinking` call failed validation because required arguments were omitted; the retry with the schema-required payload succeeded and locked the smallest proof-gate plan.
+- PASS: `user-openmemory.search-memories` returned targeted no-loss/bootstrap memories, including stale 9-tool wording that proved drift still existed before this pass.
+- PASS: `user-openmemory.add-memory` stored the new compact authority/bootstrap/tool-matrix truth as memory id `20`.
+- PASS: `user-filesystem.read_multiple_files` read the four AI-PM recovery-bundle files before editing and again after refresh.
+- PASS: `user-filesystem.write_file` refreshed `docs/ai/recovery/current-state.json`, `session-summary.md`, `active-blockers.json`, and `memory-delta.json`.
+- PASS: `user-filesystem.create_directory` created `D:/github/droidrun/docs/ai/context`.
+- PASS: targeted `ReadFile`, `Glob`, `rg`, and `ApplyPatch` work stayed within the approved governance/rules/docs surfaces only.
+- PASS: `ReadLints` reported no linter errors on the touched files.
+
+### Verdict
+
+PARTIAL - the proof gate succeeded and the documented control-plane drift is collapsed, but full lossless completeness remains blocked by the OpenClaw memory bridge and still-unreplayed hook/exclusion proof items.
+
+### Blockers
+
+- OpenClaw to OpenMemory bridge is still not built.
+- Live execution-ledger hook behavior remains unobserved in a real Cursor session.
+- Quarantine or memory-exclusion behavior was not re-proven with a fresh live search in this pass.
+- Obsidian sidecar proof remains optional and incomplete.
+
+### Fallbacks Used
+
+None. The only failure was an argument-validation miss on the first `user-thinking-patterns.sequential_thinking` call, immediately corrected by reissuing the same required tool with the schema-required payload.
+
+### Cross-Repo Impact
+
+- `droidrun` now mirrors the flat OpenMemory runtime and no longer carries a repo-local rich-schema memory contract.
+- `open--claw` was inspected only; no files changed there.
+
+### Decisions Captured
+
+- `AI-Project-Manager/AGENTS.md` is the live workflow anchor and secondary docs should point back to canonical owners instead of preserving duplicate chains.
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` is the only numbered bootstrap owner and `docs/tooling/MCP_CANONICAL_CONFIG.md` is the only installed-tool matrix owner.
+- The current installed-tool surface is 11 servers and normal-use OpenMemory remains the flat `search-memories(query)` / `list-memories()` / `add-memory(content)` contract.
+
+### Pending Actions
+
+- Run a separate proof pass for live ledger-hook observation.
+- Re-run a targeted live search that proves quarantine/memory exclusions still behave correctly.
+- Design or implement the deferred OpenClaw-to-OpenMemory bridge.
+
+### What Remains Unverified
+
+- Full no-handoff new-project startup across all three repos from live docs only.
+- Sidecar/Obsidian continuity proof.
+- Fresh live validation of non-called MCP servers beyond the session-visible matrix and descriptor cache.
+
+### What's Next
+
+Keep the next pass narrowly scoped to the remaining explicit proof gaps instead of reopening broad governance sweeps.
+
+---
+
+## 2026-04-15 17:21 - Lossless bridge proof (OpenClaw to OpenMemory)
+
+### Goal
+
+Build the smallest allowed OpenClaw-to-OpenMemory bridge seam, prove one real durable promotion and retrieval, refresh no-loss recovery surfaces, and verify clean-room recovery plus quarantine-safe retrieval without widening scope.
+
+### Scope
+
+- `open--claw`: `open-claw/skills/mem0-bridge/SKILL.md`, `open-claw/configs/openclaw.template.json5`, `open-claw/AI_Employee_knowledgebase/MEMORY_PROMOTION_TEMPLATE.md`, `open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/skills/mem0-bridge/SKILL.md`, `open-claw/AI_Employee_knowledgebase/AI_employees/sparky-chief-product-quality-officer/.openclaw-runtime/workspace/skills/mem0-bridge/SKILL.md`, `docs/ai/STATE.md`
+- `AI-Project-Manager`: `docs/ai/STATE.md`, `docs/ai/recovery/current-state.json`, `docs/ai/recovery/session-summary.md`, `docs/ai/recovery/active-blockers.json`, `docs/ai/recovery/memory-delta.json`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- `droidrun`: inspected only for repo-state and quarantine scope
+- Inspected but unchanged before/around edits: `D:/github/open--claw/open-claw/AI_Employee_knowledgebase/TEAM_OPERATING_SYSTEM.md`, `D:/github/AI-Project-Manager/.cursor/hooks/rotate_ledger.py`, `D:/github/AI-Project-Manager/.cursor/rules/02-non-routable-exclusions.md`, `D:/github/open--claw/.cursor/rules/02-non-routable-exclusions.md`, `D:/github/AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+
+### Commands / Tool Calls
+
+- `git -C "D:/github/AI-Project-Manager" status --short`
+- `git -C "D:/github/open--claw" status --short`
+- `git -C "D:/github/droidrun" status --short`
+- `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- `user-thinking-patterns.sequential_thinking`
+- `user-openmemory.search-memories`
+- `user-openmemory.add-memory`
+- `user-filesystem.read_multiple_files`
+- `user-filesystem.write_file`
+- `ReadFile`
+- `Glob`
+- `rg`
+- `ApplyPatch`
+- `Subagent`
+
+### Changes
+
+Checklist:
+- [x] Locked the minimum bridge/proof sequence with `thinking-patterns` before editing.
+- [x] Queried `openmemory.search-memories` before edits for bridge/proof guidance.
+- [x] Repurposed the allowed `mem0-bridge` seam into an OpenMemory-compatible retrieve-before-plan / store-after-gate routine without renaming it.
+- [x] Wired the minimum runtime-facing surface by enabling `mem0-bridge` in `openclaw.template.json5`.
+- [x] Updated `MEMORY_PROMOTION_TEMPLATE.md` so canonical packets carry the source doc path and do not treat namespace/memory type as runtime filters.
+- [x] Added one real durable bridge memory and confirmed retrieval from OpenMemory.
+- [x] Refreshed the AI-PM recovery bundle via `filesystem`.
+- [x] Appended one real AI-PM ledger entry through a normal file edit path.
+- [x] Proved clean-room recovery with a fresh context-isolated verifier without using `HANDOFF.md` or the ledger by default.
+- [x] Ran quarantine-safe retrieval checks for quarantined path terms.
+- [ ] Proved live ledger-hook rotation behavior on the normal ledger append.
+
+- Rewrote the three allowed `mem0-bridge` skill copies around the live flat OpenMemory contract (`search-memories`, `add-memory`, retrieval verification) and explicit stop conditions.
+- Enabled `mem0-bridge` in the OpenClaw template as the minimum runtime-facing seam.
+- Tightened the promotion template so the final paragraph is self-identifying and carries the canonical source doc path.
+- Promoted one real bridge memory with source `open-claw/skills/mem0-bridge/SKILL.md`.
+- Refreshed the AI-PM recovery bundle first for clean-room verification, then updated it again to reflect the final partial verdict.
+
+### Evidence
+
+- PASS: `git -C "D:/github/AI-Project-Manager" status --short` before work showed the pre-existing dirty AI-PM governance/recovery files only.
+- PASS: `git -C "D:/github/open--claw" status --short` before work was clean.
+- PASS: `git -C "D:/github/droidrun" status --short` before work showed only the pre-existing DroidRun dirty files and untracked `docs/ai/context/`.
+- PASS: `user-thinking-patterns.sequential_thinking` locked the smallest allowed bridge/proof plan and then confirmed the seam was implementable without widening the file set.
+- PASS: pre-edit `user-openmemory.search-memories` returned bridge/proof guidance consistent with the flat OpenMemory runtime and compact promotion rules.
+- PASS: `user-filesystem.read_multiple_files` read the four AI-PM recovery-bundle files in the required no-loss order.
+- PASS: `ApplyPatch` changed only the allowed bridge/config/template files plus the AI-PM ledger/state surfaces.
+- PASS: `user-openmemory.add-memory` stored the promoted bridge artifact as id `21`.
+- PASS: follow-up `user-openmemory.search-memories` returned id `21` as the top hit for the targeted bridge query, proving discoverability.
+- PASS: quarantine retrieval queries `candidate_employees`, `ios_provider.py`, and `droidrun/tools/ios` returned either no memories or policy/noise memories only; no quarantined file content was recalled.
+- FAIL (readonly verifier path): the first fresh readonly subagent recovered from files but could not execute the required live OpenMemory search in its readonly environment, so it did not satisfy the full clean-room proof.
+- PASS (fallback isolated verifier): the fresh context-isolated verifier recovered objective, last action, blockers, and bridge status from charter + authority + recovery bundle + STATE summary + one targeted `openmemory.search-memories` query without using `HANDOFF.md` or the ledger.
+- FAIL: the normal AI-PM ledger append did not trigger observed rotation. Before append: active ledger `1286` lines / `9` entries, archive file absent. After append and recheck: active ledger `1437` lines / `10` entries, archive file still absent.
+- PASS: no manual `--force` ledger run was used or counted as proof.
+
+### Verdict
+
+PARTIAL - the bridge seam works and durable recovery/quarantine proofs passed, but the live AI-PM ledger-hook proof failed because the normal ledger append did not rotate/archive as policy says it should.
+
+### Blockers
+
+- AI-PM `afterFileEdit` ledger hook did not visibly fire on the normal ledger append in this Cursor session.
+
+### Fallbacks Used
+
+- The readonly verifier could not run the required live `openmemory.search-memories` call, so a fresh context-isolated verifier was used instead. Evidence lost: none for recovery truth, but the strict readonly-only proof path remains unavailable in this environment.
+
+### Cross-Repo Impact
+
+- `open--claw` now carries a live documented OpenMemory bridge seam and a promotion template that matches the flat runtime.
+- `AI-Project-Manager` recovery bundle now describes the bridge proof and the remaining hook gap.
+- `droidrun` was checked for repo status/quarantine scope only and was not changed by this phase.
+
+### Decisions Captured
+
+- Keep the `mem0-bridge` name for continuity, but treat it as a compatibility seam over the flat Cursor OpenMemory runtime.
+- Treat namespace and memory-type fields in promotion packets as human labels only unless the runtime proves actual filter support.
+- Do not claim a lossless bridge proof complete while the live ledger-hook gate remains open.
+
+### Pending Actions
+
+- Determine why `.cursor/hooks/rotate_ledger.py` did not rotate the active ledger after the normal file edit.
+- Re-run the ledger-hook proof after the hook path is restored or its activation condition is corrected.
+
+### What Remains Unverified
+
+- Root cause of the missing ledger-hook rotation in this Cursor session.
+- Multi-agent Sparky routing behavior.
+- Governance overlay (Phase 6B) while `ANTHROPIC_API_KEY` remains missing in WSL.
+
+### What's Next
+
+Keep the next pass tightly scoped to diagnosing the AI-PM ledger-hook path; do not reopen the bridge seam unless that hook diagnosis proves the earlier evidence invalid.
+
+---
+
+## 2026-04-16 01:50 - Ledger Hook Proof Gate
+
+### Goal
+
+Diagnose the final AI-PM ledger-hook proof gate by distinguishing hook execution from rotation conditions with the smallest live test possible, without widening scope beyond the allowed ledger/state surfaces.
+
+### Scope
+
+- Inspected only: `D:/github/AI-Project-Manager/.cursor/hooks.json`, `D:/github/AI-Project-Manager/.cursor/hooks/rotate_ledger.py`, `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`, `D:/github/AI-Project-Manager/docs/ai/context/archive/ledger-2026-04-01.md`, `D:/github/AI-Project-Manager/.cursor/rules/10-project-workflow.md`, `D:/github/AI-Project-Manager/AGENTS.md`, `D:/github/AI-Project-Manager/docs/ai/STATE.md`, Cursor hooks docs via `https://cursor.com/docs/hooks`
+- Changed: `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`, `D:/github/AI-Project-Manager/docs/ai/context/archive/ledger-2026-04-15.md`, `D:/github/AI-Project-Manager/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `git -C "D:/github/AI-Project-Manager" status --short`
+- `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- before file inspection of `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` via `ReadFile`, `rg`
+- before archive directory inspection of `D:/github/AI-Project-Manager/docs/ai/context/archive/` via `Glob`
+- `user-thinking-patterns.sequential_thinking`
+- `WebSearch`
+- `WebFetch`
+- one ordinary ledger append via `ApplyPatch`
+- after file inspection of `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` via `ReadFile`, `rg`
+- after archive directory inspection of `D:/github/AI-Project-Manager/docs/ai/context/archive/` via `Glob`
+- `python .cursor/hooks/rotate_ledger.py --force`
+- post-force inspection of `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md` and `D:/github/AI-Project-Manager/docs/ai/context/archive/` via `ReadFile`, `rg`, `Glob`
+- `git -C "D:/github/AI-Project-Manager" diff --stat -- ".cursor/hooks.json" ".cursor/hooks/rotate_ledger.py" "docs/ai/context/AGENT_EXECUTION_LEDGER.md" "docs/ai/STATE.md"`
+- `git -C "D:/github/AI-Project-Manager" status --short`
+
+### Changes
+
+Checklist:
+- [x] Used `thinking-patterns` before acting to lock the smallest proof path.
+- [x] Inspected hook registration, threshold logic, active ledger state, and archive directory before editing.
+- [x] Captured pre-edit active ledger entry count, line count, archive list, and script threshold values.
+- [x] Appended exactly one ordinary ledger entry with no manual `--force` run beforehand.
+- [x] Captured post-edit active ledger entry count, line count, archive list, and whether the new entry remained active.
+- [x] Ran exactly one manual `python .cursor/hooks/rotate_ledger.py --force` after the failed live test to separate invocation failure from script logic failure.
+- [x] Captured post-force active ledger counts, archive list, and exact moved/kept LEDGER blocks.
+- [x] Determined whether rotation was actually warranted under the current threshold/floor logic.
+- [x] Recorded a final verdict without widening into unrelated governance edits.
+- [ ] Proved live hook execution after the normal append.
+
+- Appended one normal test entry, `LEDGER-014`, to the active AI-PM ledger.
+- Confirmed from current Cursor docs that `afterFileEdit` receives JSON over stdin with hook-specific `file_path` and `edits`, plus base `workspace_roots`.
+- Applied no repo-local hook wiring or script fix because the registered command, documented payload shape, and rotation logic all proved compatible; the unresolved gap is live hook invocation in this session.
+- Updated the AI-PM state summary and blockers so they match the exact live-test and post-force evidence from this pass.
+
+### Evidence
+
+- PASS: `user-thinking-patterns.sequential_thinking` locked the smallest diagnostic path before any edits.
+- PASS: `.cursor/hooks.json` inspection showed `afterFileEdit` registered as `python .cursor/hooks/rotate_ledger.py` with timeout `30`.
+- PASS: `.cursor/hooks/rotate_ledger.py` inspection showed the active thresholds used for interpretation: `MAX_ACTIVE_ENTRIES = 5`, `MIN_ACTIVE_ENTRIES = 3`, `MAX_ACTIVE_LINES = 300`.
+- PASS: `.cursor/rules/10-project-workflow.md` and `AGENTS.md` both still describe the hook as auto-rotation for ledgers above threshold, and the registered project-hook path `.cursor/hooks/rotate_ledger.py` matches current Cursor docs for project hooks.
+- PASS: `WebSearch` + `WebFetch` against `https://cursor.com/docs/hooks` confirmed the documented `afterFileEdit` contract: JSON via stdin, hook-specific `file_path` and `edits`, plus base `workspace_roots`.
+- PASS: pre-edit ledger inspection showed `11` real entries (`^## LEDGER-\d+`), `4` malformed `## Entry:` blocks that the script does not count as real entries, and `1541` total lines.
+- PASS: pre-edit archive directory inspection showed exactly one file: `docs/ai/context/archive/ledger-2026-04-01.md`.
+- PASS: rotation was explicitly warranted before the live test because `11 > 5` real entries and `1541 > 300` lines, while the `3`-entry floor did not apply.
+- PASS: one ordinary ledger append created `LEDGER-014` through normal file editing with no manual `--force` run beforehand.
+- PASS: the live append unquestionably satisfied the target-file assumption because the edited file was `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`, which matches the script's required suffix `docs/ai/context/AGENT_EXECUTION_LEDGER.md`.
+- FAIL: post-edit ledger inspection showed `12` real entries and `1573` total lines, so the active ledger grew instead of rotating.
+- FAIL: post-edit archive inspection still showed only `docs/ai/context/archive/ledger-2026-04-01.md`; no new archive file was created and no existing archive changed.
+- FAIL: the new `LEDGER-014` remained active and no older block moved to archive, despite rotation being warranted by the script's own thresholds.
+- PASS: `python .cursor/hooks/rotate_ledger.py --force` immediately rotated the ledger from `12` entries / `1573` lines to `3` entries / `365` lines and created `docs/ai/context/archive/ledger-2026-04-15.md`.
+- PASS: post-force inspection showed the exact moved blocks were `LEDGER-005`, `LEDGER-006`, `LEDGER-006`, `LEDGER-007`, `LEDGER-007`, `LEDGER-008`, `LEDGER-009`, `LEDGER-010`, and `LEDGER-011`; the exact kept blocks were `LEDGER-014`, `LEDGER-013`, and `LEDGER-012`.
+- PASS: the manual run proves the rotation script, path resolution, threshold logic, and archive writing are functional when invoked directly.
+
+### Verdict
+
+PARTIAL - the registered hook path and rotation script are valid, but the required PASS gate remains open because a normal AI append still did not produce live `afterFileEdit` rotation. The manual `--force` run isolated the remaining failure bucket to live Cursor invocation or stdin delivery, not repo-local rotation logic.
+
+### Blockers
+
+- Live hook execution after a normal ledger edit remains unproven.
+- The remaining unresolved bucket is `Cursor did not invoke the hook for this edit path` or `Cursor invoked it without delivering usable stdin`; no repo-local registration, path, or rotation-logic bug was proven.
+
+### Fallbacks Used
+
+- `python .cursor/hooks/rotate_ledger.py --force` was used exactly once after the failed live append as the permitted narrow diagnostic split. It proved script correctness but does not count as the primary proof.
+
+### Cross-Repo Impact
+
+- None. This pass was intentionally limited to `AI-Project-Manager`.
+
+### Decisions Captured
+
+- Archive rotation was actually warranted under the current script values for this live test.
+- A future `PASS` requires proof that the hook executed after a normal ledger edit, not just proof that the rotation script exists on disk or works manually.
+- The system cannot yet honestly be called lossless-proven.
+- Until native live-hook execution is re-proven, the safest canonical fallback is an explicit post-step `python .cursor/hooks/rotate_ledger.py --force` after ledger appends.
+
+### Pending Actions
+
+- Reproduce the missing live hook execution from a native Cursor edit path that is known to fire `afterFileEdit`, or inspect Cursor app logs if deeper platform diagnosis is needed.
+- Until that proof exists, treat explicit post-step `python .cursor/hooks/rotate_ledger.py --force` as the reliable ledger-rotation mechanism.
+
+### What Remains Unverified
+
+- Whether Cursor failed to invoke the hook at all for this AI edit path.
+- Whether Cursor invoked it but delivered empty or otherwise unusable stdin despite the documented contract.
+
+### What's Next
+
+Keep the next pass limited to proving live Cursor `afterFileEdit` execution itself; do not spend more time on repo-local hook logic unless new evidence contradicts the successful manual rotation.
+
+---
+
+## 2026-04-15 22:13 - Live afterFileEdit hook hardening reproof
+
+### Goal
+
+Apply only the smallest evidence-backed hardening to the AI-PM ledger hook path and then re-run a normal edit proof to see whether live `afterFileEdit` rotation becomes visible.
+
+### Scope
+
+- Inspected: `D:/github/AI-Project-Manager/.cursor/hooks.json`, `D:/github/AI-Project-Manager/.cursor/hooks/rotate_ledger.py`, `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`, `D:/github/AI-Project-Manager/docs/ai/context/archive/`, `D:/github/AI-Project-Manager/docs/ai/STATE.md`
+- Changed: `D:/github/AI-Project-Manager/.cursor/hooks/rotate_ledger.py`, `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`, `D:/github/AI-Project-Manager/docs/ai/STATE.md`
+
+### Commands / Tool Calls
+
+- `git -C "D:/github/AI-Project-Manager" status --short`
+- `ReadFile`
+- `rg`
+- `user-thinking-patterns.sequential_thinking`
+- `user-filesystem.list_directory`
+- `user-filesystem.read_text_file`
+- resolver simulation via `python -c "..."` before the fix
+- normal-append timestamp via `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- normal ledger append via `ApplyPatch`
+- `python -m py_compile ".cursor/hooks/rotate_ledger.py"`
+- `git -C "D:/github/AI-Project-Manager" diff --stat -- ".cursor/hooks.json" ".cursor/hooks/rotate_ledger.py" "docs/ai/context/AGENT_EXECUTION_LEDGER.md" "docs/ai/STATE.md"`
+- `git -C "D:/github/AI-Project-Manager" status --short`
+- `ReadLints`
+
+### Changes
+
+Checklist:
+- [x] Re-ran `thinking-patterns` before editing.
+- [x] Reconfirmed the exact hook wiring from `.cursor/hooks.json` into `.cursor/hooks/rotate_ledger.py`.
+- [x] Used `filesystem` MCP to inspect the live archive directory and ledger surface inside the allowed scope.
+- [x] Proved that the old resolver could choose the wrong repo root in a multi-root workspace.
+- [x] Applied the smallest safe hardening fix to prefer file-path derivation and matching workspace roots over blindly using `workspace_roots[0]`.
+- [x] Revalidated the hardened resolver with the same bad-order simulation.
+- [x] Captured before-proof ledger count, line count, and archive list.
+- [x] Performed one normal ledger append without `--force`.
+- [x] Captured after-proof ledger count, line count, archive list, and block movement.
+- [ ] Achieved a valid live hook proof.
+
+- Hardened `_resolve_project_root_from_stdin()` so it now:
+  - matches the ledger path case-insensitively,
+  - derives the repo root from the edited file path when possible,
+  - falls back to a matching workspace root instead of blindly trusting `workspace_roots[0]`,
+  - uses the single-root fallback only when the workspace actually has one root.
+- Added `_find_matching_workspace_root()` and `_normalize_path_for_match()` as the minimal helpers needed for that hardening.
+- Appended one ordinary proof entry, `LEDGER-015`, to the active ledger.
+
+### Evidence
+
+- PASS: `git -C "D:/github/AI-Project-Manager" status --short` before edits showed the existing dirty governance/docs surfaces plus the prior diagnostic archive file, with no `.cursor/hooks/rotate_ledger.py` modification yet in this pass.
+- PASS: `.cursor/hooks.json` still wires `afterFileEdit` to the exact command `python .cursor/hooks/rotate_ledger.py` with timeout `30`.
+- PASS: `user-thinking-patterns.sequential_thinking` identified the multi-root resolver as the smallest plausible repo-local hardening target before any edits.
+- PASS: `user-filesystem.list_directory` showed the live archive baseline: `.gitkeep`, `ledger-2026-04-01.md`, `ledger-2026-04-15.md`.
+- PASS: before-proof ledger inspection showed `3` real `^## LEDGER-\d+` blocks (`LEDGER-014`, `LEDGER-013`, `LEDGER-012`) and `365` total lines.
+- PASS: pre-fix resolver simulation with reordered `workspace_roots` returned `D:\github\open--claw`, proving the old code could choose the wrong repo in this multi-root workspace.
+- PASS: post-fix resolver simulation with the same reordered `workspace_roots` returned `D:\github\AI-Project-Manager`, proving the hardening change works for that concrete failure mode.
+- PASS: `python -m py_compile ".cursor/hooks/rotate_ledger.py"` succeeded after the edit.
+- PASS: one normal ledger append created `LEDGER-015` through the ordinary edit path with no manual fallback command.
+- PASS: the edited file path still satisfied the script target requirement because the edit was to `D:/github/AI-Project-Manager/docs/ai/context/AGENT_EXECUTION_LEDGER.md`.
+- FAIL: after the normal append, the active ledger remained unrotated at `4` real `LEDGER-*` blocks and `397` lines.
+- FAIL: after the normal append, the archive file list remained unchanged: `.gitkeep`, `ledger-2026-04-01.md`, `ledger-2026-04-15.md`.
+- FAIL: no block moved; `LEDGER-015`, `LEDGER-014`, `LEDGER-013`, and `LEDGER-012` all stayed active, so there was no observable hook side effect sufficient for a live proof.
+- PASS: `ReadLints` found no linter errors in `.cursor/hooks/rotate_ledger.py`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`, or `docs/ai/STATE.md`.
+
+### Verdict
+
+PARTIAL - one justified repo-local hardening fix landed and was simulation-proven, but the required live hook proof still failed because a normal ledger edit produced no observable `afterFileEdit` rotation or other sufficient hook side effect.
+
+### Blockers
+
+- Live Cursor `afterFileEdit` execution remains unproven even after the multi-root root-resolution hardening.
+- No additional repo-local fix is justified yet; the remaining unresolved bucket is outside the proven resolver/rotation logic.
+
+### Fallbacks Used
+
+None. I intentionally did not use `python .cursor/hooks/rotate_ledger.py --force` in this proof pass.
+
+### Cross-Repo Impact
+
+None. This pass was limited to `AI-Project-Manager`.
+
+### Decisions Captured
+
+- In a multi-root workspace, `workspace_roots[0]` is not a safe source of truth for hook repo resolution.
+- A live hook `VERIFIED` verdict still requires visible rotation or another observable hook side effect after a normal edit.
+- No further repo-local hook wiring change is justified without new evidence that the command is being invoked but failing before script logic.
+
+### Pending Actions
+
+- If deeper diagnosis is needed, inspect Cursor app logs or reproduce the same proof with a native edit path that is known to emit `afterFileEdit`.
+
+### What Remains Unverified
+
+- Whether Cursor invoked `afterFileEdit` at all for this normal edit path.
+- Whether the hook command failed before the Python script body executed.
+
+### What's Next
+
+Keep the next pass focused on Cursor-side invocation tracing, not additional repo-local logic changes, unless new evidence shows the hardened resolver is still insufficient.
+
+---
+
+## 2026-04-15 22:20 - Repo-side ledger fallback finalization
+
+### Goal
+
+Finalize the repo-side workflow wording so the canonical docs reflect the proven ledger state accurately without changing runtime behavior or widening into more hook diagnostics.
+
+### Scope
+
+- Inspected: `AGENTS.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/STATE.md`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- Changed: `AGENTS.md`, `.cursor/rules/10-project-workflow.md`, `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`, `docs/ai/STATE.md`
+- Left unchanged: `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+
+### Commands / Tool Calls
+
+- `git status --short`
+- `git diff -- AGENTS.md .cursor/rules/10-project-workflow.md docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md docs/ai/STATE.md`
+- `git diff --stat -- AGENTS.md .cursor/rules/10-project-workflow.md docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md docs/ai/STATE.md`
+- `Get-Date -Format "yyyy-MM-dd HH:mm"`
+- `ReadFile`
+- `rg`
+- `ApplyPatch`
+- `ReadLints`
+
+### Changes
+
+- Added the smallest canonical note across the repo workflow/recovery docs that:
+  - repo-local `rotate_ledger.py` logic is proven
+  - live Cursor `afterFileEdit` execution remains unproven
+  - `python .cursor/hooks/rotate_ledger.py --force` is the current canonical fallback after ledger appends when compaction is needed
+- Updated the `STATE.md` summary to frame the issue as a Cursor-hook proof gap rather than a repo-memory architecture problem.
+
+### Evidence
+
+- PASS: targeted reads confirmed the canonical workflow surfaces still implied live automatic hook rotation without the now-required fallback note.
+- PASS: `ApplyPatch` updated only the four allowed repo-side docs and did not modify `docs/ai/context/AGENT_EXECUTION_LEDGER.md`, hook code, or hook registration.
+- PASS: the final wording now consistently states that direct script execution is proven, live Cursor hook execution is still unproven, and manual `--force` remains the operational fallback.
+- PASS: `ReadLints` reported no diagnostics on the four touched docs.
+
+### Verdict
+
+READY - repo-side documentation now matches the proven ledger state and current operational fallback without widening scope.
+
+### Blockers
+
+- Live Cursor `afterFileEdit` invocation is still unproven on an ordinary ledger edit.
+
+### Fallbacks Used
+
+- None during this documentation pass. The documented operational fallback remains `python .cursor/hooks/rotate_ledger.py --force` after ledger appends when compaction is needed.
+
+### Cross-Repo Impact
+
+None. This finalization pass stayed inside `AI-Project-Manager`.
+
+### Decisions Captured
+
+- Treat repo-local ledger rotation logic as proven.
+- Treat live Cursor `afterFileEdit` execution as the only remaining proof gap.
+- Treat `python .cursor/hooks/rotate_ledger.py --force` as the current canonical operational fallback when compaction is needed after a ledger append.
+
+### Pending Actions
+
+- Re-prove live Cursor hook invocation in a dedicated hook-only pass if the proof gap needs to be closed.
+
+### What Remains Unverified
+
+- Whether Cursor invoked `afterFileEdit` at all for the ordinary ledger edit path.
+- Whether Cursor invoked it but failed before the repo-local script body could perform rotation.
+
+### What's Next
+
+Keep future work narrow: use the manual fallback operationally when needed, and reserve any deeper work for a dedicated Cursor-side hook proof pass.

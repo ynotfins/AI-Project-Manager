@@ -1,30 +1,18 @@
 # Recovery Session Summary
 
-Phase 1 no-loss governance normalization is complete for the active AI-PM rule stack.
-
-obsidian_sync: pending
-obsidian_target: `AI-PM/Recovery Sidecar/No-Loss Recovery Catch-Up.md`
+Lossless bridge proof reached a partial result in the allowed file set.
 
 What changed:
-- Normalized the default recovery path to: charter -> repo authority -> targeted OpenMemory -> filesystem recovery bundle -> `STATE.md` summary/current state -> exactly one selective deep read (`DECISIONS.md`, `PATTERNS.md`, or `HANDOFF.md`) -> ledger one-block fallback only.
-- Rewrote `.cursor/rules/openmemory.mdc` to match the verified flat runtime only: `search-memories(query)`, `list-memories()`, `add-memory(content)`.
-- Updated `docs/ai/operations/TRI_WORKSPACE_TOOL_WORKFLOW.md` so the tool inventory and role boundaries match the 9 installed MCP descriptors.
-- Made Obsidian explicitly sidecar-only and non-blocking in the active repo docs, then narrowed the conflicting machine-global Obsidian/governance overlays so they cannot silently outrank repo policy.
+- Replaced the old mem0-server wording in the three allowed `mem0-bridge` skill copies with a compatibility-named OpenMemory routine: retrieve with `search-memories`, promote only Sparky-validated compact packets, store with `add-memory`, then verify retrieval with `search-memories`.
+- Enabled the `mem0-bridge` skill in `open-claw/configs/openclaw.template.json5` as the minimum runtime-facing seam.
+- Updated `MEMORY_PROMOTION_TEMPLATE.md` so canonical packets carry the source doc path and treat namespace/memory-type fields as human labels only.
+- Wrote one real durable bridge memory and confirmed retrieval from OpenMemory as id `21`.
+- Ran quarantine-safe retrieval checks for `candidate_employees`, `ios_provider.py`, and `droidrun/tools/ios`; no quarantined file content was recalled.
+- Ran a fresh context-isolated verifier that recovered the current objective, last action, blockers, and bridge status from persisted sources only, without relying on `HANDOFF.md` or the ledger by default.
 
-Fresh recovery expectation:
-Read the charter, repo authority contract, targeted OpenMemory result, and the four files in `docs/ai/recovery/` before touching `STATE.md`. Use the ledger only if the bundle plus one selective deep read are still insufficient.
+Current proof split:
+- Proven: bridge seam in the allowed OpenClaw docs/config, durable memory promotion, durable retrieval, quarantine-safe retrieval, and power-loss-safe clean-room recovery.
+- Open proof gap: the normal AI-PM ledger append did not visibly trigger `afterFileEdit` rotation/archive behavior, so the phase cannot be called fully lossless-proven yet.
 
-Phase 2 still needed:
-- Sweep broader untouched docs for stale tool inventory or older no-loss wording.
-- Decide whether any stale older OpenMemory bootstrap entries should be superseded again.
-
-## Pending Obsidian Sidecar Summary
-
-This is a non-canonical fallback payload to flush into Obsidian once `obsidian-vault` is available again.
-
-- Phase 1 governance normalization now makes the flat OpenMemory surface, the lean bootstrap order, and sidecar-only Obsidian behavior explicit across the active AI-PM rule stack.
-- Machine-global Obsidian and governance overlays were narrowed so they cannot silently broaden bootstrap or outrank repo-tracked AI-PM policy.
-- Remaining drift is intentionally deferred to Phase 2: broader stale docs, historical logs, and any supersession of older low-relevance OpenMemory bootstrap memories.
-
-Flush rule:
-- On next successful `obsidian-vault` availability, copy this sidecar summary into Obsidian and clear `obsidian_sync: pending`.
+Next recommended action:
+Diagnose the AI-PM ledger-hook path (`.cursor/hooks/rotate_ledger.py` / hook activation conditions) and rerun only the hook proof gate.

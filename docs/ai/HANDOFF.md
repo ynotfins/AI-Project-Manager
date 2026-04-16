@@ -1,8 +1,8 @@
 # Agent Handoff — AI-Project-Manager
 
-**Date**: 2026-04-13
-**Status**: Current handoff — recovery bundle materialized and proven alive across a later normal execution; Obsidian sidecar catch-up now falls back to a pending summary in `docs/ai/recovery/session-summary.md`
-**Crash-recovery path**: OpenMemory + `docs/ai/recovery/*` first, then `docs/ai/STATE.md` if needed
+**Date**: 2026-04-15
+**Status**: Current handoff — AI-PM authority, bootstrap order, installed-tool matrix, and flat OpenMemory contract are re-aligned; fresh proof replay evidence now lives in `docs/ai/STATE.md` and `docs/ai/recovery/*`
+**Crash-recovery path**: Follow `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`: authority contract -> targeted OpenMemory -> `docs/ai/recovery/*` -> `docs/ai/STATE.md` summary/current state -> one selective deep read only if needed
 
 Previous handoff snapshot: `docs/ai/archive/handoff-2026-03-08.md`.
 
@@ -109,19 +109,23 @@ Structural limits that affect all planning. Not resolvable in a single task bloc
 
 ## 6. Read Order For New Sessions
 
+Do not reconstruct a local bootstrap chain from this file. Use the one canonical order in `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`.
+
+Default bootstrap set:
+
 1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`
 2. `AGENTS.md`
 3. `.cursor/rules/05-global-mcp-usage.md`
 4. `.cursor/rules/10-project-workflow.md`
 5. `docs/ai/memory/MEMORY_CONTRACT.md`
 6. `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
-7. `docs/ai/operations/RECOVERY_BUNDLE_SPEC.md`
+7. `docs/tooling/MCP_CANONICAL_CONFIG.md`
 8. Targeted OpenMemory search
-9. Recovery bundle if present/current
+9. `docs/ai/recovery/current-state.json`, `session-summary.md`, `active-blockers.json`, `memory-delta.json`
 10. `docs/ai/STATE.md` summary/current state section
-11. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md`
+11. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` if needed
 
-Use archived docs only for historical evidence, not operational truth.
+Never read by default: `docs/ai/context/**`, `docs/ai/context/AGENT_EXECUTION_LEDGER.md`, `docs/ai/archive/**`, Obsidian sidecar notes, Artiforge briefs, or the full `STATE.md`.
 
 ---
 
@@ -152,13 +156,15 @@ Do not rely on dashboard names when switching repos. `D:/github/open--claw` repo
 
 ### MCP configuration
 
-All 10 active MCP servers live in the single global config at `C:/Users/ynotf/.cursor/mcp.json`:
+The live installed-tool matrix is owned by `docs/tooling/MCP_CANONICAL_CONFIG.md`.
 
-Context7, thinking-patterns, openmemory, github, serena, Exa Search, firecrawl-mcp, playwright, Magic MCP, droidrun, context-matic, filesystem, obsidian-vault.
+Current installed surface: 11 servers in the single global config at `C:/Users/ynotf/.cursor/mcp.json`:
+
+Context7, thinking-patterns, openmemory, filesystem, serena, droidrun, Exa Search, playwright, Magic MCP, Artiforge, obsidian-vault.
 
 No workspace-local `.cursor/mcp.json` files. The earlier split caused duplicate tool loading in multi-root workspaces.
 
-Removed from toolchain: `sequential-thinking`, `shell-mcp`, GitKraken MCP, `googlesheets-tvi8pq-94`, `firestore-mcp`.
+Do not document `github`, `firecrawl-mcp`, or `context-matic` as installed/default tools unless a later pass re-proves them and updates the canonical matrix first.
 
 ### No-Loss memory system
 

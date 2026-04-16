@@ -213,13 +213,13 @@ The filesystem recovery bundle is a non-canonical speed layer for post-crash or 
 2. The exact prompt text or exact response text from a prior AGENT block is specifically needed.
 3. Read **one block at a time**. Stop reading as soon as sufficient context is recovered. Do not preload multiple entries unless one block proves insufficient.
 
-**Size management (hook-enforced — automatic):**
+**Size management (hook-configured; repo logic proven, live trigger unproven):**
 - Active ledger: keep the 3–5 most recent entries.
-- Archive threshold: when entries exceed 5 or file exceeds ~300 lines, the `afterFileEdit` Cursor hook (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`) automatically moves the oldest entries verbatim to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md`.
-- AGENT must still append the new entry. Archival of old entries is automatic after each ledger edit — AGENT does NOT manage archival manually.
+- Archive threshold: when entries exceed 5 or file exceeds ~300 lines, the registered `afterFileEdit` Cursor hook (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`) is intended to move the oldest entries verbatim to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md`.
+- AGENT must still append the new entry. Repo-local rotation logic in `.cursor/hooks/rotate_ledger.py` is proven via direct invocation, but live Cursor `afterFileEdit` execution remains unproven.
 - Archived files are non-canonical and historical only. PLAN and DEBUG must not include them in default reads.
 - Exact prompt and response text must never be summarized or paraphrased when archiving — the hook moves them verbatim.
-- If the hook is unavailable or fails, AGENT must archive manually following the same policy before proceeding to the next non-trivial block.
+- Until live hook firing is re-proven, if a ledger append leaves the file above the compaction threshold, run `python .cursor/hooks/rotate_ledger.py --force` as the current canonical fallback before the next non-trivial block. This is a Cursor-hook proof gap, not a repo-memory architecture gap.
 
 ## docs/ai/archive/ — never consulted
 

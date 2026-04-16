@@ -106,17 +106,29 @@ def _resolve_project_root_from_stdin() -> "Path | None":
         return None
 
     # Quick check: is this the ledger file?
-    normalized = file_path_str.replace("\\", "/")
-    if not normalized.endswith(LEDGER_RELATIVE_PATH):
+    normalized = _normalize_path_for_match(file_path_str)
+    if not normalized.endswith(_normalize_path_for_match(LEDGER_RELATIVE_PATH)):
         # Not the ledger – skip immediately.
         return None
 
-    # Prefer workspace_roots[0] as the project root (most reliable).
-    if workspace_roots:
+    file_path = Path(file_path_str)
+
+    # Prefer deriving from the edited file itself. This is robust for
+    # multi-root workspaces where workspace_roots ordering is not guaranteed.
+    derived_root = _derive_root_from_file_path(file_path)
+    if derived_root is not None:
+        return derived_root
+
+    matching_root = _find_matching_workspace_root(file_path_str, workspace_roots)
+    if matching_root is not None:
+        return matching_root
+
+    # Single-root fallback only. In multi-root workspaces, blindly trusting
+    # workspace_roots[0] can target the wrong repository.
+    if len(workspace_roots) == 1:
         return Path(workspace_roots[0])
 
-    # Fallback: derive project root from the absolute file path.
-    return _derive_root_from_file_path(Path(file_path_str))
+    return None
 
 
 def _resolve_project_root_from_args() -> "Path | None":
@@ -148,6 +160,32 @@ def _derive_root_from_file_path(file_path: Path) -> "Path | None":
     if (candidate / LEDGER_RELATIVE_PATH).exists():
         return candidate
     return None
+
+
+def _find_matching_workspace_root(
+    file_path_str: str, workspace_roots: list[str]
+) -> "Path | None":
+    """Return the workspace root that actually contains the edited ledger file."""
+    normalized_file = _normalize_path_for_match(file_path_str)
+
+    for root_str in workspace_roots:
+        candidate_root = Path(root_str)
+        candidate_ledger = candidate_root / LEDGER_RELATIVE_PATH
+        normalized_root = _normalize_path_for_match(candidate_root)
+        normalized_candidate_ledger = _normalize_path_for_match(candidate_ledger)
+
+        if normalized_file == normalized_candidate_ledger:
+            return candidate_root
+
+        if normalized_file.startswith(normalized_root.rstrip("/") + "/"):
+            return candidate_root
+
+    return None
+
+
+def _normalize_path_for_match(path_value: "str | Path") -> str:
+    """Normalize paths for case-insensitive cross-platform suffix/prefix checks."""
+    return str(path_value).replace("\\", "/").lower()
 
 
 # ---------------------------------------------------------------------------

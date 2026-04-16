@@ -49,18 +49,34 @@ flowchart TD
 - `open--claw/vendor/openclaw`: the actual OpenClaw runtime codebase. Start here for gateway behavior, agents, channels, Control UI, and mobile client implementation.
 - `droidrun`: actuator layer. Exposes phone automation through MCP and drives the Portal APK, ADB, and the DroidAgent loop.
 
-## Canonical Source Order (for any new session)
+## Default PLAN Bootstrap
 
-1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md` — supreme product charter
-2. `AGENTS.md` (repo-local)
-3. `docs/ai/STATE.md` — operational evidence
-4. `docs/ai/memory/DECISIONS.md`
-5. `docs/ai/memory/PATTERNS.md`
-6. `docs/ai/HANDOFF.md` — operational evidence
-7. `docs/ai/architecture/CODEBASE_ORIENTATION.md`
-8. Downstream handoff docs (operational evidence only):
-   - `../open--claw/docs/ai/HANDOFF.md`
-   - `../droidrun/docs/ai/HANDOFF.md`
+This brief does not own the numbered bootstrap chain. Follow `D:/github/AI-Project-Manager/docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`.
+
+Default bootstrap set:
+
+1. `open--claw/open-claw/AI_Employee_knowledgebase/FINAL_OUTPUT_PRODUCT.md`
+2. `AGENTS.md` plus the repo authority contract in scope
+3. `D:/github/AI-Project-Manager/docs/tooling/MCP_CANONICAL_CONFIG.md`
+4. Targeted OpenMemory search
+5. The AI-PM recovery bundle in `docs/ai/recovery/`
+6. `docs/ai/STATE.md` summary/current state section
+7. Exactly one of `docs/ai/memory/DECISIONS.md`, `docs/ai/memory/PATTERNS.md`, or `docs/ai/HANDOFF.md` if needed
+
+Never read by default:
+
+- `docs/ai/context/**`
+- `docs/ai/context/AGENT_EXECUTION_LEDGER.md`
+- `docs/ai/archive/**`
+- Obsidian sidecar notes
+- Artiforge briefs
+- full `STATE.md`
+
+Selective-only reads:
+
+- `docs/ai/HANDOFF.md` when unresolved operator turbulence matters
+- downstream repo handoffs only after the canonical path still leaves a repo-routing question
+- `docs/ai/architecture/CODEBASE_ORIENTATION.md` when repo selection is known but implementation surface is still unclear
 
 ## Task Routing
 
@@ -96,10 +112,11 @@ If Serena activation fails, state that explicitly, record FAIL evidence, and con
 ### Governance / planning
 
 - `AGENTS.md`
-- `docs/ai/STATE.md`
-- `docs/ai/HANDOFF.md`
-- `docs/ai/PLAN.md`
-- `docs/ai/architecture/CODEBASE_ORIENTATION.md`
+- `.cursor/rules/05-global-mcp-usage.md`
+- `.cursor/rules/10-project-workflow.md`
+- `docs/ai/memory/MEMORY_CONTRACT.md`
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md`
+- `docs/tooling/MCP_CANONICAL_CONFIG.md`
 
 ### OpenClaw runtime implementation
 

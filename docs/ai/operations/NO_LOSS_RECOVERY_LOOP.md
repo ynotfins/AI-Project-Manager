@@ -57,6 +57,8 @@ Use this order unless a stricter repo rule applies:
 
 - Execute the PLAN prompt exactly
 - Update `STATE.md`, `HANDOFF.md`, and the execution ledger honestly
+- Treat ledger rotation as repo-proven but live-hook-unproven: `.cursor/hooks/rotate_ledger.py` works when run directly, but Cursor `afterFileEdit` delivery is not yet reproven
+- If a ledger append leaves `docs/ai/context/AGENT_EXECUTION_LEDGER.md` above compaction threshold, run `python .cursor/hooks/rotate_ledger.py --force` as the current canonical fallback
 - After every meaningful execution, write all four recovery bundle files via `filesystem`
 - Store durable conclusions in OpenMemory when healthy
 
@@ -137,6 +139,8 @@ If a required recovery step is degraded:
 5. Record the incident in `STATE.md`
 
 If OpenMemory retrieval or storage was skipped, add a reseed note so future sessions know durable memory must be repaired.
+
+The current ledger-compaction fallback is operational, not architectural: the repo-tracked memory/recovery design remains valid; the open proof gap is live Cursor hook invocation.
 
 `obsidian-vault` sidecar sync is a special non-canonical case: on failure, keep execution moving and store the pending sidecar payload in `docs/ai/recovery/session-summary.md` instead of blocking the task.
 

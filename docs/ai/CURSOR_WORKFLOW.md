@@ -36,8 +36,11 @@ See `docs/ai/tabs/TAB_BOOTSTRAP_PROMPTS.md` for tab-start prompts.
 
 - Do not invent a local bootstrap order from this overview.
 - Follow `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` when reconstructing context.
+- Do not duplicate the installed-tool inventory here; use `docs/tooling/MCP_CANONICAL_CONFIG.md`.
 - Treat `docs/ai/context/` and the execution ledger as non-canonical last-resort evidence only.
 - Treat `docs/ai/STATE.md` as operational evidence reached after authority, targeted OpenMemory, and the recovery bundle.
+
+Default bootstrap excludes `docs/ai/context/**`, archived docs, Obsidian sidecar notes, Artiforge briefs, and full-ledger reads unless the canonical recovery path still leaves a targeted question unanswered.
 
 ## Tooling Guidance
 

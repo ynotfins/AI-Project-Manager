@@ -37,6 +37,15 @@ For workflow and memory recovery, read this repo contract before operational evi
 
 These repo-tracked files define live workflow policy. Historical snapshots such as `docs/global-rules.md` are informative only.
 
+## Canonical Owners
+
+Secondary docs in this repo must point back to these owners instead of restating competing versions:
+
+- `docs/ai/operations/NO_LOSS_RECOVERY_LOOP.md` owns the numbered no-loss bootstrap order
+- `docs/tooling/MCP_CANONICAL_CONFIG.md` owns the live installed-tool matrix
+- `.cursor/rules/05-global-mcp-usage.md` owns tool triggers and degraded-tool behavior
+- `docs/ai/memory/MEMORY_CONTRACT.md` owns the flat-runtime OpenMemory storage/retrieval contract
+
 ## State Tracking
 
 - `docs/ai/STATE.md` — operational evidence log, not product law; use the summary/current state section first during recovery, then deeper blocks only as needed
@@ -104,11 +113,11 @@ AGENT must:
 
 `docs/ai/context/AGENT_EXECUTION_LEDGER.md` records verbatim AGENT execution events. It is non-canonical and must never be part of default bootstrap reads for any tab. PLAN and DEBUG may consult it only when `STATE.md`, `DECISIONS.md`, `PATTERNS.md`, and `HANDOFF.md` are insufficient, and only by reading the specific needed block(s).
 
-**Ledger auto-rotation is hook-enforced** (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`). After every AI edit to the ledger file, the hook script automatically:
+**Ledger rotation is hook-configured** (`.cursor/hooks.json` → `.cursor/hooks/rotate_ledger.py`). Repo-local rotation logic is proven when the script is run directly, but live Cursor `afterFileEdit` execution remains unproven. After every AI edit to the ledger file, the intended rotation behavior is:
 
 - Checks if entry count > 5 or file > ~300 lines
 - Moves the oldest entries verbatim to `docs/ai/context/archive/ledger-<YYYY-MM-DD>.md`
 - Keeps the 3–5 most recent entries in the active ledger
 - Does not rotate below 3 active entries
 
-AGENT must still append the new entry manually. PLAN and DEBUG must not preload the ledger; they may consult only the minimum needed block(s), one block at a time.
+AGENT must still append the new entry manually. Until live hook firing is re-proven, if a ledger append leaves the file above the compaction threshold, run `python .cursor/hooks/rotate_ledger.py --force` as the current canonical fallback. This is a Cursor-hook proof gap, not a repo-memory architecture gap. PLAN and DEBUG must not preload the ledger; they may consult only the minimum needed block(s), one block at a time.

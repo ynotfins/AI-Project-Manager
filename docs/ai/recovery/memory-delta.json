@@ -1,30 +1,22 @@
 {
   "decisions": [
     {
-      "title": "Phase 1 no-loss bootstrap order normalized",
-      "summary": "Active AI-PM bootstrap docs now align on the lean order: charter, repo authority, targeted OpenMemory, recovery bundle, STATE summary, one selective deep read, then ledger fallback."
+      "title": "mem0-bridge is now the allowed OpenMemory compatibility seam",
+      "summary": "The bridge keeps the `mem0-bridge` name for continuity but now documents retrieve-before-plan and store-after-gate against the flat Cursor OpenMemory runtime."
     },
     {
-      "title": "Repo openmemory rule now follows the flat live runtime",
-      "summary": "The active rule no longer claims or requires project_id, namespace, user_preference, memory_types, or metadata/filter support that the installed runtime does not expose."
-    },
-    {
-      "title": "Machine-global overlays were subordinated to repo-tracked AI-PM policy",
-      "summary": "The global Obsidian gate, AI-PM governance hint, and thinking-patterns reminder were narrowed so they cannot silently broaden bootstrap or outrank repo-tracked no-loss rules."
+      "title": "Lossless bridge proof is partial until the AI-PM ledger hook fires live",
+      "summary": "Do not call the tri-workspace fully lossless-proven while the normal AI-PM ledger append can still fail to rotate/archive under policy."
     }
   ],
   "patterns": [
     {
-      "title": "Lean recovery path",
-      "summary": "Default recovery now stops after the first selective deep read unless the ledger is specifically needed one block at a time."
+      "title": "Bridge promotion loop",
+      "summary": "Search memory first, validate the packet, add one compact self-identifying memory, immediately re-search for discoverability, then mirror the proof into recovery/state docs."
     },
     {
-      "title": "Installed MCP descriptor inventory",
-      "summary": "The active tri-workspace MCP descriptor set is 9 servers: Context7, thinking-patterns, openmemory, filesystem, serena, droidrun, obsidian-vault, Magic MCP, and Artiforge."
-    },
-    {
-      "title": "Obsidian sidecar discipline",
-      "summary": "Obsidian is sidecar-only, never canonical, and non-blocking when degraded; pending sidecar sync remains in session-summary.md until a later flush succeeds."
+      "title": "Clean-room recovery proof",
+      "summary": "A fresh verifier can recover objective, last action, blockers, and bridge status from charter + repo authority + one targeted OpenMemory search + AI-PM recovery bundle + STATE summary, without HANDOFF or ledger default reads."
     }
   ]
 }
